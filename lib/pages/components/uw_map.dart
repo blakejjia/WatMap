@@ -1,6 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../data/db/repositories/building.dart';
+import '../../main.dart';
 
 class UWMap extends StatefulWidget {
   const UWMap({super.key});
@@ -15,24 +17,23 @@ class _UWMapState extends State<UWMap> {
   @override
   void initState() {
     super.initState();
-    // _loadBuildingData();
+    _loadBuildingData();
   }
 
   Future<void> _loadBuildingData() async {
-    //TODO: load from db
-    final String response = await rootBundle.loadString('assets/MapDat.json');
-    final data = json.decode(response);
+    final buildings = await getIt<BuildingRepository>().readAllBuildings();
+    print(buildings);
     setState(() {
-      _buildingMarkers = (data['buildings'] as List).map((building) {
+      _buildingMarkers = buildings.map((building) {
         return Positioned(
-          left: building['position']['left'].toDouble(),
-          top: building['position']['top'].toDouble(),
+          left: building.x.toDouble(),
+          top: building.y.toDouble(),
           child: IconButton(
-            icon: Icon(Icons.circle, color: Colors.orange.withOpacity(0), size: 50,),
+            icon: Icon(Icons.circle, color: Colors.orange.withOpacity(0.3), size: 50),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Clicked on ${building['name']}'),
+                  content: Text('Clicked on ${building.name}'),
                   duration: Duration(seconds: 2),
                 ),
               );

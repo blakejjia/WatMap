@@ -16,8 +16,7 @@ class HomePage extends StatelessWidget {
         transformationController: TransformationController(Matrix4.identity()..translate(-2500.0, -1200.0)),
         minScale: 0.1,
         builder: (BuildContext context, Quad viewport) {
-          return Center(child: Text(getIt<BuildingRepository>().readAllBuildings().toString()),);
-          // return UWMap();
+          return UWMap();
         },
       ),
     );

@@ -25,4 +25,8 @@ class LocationRepository {
   Future<int> deleteLocation(int id) {
     return (db.delete(db.locations)..where((tbl) => tbl.id.equals(id))).go();
   }
+
+  Future<int> destroyAllLocations() {
+    return db.delete(db.locations).go();
+  }
 }

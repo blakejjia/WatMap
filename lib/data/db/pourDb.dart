@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/services.dart';
 import 'package:watmap/data/db/database.dart';
 import 'package:watmap/data/db/repositories/building.dart';
 import 'package:watmap/data/db/repositories/location.dart';
@@ -10,10 +11,23 @@ import '../../main.dart';
 import '../model/base/path.dart';
 
 Future<bool> pourDb() async {
+  // Check if there is existing data in the database
+  // TODO: This is a temporary solution. We need to implement a better way to check if the database is empty.
+  final existingBuildings =
+      await getIt<BuildingRepository>().readAllBuildings();
+  if (existingBuildings.isNotEmpty) {
+    return false;
+  }
+
+  // Destroy existing data
+  await getIt<BuildingRepository>().destroyAllBuildings();
+  await getIt<LocationRepository>().destroyAllLocations();
+  await getIt<PathRepository>().destroyAllPaths();
 
   // buildings table ----------------------------------------------------------------
-  final buildingsData =
-      await File('assets/mapDat/buildings.csv').readAsString();
+  final buildingsData = await rootBundle.loadString(
+    'assets/mapDat/buildings.csv',
+  );
   List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(
     buildingsData,
   );
@@ -66,11 +80,10 @@ Future<bool> pourDb() async {
   });
 
   // locations table ----------------------------------------------------------------
-  final locationsData =
-      await File('assets/mapDat/locations.csv').readAsString();
-  rowsAsListOfValues = const CsvToListConverter().convert(
-    locationsData,
+  final locationsData = await rootBundle.loadString(
+    'assets/mapDat/locations.csv',
   );
+  rowsAsListOfValues = const CsvToListConverter().convert(locationsData);
 
   // insert:
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {
@@ -86,10 +99,8 @@ Future<bool> pourDb() async {
   });
 
   // paths table ----------------------------------------------------------------
-  final pathsData = await File('assets/mapDat/paths.csv').readAsString();
-  rowsAsListOfValues = const CsvToListConverter().convert(
-    pathsData,
-  );
+  final pathsData = await rootBundle.loadString('assets/mapDat/paths.csv');
+  rowsAsListOfValues = const CsvToListConverter().convert(pathsData);
 
   // insert:
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {

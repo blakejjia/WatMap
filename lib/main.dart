@@ -17,7 +17,8 @@ void main() {
 }
 
 void init() {
-  getIt.registerSingleton<AppDatabase>(AppDatabase(NativeDatabase.memory()));
+  WidgetsFlutterBinding.ensureInitialized();
+  getIt.registerSingleton<AppDatabase>(AppDatabase());
   getIt.registerSingleton<BuildingRepository>(BuildingRepository(getIt<AppDatabase>()));
   getIt.registerSingleton<LocationRepository>(LocationRepository(getIt<AppDatabase>()));
   getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));

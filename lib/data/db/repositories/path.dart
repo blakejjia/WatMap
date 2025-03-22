@@ -25,4 +25,8 @@ class PathRepository {
   Future<int> deletePath(int id) {
     return (db.delete(db.paths)..where((tbl) => tbl.id.equals(id))).go();
   }
+
+  Future<int> destroyAllPaths() {
+    return db.delete(db.paths).go();
+  }
 }

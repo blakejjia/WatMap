@@ -25,4 +25,9 @@ class BuildingRepository {
   Future<int> deleteBuilding(int id) {
     return (db.delete(db.buildings)..where((tbl) => tbl.id.equals(id))).go();
   }
+
+  Future<void> destroyAllBuildings() {
+    return db.delete(db.buildings).go();
+  }
+
 }
