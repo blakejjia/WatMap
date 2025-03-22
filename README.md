@@ -1,16 +1,15 @@
-# watmap
+# WatMap
 
-A app help you hang around uwaterloo
+A interactive map app🗺️ help you hang around in UWaterloo, finding best routes📍 and make your life in UWaterloo better😀~
 
-## Getting Started
+## Features
+- [x] Inside mode🌧️ - help you find routes inside buildings (if available)
+- [x] Sunny mode🔆 - help you find the fastest routes both inside and outside
+- Some routes that Blake personal's favorite👍
 
-This project is a starting point for a Flutter application.
+## Future Features
+- Add a route to favorite and save it for later
+- support to open route in google map (better help you see where you are)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Special Thanks
+Special Thanks to [WatIsRain](https://github.com/lucky-bai/WATisRain). This project was inspired by WatIsRain. This is app is basically a updated version of WatIsRain..
