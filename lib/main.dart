@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:watmap/pages/home_page.dart';
-import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:get_it/get_it.dart';
 
 import 'data/db/database.dart';
+import 'data/db/pourDb.dart';
+import 'data/db/repositories/building.dart';
+import 'data/db/repositories/location.dart';
+import 'data/db/repositories/path.dart';
+
+final getIt = GetIt.instance;
 
 void main() {
-  final db = Database(NativeDatabase.memory());
+  init();
   runApp(const MyApp());
+}
+
+void init() {
+  getIt.registerSingleton<AppDatabase>(AppDatabase(NativeDatabase.memory()));
+  getIt.registerSingleton<BuildingRepository>(BuildingRepository(getIt<AppDatabase>()));
+  getIt.registerSingleton<LocationRepository>(LocationRepository(getIt<AppDatabase>()));
+  getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));
+  pourDb();
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'WatMap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

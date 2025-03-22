@@ -12,16 +12,11 @@ class Locations extends Table {
   IntColumn get x => integer()();
   IntColumn get y => integer()();
 
-  /// Floor of the location
+  /// which floor
   IntColumn get floor => integer().withDefault(Constant(0))();
 
-  /// If a location has building = false means it's not a building
-  BoolColumn get isBuilding => boolean()();
-
+  /// If a location is inside a building, here should have its id.
   IntColumn get buildingId => integer().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {name};
 }
 // Euclidean distance
 // double distanceTo(Location a) {

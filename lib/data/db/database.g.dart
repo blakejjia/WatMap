@@ -17,7 +17,7 @@ class $BuildingsTable extends Buildings
     false,
     hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
@@ -31,43 +31,48 @@ class $BuildingsTable extends Buildings
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _floorMeta = const VerificationMeta('floor');
   @override
-  late final GeneratedColumnWithTypeConverter<List<int>, String> floorIds =
-      GeneratedColumn<String>(
-        'floor_ids',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<List<int>>($BuildingsTable.$converterfloorIds);
-  @override
-  late final GeneratedColumnWithTypeConverter<List<int>, String> pathIds =
-      GeneratedColumn<String>(
-        'path_ids',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<List<int>>($BuildingsTable.$converterpathIds);
-  static const VerificationMeta _mainFloorIdMeta = const VerificationMeta(
-    'mainFloorId',
+  late final GeneratedColumn<int> floor = GeneratedColumn<int>(
+    'floor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: Constant(1),
+  );
+  static const VerificationMeta _mainFloorMeta = const VerificationMeta(
+    'mainFloor',
   );
   @override
-  late final GeneratedColumn<int> mainFloorId = GeneratedColumn<int>(
-    'main_floor_id',
+  late final GeneratedColumn<int> mainFloor = GeneratedColumn<int>(
+    'main_floor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: Constant(1),
+  );
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<int> x = GeneratedColumn<int>(
+    'x',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<int> y = GeneratedColumn<int>(
+    'y',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    floorIds,
-    pathIds,
-    mainFloorId,
-  ];
+  List<GeneratedColumn> get $columns => [id, name, floor, mainFloor, x, y];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -82,8 +87,6 @@ class $BuildingsTable extends Buildings
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -93,22 +96,33 @@ class $BuildingsTable extends Buildings
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('main_floor_id')) {
+    if (data.containsKey('floor')) {
       context.handle(
-        _mainFloorIdMeta,
-        mainFloorId.isAcceptableOrUnknown(
-          data['main_floor_id']!,
-          _mainFloorIdMeta,
-        ),
+        _floorMeta,
+        floor.isAcceptableOrUnknown(data['floor']!, _floorMeta),
       );
+    }
+    if (data.containsKey('main_floor')) {
+      context.handle(
+        _mainFloorMeta,
+        mainFloor.isAcceptableOrUnknown(data['main_floor']!, _mainFloorMeta),
+      );
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
     } else if (isInserting) {
-      context.missing(_mainFloorIdMeta);
+      context.missing(_xMeta);
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    } else if (isInserting) {
+      context.missing(_yMeta);
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {name};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Building map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -123,22 +137,25 @@ class $BuildingsTable extends Buildings
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
-      floorIds: $BuildingsTable.$converterfloorIds.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}floor_ids'],
-        )!,
-      ),
-      pathIds: $BuildingsTable.$converterpathIds.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}path_ids'],
-        )!,
-      ),
-      mainFloorId:
+      floor:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
-            data['${effectivePrefix}main_floor_id'],
+            data['${effectivePrefix}floor'],
+          )!,
+      mainFloor:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}main_floor'],
+          )!,
+      x:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}x'],
+          )!,
+      y:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}y'],
           )!,
     );
   }
@@ -147,11 +164,6 @@ class $BuildingsTable extends Buildings
   $BuildingsTable createAlias(String alias) {
     return $BuildingsTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<List<int>, String> $converterfloorIds =
-      const IntListConverter();
-  static TypeConverter<List<int>, String> $converterpathIds =
-      const IntListConverter();
 }
 
 class Building extends DataClass implements Insertable<Building> {
@@ -161,37 +173,32 @@ class Building extends DataClass implements Insertable<Building> {
   /// Name of the building
   final String name;
 
-  /// Floors of a building
-  final List<int> floorIds;
-
-  /// Stairs in a building
-  final List<int> pathIds;
+  /// Main floor of this building
+  final int floor;
 
   /// Main floor of this building
-  final int mainFloorId;
+  final int mainFloor;
+
+  /// Position of the building
+  final int x;
+  final int y;
   const Building({
     required this.id,
     required this.name,
-    required this.floorIds,
-    required this.pathIds,
-    required this.mainFloorId,
+    required this.floor,
+    required this.mainFloor,
+    required this.x,
+    required this.y,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    {
-      map['floor_ids'] = Variable<String>(
-        $BuildingsTable.$converterfloorIds.toSql(floorIds),
-      );
-    }
-    {
-      map['path_ids'] = Variable<String>(
-        $BuildingsTable.$converterpathIds.toSql(pathIds),
-      );
-    }
-    map['main_floor_id'] = Variable<int>(mainFloorId);
+    map['floor'] = Variable<int>(floor);
+    map['main_floor'] = Variable<int>(mainFloor);
+    map['x'] = Variable<int>(x);
+    map['y'] = Variable<int>(y);
     return map;
   }
 
@@ -199,9 +206,10 @@ class Building extends DataClass implements Insertable<Building> {
     return BuildingsCompanion(
       id: Value(id),
       name: Value(name),
-      floorIds: Value(floorIds),
-      pathIds: Value(pathIds),
-      mainFloorId: Value(mainFloorId),
+      floor: Value(floor),
+      mainFloor: Value(mainFloor),
+      x: Value(x),
+      y: Value(y),
     );
   }
 
@@ -213,9 +221,10 @@ class Building extends DataClass implements Insertable<Building> {
     return Building(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      floorIds: serializer.fromJson<List<int>>(json['floorIds']),
-      pathIds: serializer.fromJson<List<int>>(json['pathIds']),
-      mainFloorId: serializer.fromJson<int>(json['mainFloorId']),
+      floor: serializer.fromJson<int>(json['floor']),
+      mainFloor: serializer.fromJson<int>(json['mainFloor']),
+      x: serializer.fromJson<int>(json['x']),
+      y: serializer.fromJson<int>(json['y']),
     );
   }
   @override
@@ -224,33 +233,36 @@ class Building extends DataClass implements Insertable<Building> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'floorIds': serializer.toJson<List<int>>(floorIds),
-      'pathIds': serializer.toJson<List<int>>(pathIds),
-      'mainFloorId': serializer.toJson<int>(mainFloorId),
+      'floor': serializer.toJson<int>(floor),
+      'mainFloor': serializer.toJson<int>(mainFloor),
+      'x': serializer.toJson<int>(x),
+      'y': serializer.toJson<int>(y),
     };
   }
 
   Building copyWith({
     int? id,
     String? name,
-    List<int>? floorIds,
-    List<int>? pathIds,
-    int? mainFloorId,
+    int? floor,
+    int? mainFloor,
+    int? x,
+    int? y,
   }) => Building(
     id: id ?? this.id,
     name: name ?? this.name,
-    floorIds: floorIds ?? this.floorIds,
-    pathIds: pathIds ?? this.pathIds,
-    mainFloorId: mainFloorId ?? this.mainFloorId,
+    floor: floor ?? this.floor,
+    mainFloor: mainFloor ?? this.mainFloor,
+    x: x ?? this.x,
+    y: y ?? this.y,
   );
   Building copyWithCompanion(BuildingsCompanion data) {
     return Building(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      floorIds: data.floorIds.present ? data.floorIds.value : this.floorIds,
-      pathIds: data.pathIds.present ? data.pathIds.value : this.pathIds,
-      mainFloorId:
-          data.mainFloorId.present ? data.mainFloorId.value : this.mainFloorId,
+      floor: data.floor.present ? data.floor.value : this.floor,
+      mainFloor: data.mainFloor.present ? data.mainFloor.value : this.mainFloor,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
     );
   }
 
@@ -259,86 +271,86 @@ class Building extends DataClass implements Insertable<Building> {
     return (StringBuffer('Building(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('floorIds: $floorIds, ')
-          ..write('pathIds: $pathIds, ')
-          ..write('mainFloorId: $mainFloorId')
+          ..write('floor: $floor, ')
+          ..write('mainFloor: $mainFloor, ')
+          ..write('x: $x, ')
+          ..write('y: $y')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, floorIds, pathIds, mainFloorId);
+  int get hashCode => Object.hash(id, name, floor, mainFloor, x, y);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Building &&
           other.id == this.id &&
           other.name == this.name &&
-          other.floorIds == this.floorIds &&
-          other.pathIds == this.pathIds &&
-          other.mainFloorId == this.mainFloorId);
+          other.floor == this.floor &&
+          other.mainFloor == this.mainFloor &&
+          other.x == this.x &&
+          other.y == this.y);
 }
 
 class BuildingsCompanion extends UpdateCompanion<Building> {
   final Value<int> id;
   final Value<String> name;
-  final Value<List<int>> floorIds;
-  final Value<List<int>> pathIds;
-  final Value<int> mainFloorId;
-  final Value<int> rowid;
+  final Value<int> floor;
+  final Value<int> mainFloor;
+  final Value<int> x;
+  final Value<int> y;
   const BuildingsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.floorIds = const Value.absent(),
-    this.pathIds = const Value.absent(),
-    this.mainFloorId = const Value.absent(),
-    this.rowid = const Value.absent(),
+    this.floor = const Value.absent(),
+    this.mainFloor = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
   });
   BuildingsCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required String name,
-    required List<int> floorIds,
-    required List<int> pathIds,
-    required int mainFloorId,
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
-       floorIds = Value(floorIds),
-       pathIds = Value(pathIds),
-       mainFloorId = Value(mainFloorId);
+    this.floor = const Value.absent(),
+    this.mainFloor = const Value.absent(),
+    required int x,
+    required int y,
+  }) : name = Value(name),
+       x = Value(x),
+       y = Value(y);
   static Insertable<Building> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<String>? floorIds,
-    Expression<String>? pathIds,
-    Expression<int>? mainFloorId,
-    Expression<int>? rowid,
+    Expression<int>? floor,
+    Expression<int>? mainFloor,
+    Expression<int>? x,
+    Expression<int>? y,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (floorIds != null) 'floor_ids': floorIds,
-      if (pathIds != null) 'path_ids': pathIds,
-      if (mainFloorId != null) 'main_floor_id': mainFloorId,
-      if (rowid != null) 'rowid': rowid,
+      if (floor != null) 'floor': floor,
+      if (mainFloor != null) 'main_floor': mainFloor,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
     });
   }
 
   BuildingsCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<List<int>>? floorIds,
-    Value<List<int>>? pathIds,
-    Value<int>? mainFloorId,
-    Value<int>? rowid,
+    Value<int>? floor,
+    Value<int>? mainFloor,
+    Value<int>? x,
+    Value<int>? y,
   }) {
     return BuildingsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      floorIds: floorIds ?? this.floorIds,
-      pathIds: pathIds ?? this.pathIds,
-      mainFloorId: mainFloorId ?? this.mainFloorId,
-      rowid: rowid ?? this.rowid,
+      floor: floor ?? this.floor,
+      mainFloor: mainFloor ?? this.mainFloor,
+      x: x ?? this.x,
+      y: y ?? this.y,
     );
   }
 
@@ -351,21 +363,17 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (floorIds.present) {
-      map['floor_ids'] = Variable<String>(
-        $BuildingsTable.$converterfloorIds.toSql(floorIds.value),
-      );
+    if (floor.present) {
+      map['floor'] = Variable<int>(floor.value);
     }
-    if (pathIds.present) {
-      map['path_ids'] = Variable<String>(
-        $BuildingsTable.$converterpathIds.toSql(pathIds.value),
-      );
+    if (mainFloor.present) {
+      map['main_floor'] = Variable<int>(mainFloor.value);
     }
-    if (mainFloorId.present) {
-      map['main_floor_id'] = Variable<int>(mainFloorId.value);
+    if (x.present) {
+      map['x'] = Variable<int>(x.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
+    if (y.present) {
+      map['y'] = Variable<int>(y.value);
     }
     return map;
   }
@@ -375,10 +383,10 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     return (StringBuffer('BuildingsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('floorIds: $floorIds, ')
-          ..write('pathIds: $pathIds, ')
-          ..write('mainFloorId: $mainFloorId, ')
-          ..write('rowid: $rowid')
+          ..write('floor: $floor, ')
+          ..write('mainFloor: $mainFloor, ')
+          ..write('x: $x, ')
+          ..write('y: $y')
           ..write(')'))
         .toString();
   }
@@ -398,7 +406,7 @@ class $LocationsTable extends Locations
     false,
     hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
@@ -440,20 +448,6 @@ class $LocationsTable extends Locations
     requiredDuringInsert: false,
     defaultValue: Constant(0),
   );
-  static const VerificationMeta _isBuildingMeta = const VerificationMeta(
-    'isBuilding',
-  );
-  @override
-  late final GeneratedColumn<bool> isBuilding = GeneratedColumn<bool>(
-    'is_building',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_building" IN (0, 1))',
-    ),
-  );
   static const VerificationMeta _buildingIdMeta = const VerificationMeta(
     'buildingId',
   );
@@ -466,15 +460,7 @@ class $LocationsTable extends Locations
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    x,
-    y,
-    floor,
-    isBuilding,
-    buildingId,
-  ];
+  List<GeneratedColumn> get $columns => [id, name, x, y, floor, buildingId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -489,8 +475,6 @@ class $LocationsTable extends Locations
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -516,14 +500,6 @@ class $LocationsTable extends Locations
         floor.isAcceptableOrUnknown(data['floor']!, _floorMeta),
       );
     }
-    if (data.containsKey('is_building')) {
-      context.handle(
-        _isBuildingMeta,
-        isBuilding.isAcceptableOrUnknown(data['is_building']!, _isBuildingMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_isBuildingMeta);
-    }
     if (data.containsKey('building_id')) {
       context.handle(
         _buildingIdMeta,
@@ -534,7 +510,7 @@ class $LocationsTable extends Locations
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {name};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Location map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -564,11 +540,6 @@ class $LocationsTable extends Locations
             DriftSqlType.int,
             data['${effectivePrefix}floor'],
           )!,
-      isBuilding:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.bool,
-            data['${effectivePrefix}is_building'],
-          )!,
       buildingId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}building_id'],
@@ -593,11 +564,10 @@ class Location extends DataClass implements Insertable<Location> {
   final int x;
   final int y;
 
-  /// Floor of the location
+  /// which floor
   final int floor;
 
-  /// If a location has building = false means it's not a building
-  final bool isBuilding;
+  /// If a location is inside a building, here should have its id.
   final int? buildingId;
   const Location({
     required this.id,
@@ -605,7 +575,6 @@ class Location extends DataClass implements Insertable<Location> {
     required this.x,
     required this.y,
     required this.floor,
-    required this.isBuilding,
     this.buildingId,
   });
   @override
@@ -616,7 +585,6 @@ class Location extends DataClass implements Insertable<Location> {
     map['x'] = Variable<int>(x);
     map['y'] = Variable<int>(y);
     map['floor'] = Variable<int>(floor);
-    map['is_building'] = Variable<bool>(isBuilding);
     if (!nullToAbsent || buildingId != null) {
       map['building_id'] = Variable<int>(buildingId);
     }
@@ -630,7 +598,6 @@ class Location extends DataClass implements Insertable<Location> {
       x: Value(x),
       y: Value(y),
       floor: Value(floor),
-      isBuilding: Value(isBuilding),
       buildingId:
           buildingId == null && nullToAbsent
               ? const Value.absent()
@@ -649,7 +616,6 @@ class Location extends DataClass implements Insertable<Location> {
       x: serializer.fromJson<int>(json['x']),
       y: serializer.fromJson<int>(json['y']),
       floor: serializer.fromJson<int>(json['floor']),
-      isBuilding: serializer.fromJson<bool>(json['isBuilding']),
       buildingId: serializer.fromJson<int?>(json['buildingId']),
     );
   }
@@ -662,7 +628,6 @@ class Location extends DataClass implements Insertable<Location> {
       'x': serializer.toJson<int>(x),
       'y': serializer.toJson<int>(y),
       'floor': serializer.toJson<int>(floor),
-      'isBuilding': serializer.toJson<bool>(isBuilding),
       'buildingId': serializer.toJson<int?>(buildingId),
     };
   }
@@ -673,7 +638,6 @@ class Location extends DataClass implements Insertable<Location> {
     int? x,
     int? y,
     int? floor,
-    bool? isBuilding,
     Value<int?> buildingId = const Value.absent(),
   }) => Location(
     id: id ?? this.id,
@@ -681,7 +645,6 @@ class Location extends DataClass implements Insertable<Location> {
     x: x ?? this.x,
     y: y ?? this.y,
     floor: floor ?? this.floor,
-    isBuilding: isBuilding ?? this.isBuilding,
     buildingId: buildingId.present ? buildingId.value : this.buildingId,
   );
   Location copyWithCompanion(LocationsCompanion data) {
@@ -691,8 +654,6 @@ class Location extends DataClass implements Insertable<Location> {
       x: data.x.present ? data.x.value : this.x,
       y: data.y.present ? data.y.value : this.y,
       floor: data.floor.present ? data.floor.value : this.floor,
-      isBuilding:
-          data.isBuilding.present ? data.isBuilding.value : this.isBuilding,
       buildingId:
           data.buildingId.present ? data.buildingId.value : this.buildingId,
     );
@@ -706,15 +667,13 @@ class Location extends DataClass implements Insertable<Location> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('floor: $floor, ')
-          ..write('isBuilding: $isBuilding, ')
           ..write('buildingId: $buildingId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, x, y, floor, isBuilding, buildingId);
+  int get hashCode => Object.hash(id, name, x, y, floor, buildingId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -724,7 +683,6 @@ class Location extends DataClass implements Insertable<Location> {
           other.x == this.x &&
           other.y == this.y &&
           other.floor == this.floor &&
-          other.isBuilding == this.isBuilding &&
           other.buildingId == this.buildingId);
 }
 
@@ -734,42 +692,32 @@ class LocationsCompanion extends UpdateCompanion<Location> {
   final Value<int> x;
   final Value<int> y;
   final Value<int> floor;
-  final Value<bool> isBuilding;
   final Value<int?> buildingId;
-  final Value<int> rowid;
   const LocationsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.x = const Value.absent(),
     this.y = const Value.absent(),
     this.floor = const Value.absent(),
-    this.isBuilding = const Value.absent(),
     this.buildingId = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   LocationsCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required String name,
     required int x,
     required int y,
     this.floor = const Value.absent(),
-    required bool isBuilding,
     this.buildingId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
+  }) : name = Value(name),
        x = Value(x),
-       y = Value(y),
-       isBuilding = Value(isBuilding);
+       y = Value(y);
   static Insertable<Location> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? x,
     Expression<int>? y,
     Expression<int>? floor,
-    Expression<bool>? isBuilding,
     Expression<int>? buildingId,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -777,9 +725,7 @@ class LocationsCompanion extends UpdateCompanion<Location> {
       if (x != null) 'x': x,
       if (y != null) 'y': y,
       if (floor != null) 'floor': floor,
-      if (isBuilding != null) 'is_building': isBuilding,
       if (buildingId != null) 'building_id': buildingId,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -789,9 +735,7 @@ class LocationsCompanion extends UpdateCompanion<Location> {
     Value<int>? x,
     Value<int>? y,
     Value<int>? floor,
-    Value<bool>? isBuilding,
     Value<int?>? buildingId,
-    Value<int>? rowid,
   }) {
     return LocationsCompanion(
       id: id ?? this.id,
@@ -799,9 +743,7 @@ class LocationsCompanion extends UpdateCompanion<Location> {
       x: x ?? this.x,
       y: y ?? this.y,
       floor: floor ?? this.floor,
-      isBuilding: isBuilding ?? this.isBuilding,
       buildingId: buildingId ?? this.buildingId,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -823,14 +765,8 @@ class LocationsCompanion extends UpdateCompanion<Location> {
     if (floor.present) {
       map['floor'] = Variable<int>(floor.value);
     }
-    if (isBuilding.present) {
-      map['is_building'] = Variable<bool>(isBuilding.value);
-    }
     if (buildingId.present) {
       map['building_id'] = Variable<int>(buildingId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -843,9 +779,7 @@ class LocationsCompanion extends UpdateCompanion<Location> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('floor: $floor, ')
-          ..write('isBuilding: $isBuilding, ')
-          ..write('buildingId: $buildingId, ')
-          ..write('rowid: $rowid')
+          ..write('buildingId: $buildingId')
           ..write(')'))
         .toString();
   }
@@ -864,7 +798,7 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
     false,
     hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
@@ -879,7 +813,6 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'REFERENCES locations(id)',
   );
   static const VerificationMeta _pointBIdMeta = const VerificationMeta(
     'pointBId',
@@ -891,7 +824,6 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'REFERENCES locations(id)',
   );
   static const VerificationMeta _pathTypeMeta = const VerificationMeta(
     'pathType',
@@ -937,8 +869,6 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('point_a_id')) {
       context.handle(
@@ -974,7 +904,7 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {pointAId, pointBId};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Path map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1136,24 +1066,20 @@ class PathsCompanion extends UpdateCompanion<Path> {
   final Value<int> pointBId;
   final Value<int> pathType;
   final Value<int?> buildingId;
-  final Value<int> rowid;
   const PathsCompanion({
     this.id = const Value.absent(),
     this.pointAId = const Value.absent(),
     this.pointBId = const Value.absent(),
     this.pathType = const Value.absent(),
     this.buildingId = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   PathsCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required int pointAId,
     required int pointBId,
     required int pathType,
     this.buildingId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       pointAId = Value(pointAId),
+  }) : pointAId = Value(pointAId),
        pointBId = Value(pointBId),
        pathType = Value(pathType);
   static Insertable<Path> custom({
@@ -1162,7 +1088,6 @@ class PathsCompanion extends UpdateCompanion<Path> {
     Expression<int>? pointBId,
     Expression<int>? pathType,
     Expression<int>? buildingId,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1170,7 +1095,6 @@ class PathsCompanion extends UpdateCompanion<Path> {
       if (pointBId != null) 'point_b_id': pointBId,
       if (pathType != null) 'path_type': pathType,
       if (buildingId != null) 'building_id': buildingId,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -1180,7 +1104,6 @@ class PathsCompanion extends UpdateCompanion<Path> {
     Value<int>? pointBId,
     Value<int>? pathType,
     Value<int?>? buildingId,
-    Value<int>? rowid,
   }) {
     return PathsCompanion(
       id: id ?? this.id,
@@ -1188,7 +1111,6 @@ class PathsCompanion extends UpdateCompanion<Path> {
       pointBId: pointBId ?? this.pointBId,
       pathType: pathType ?? this.pathType,
       buildingId: buildingId ?? this.buildingId,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -1210,9 +1132,6 @@ class PathsCompanion extends UpdateCompanion<Path> {
     if (buildingId.present) {
       map['building_id'] = Variable<int>(buildingId.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
@@ -1223,16 +1142,15 @@ class PathsCompanion extends UpdateCompanion<Path> {
           ..write('pointAId: $pointAId, ')
           ..write('pointBId: $pointBId, ')
           ..write('pathType: $pathType, ')
-          ..write('buildingId: $buildingId, ')
-          ..write('rowid: $rowid')
+          ..write('buildingId: $buildingId')
           ..write(')'))
         .toString();
   }
 }
 
-abstract class _$Database extends GeneratedDatabase {
-  _$Database(QueryExecutor e) : super(e);
-  $DatabaseManager get managers => $DatabaseManager(this);
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $BuildingsTable buildings = $BuildingsTable(this);
   late final $LocationsTable locations = $LocationsTable(this);
   late final $PathsTable paths = $PathsTable(this);
@@ -1249,25 +1167,25 @@ abstract class _$Database extends GeneratedDatabase {
 
 typedef $$BuildingsTableCreateCompanionBuilder =
     BuildingsCompanion Function({
-      required int id,
+      Value<int> id,
       required String name,
-      required List<int> floorIds,
-      required List<int> pathIds,
-      required int mainFloorId,
-      Value<int> rowid,
+      Value<int> floor,
+      Value<int> mainFloor,
+      required int x,
+      required int y,
     });
 typedef $$BuildingsTableUpdateCompanionBuilder =
     BuildingsCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<List<int>> floorIds,
-      Value<List<int>> pathIds,
-      Value<int> mainFloorId,
-      Value<int> rowid,
+      Value<int> floor,
+      Value<int> mainFloor,
+      Value<int> x,
+      Value<int> y,
     });
 
 class $$BuildingsTableFilterComposer
-    extends Composer<_$Database, $BuildingsTable> {
+    extends Composer<_$AppDatabase, $BuildingsTable> {
   $$BuildingsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1285,26 +1203,29 @@ class $$BuildingsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<List<int>, List<int>, String> get floorIds =>
-      $composableBuilder(
-        column: $table.floorIds,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnFilters<int> get floor => $composableBuilder(
+    column: $table.floor,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnWithTypeConverterFilters<List<int>, List<int>, String> get pathIds =>
-      $composableBuilder(
-        column: $table.pathIds,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnFilters<int> get mainFloor => $composableBuilder(
+    column: $table.mainFloor,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnFilters<int> get mainFloorId => $composableBuilder(
-    column: $table.mainFloorId,
+  ColumnFilters<int> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get y => $composableBuilder(
+    column: $table.y,
     builder: (column) => ColumnFilters(column),
   );
 }
 
 class $$BuildingsTableOrderingComposer
-    extends Composer<_$Database, $BuildingsTable> {
+    extends Composer<_$AppDatabase, $BuildingsTable> {
   $$BuildingsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1322,24 +1243,29 @@ class $$BuildingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get floorIds => $composableBuilder(
-    column: $table.floorIds,
+  ColumnOrderings<int> get floor => $composableBuilder(
+    column: $table.floor,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get pathIds => $composableBuilder(
-    column: $table.pathIds,
+  ColumnOrderings<int> get mainFloor => $composableBuilder(
+    column: $table.mainFloor,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get mainFloorId => $composableBuilder(
-    column: $table.mainFloorId,
+  ColumnOrderings<int> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get y => $composableBuilder(
+    column: $table.y,
     builder: (column) => ColumnOrderings(column),
   );
 }
 
 class $$BuildingsTableAnnotationComposer
-    extends Composer<_$Database, $BuildingsTable> {
+    extends Composer<_$AppDatabase, $BuildingsTable> {
   $$BuildingsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1353,22 +1279,23 @@ class $$BuildingsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<int>, String> get floorIds =>
-      $composableBuilder(column: $table.floorIds, builder: (column) => column);
+  GeneratedColumn<int> get floor =>
+      $composableBuilder(column: $table.floor, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<int>, String> get pathIds =>
-      $composableBuilder(column: $table.pathIds, builder: (column) => column);
+  GeneratedColumn<int> get mainFloor =>
+      $composableBuilder(column: $table.mainFloor, builder: (column) => column);
 
-  GeneratedColumn<int> get mainFloorId => $composableBuilder(
-    column: $table.mainFloorId,
-    builder: (column) => column,
-  );
+  GeneratedColumn<int> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<int> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
 }
 
 class $$BuildingsTableTableManager
     extends
         RootTableManager<
-          _$Database,
+          _$AppDatabase,
           $BuildingsTable,
           Building,
           $$BuildingsTableFilterComposer,
@@ -1376,11 +1303,11 @@ class $$BuildingsTableTableManager
           $$BuildingsTableAnnotationComposer,
           $$BuildingsTableCreateCompanionBuilder,
           $$BuildingsTableUpdateCompanionBuilder,
-          (Building, BaseReferences<_$Database, $BuildingsTable, Building>),
+          (Building, BaseReferences<_$AppDatabase, $BuildingsTable, Building>),
           Building,
           PrefetchHooks Function()
         > {
-  $$BuildingsTableTableManager(_$Database db, $BuildingsTable table)
+  $$BuildingsTableTableManager(_$AppDatabase db, $BuildingsTable table)
     : super(
         TableManagerState(
           db: db,
@@ -1395,33 +1322,33 @@ class $$BuildingsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<List<int>> floorIds = const Value.absent(),
-                Value<List<int>> pathIds = const Value.absent(),
-                Value<int> mainFloorId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
+                Value<int> floor = const Value.absent(),
+                Value<int> mainFloor = const Value.absent(),
+                Value<int> x = const Value.absent(),
+                Value<int> y = const Value.absent(),
               }) => BuildingsCompanion(
                 id: id,
                 name: name,
-                floorIds: floorIds,
-                pathIds: pathIds,
-                mainFloorId: mainFloorId,
-                rowid: rowid,
+                floor: floor,
+                mainFloor: mainFloor,
+                x: x,
+                y: y,
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<int> id = const Value.absent(),
                 required String name,
-                required List<int> floorIds,
-                required List<int> pathIds,
-                required int mainFloorId,
-                Value<int> rowid = const Value.absent(),
+                Value<int> floor = const Value.absent(),
+                Value<int> mainFloor = const Value.absent(),
+                required int x,
+                required int y,
               }) => BuildingsCompanion.insert(
                 id: id,
                 name: name,
-                floorIds: floorIds,
-                pathIds: pathIds,
-                mainFloorId: mainFloorId,
-                rowid: rowid,
+                floor: floor,
+                mainFloor: mainFloor,
+                x: x,
+                y: y,
               ),
           withReferenceMapper:
               (p0) =>
@@ -1440,7 +1367,7 @@ class $$BuildingsTableTableManager
 
 typedef $$BuildingsTableProcessedTableManager =
     ProcessedTableManager<
-      _$Database,
+      _$AppDatabase,
       $BuildingsTable,
       Building,
       $$BuildingsTableFilterComposer,
@@ -1448,20 +1375,18 @@ typedef $$BuildingsTableProcessedTableManager =
       $$BuildingsTableAnnotationComposer,
       $$BuildingsTableCreateCompanionBuilder,
       $$BuildingsTableUpdateCompanionBuilder,
-      (Building, BaseReferences<_$Database, $BuildingsTable, Building>),
+      (Building, BaseReferences<_$AppDatabase, $BuildingsTable, Building>),
       Building,
       PrefetchHooks Function()
     >;
 typedef $$LocationsTableCreateCompanionBuilder =
     LocationsCompanion Function({
-      required int id,
+      Value<int> id,
       required String name,
       required int x,
       required int y,
       Value<int> floor,
-      required bool isBuilding,
       Value<int?> buildingId,
-      Value<int> rowid,
     });
 typedef $$LocationsTableUpdateCompanionBuilder =
     LocationsCompanion Function({
@@ -1470,13 +1395,11 @@ typedef $$LocationsTableUpdateCompanionBuilder =
       Value<int> x,
       Value<int> y,
       Value<int> floor,
-      Value<bool> isBuilding,
       Value<int?> buildingId,
-      Value<int> rowid,
     });
 
 class $$LocationsTableFilterComposer
-    extends Composer<_$Database, $LocationsTable> {
+    extends Composer<_$AppDatabase, $LocationsTable> {
   $$LocationsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1509,11 +1432,6 @@ class $$LocationsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<bool> get isBuilding => $composableBuilder(
-    column: $table.isBuilding,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get buildingId => $composableBuilder(
     column: $table.buildingId,
     builder: (column) => ColumnFilters(column),
@@ -1521,7 +1439,7 @@ class $$LocationsTableFilterComposer
 }
 
 class $$LocationsTableOrderingComposer
-    extends Composer<_$Database, $LocationsTable> {
+    extends Composer<_$AppDatabase, $LocationsTable> {
   $$LocationsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1554,11 +1472,6 @@ class $$LocationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<bool> get isBuilding => $composableBuilder(
-    column: $table.isBuilding,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get buildingId => $composableBuilder(
     column: $table.buildingId,
     builder: (column) => ColumnOrderings(column),
@@ -1566,7 +1479,7 @@ class $$LocationsTableOrderingComposer
 }
 
 class $$LocationsTableAnnotationComposer
-    extends Composer<_$Database, $LocationsTable> {
+    extends Composer<_$AppDatabase, $LocationsTable> {
   $$LocationsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1589,11 +1502,6 @@ class $$LocationsTableAnnotationComposer
   GeneratedColumn<int> get floor =>
       $composableBuilder(column: $table.floor, builder: (column) => column);
 
-  GeneratedColumn<bool> get isBuilding => $composableBuilder(
-    column: $table.isBuilding,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get buildingId => $composableBuilder(
     column: $table.buildingId,
     builder: (column) => column,
@@ -1603,7 +1511,7 @@ class $$LocationsTableAnnotationComposer
 class $$LocationsTableTableManager
     extends
         RootTableManager<
-          _$Database,
+          _$AppDatabase,
           $LocationsTable,
           Location,
           $$LocationsTableFilterComposer,
@@ -1611,11 +1519,11 @@ class $$LocationsTableTableManager
           $$LocationsTableAnnotationComposer,
           $$LocationsTableCreateCompanionBuilder,
           $$LocationsTableUpdateCompanionBuilder,
-          (Location, BaseReferences<_$Database, $LocationsTable, Location>),
+          (Location, BaseReferences<_$AppDatabase, $LocationsTable, Location>),
           Location,
           PrefetchHooks Function()
         > {
-  $$LocationsTableTableManager(_$Database db, $LocationsTable table)
+  $$LocationsTableTableManager(_$AppDatabase db, $LocationsTable table)
     : super(
         TableManagerState(
           db: db,
@@ -1633,38 +1541,30 @@ class $$LocationsTableTableManager
                 Value<int> x = const Value.absent(),
                 Value<int> y = const Value.absent(),
                 Value<int> floor = const Value.absent(),
-                Value<bool> isBuilding = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => LocationsCompanion(
                 id: id,
                 name: name,
                 x: x,
                 y: y,
                 floor: floor,
-                isBuilding: isBuilding,
                 buildingId: buildingId,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<int> id = const Value.absent(),
                 required String name,
                 required int x,
                 required int y,
                 Value<int> floor = const Value.absent(),
-                required bool isBuilding,
                 Value<int?> buildingId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => LocationsCompanion.insert(
                 id: id,
                 name: name,
                 x: x,
                 y: y,
                 floor: floor,
-                isBuilding: isBuilding,
                 buildingId: buildingId,
-                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>
@@ -1683,7 +1583,7 @@ class $$LocationsTableTableManager
 
 typedef $$LocationsTableProcessedTableManager =
     ProcessedTableManager<
-      _$Database,
+      _$AppDatabase,
       $LocationsTable,
       Location,
       $$LocationsTableFilterComposer,
@@ -1691,18 +1591,17 @@ typedef $$LocationsTableProcessedTableManager =
       $$LocationsTableAnnotationComposer,
       $$LocationsTableCreateCompanionBuilder,
       $$LocationsTableUpdateCompanionBuilder,
-      (Location, BaseReferences<_$Database, $LocationsTable, Location>),
+      (Location, BaseReferences<_$AppDatabase, $LocationsTable, Location>),
       Location,
       PrefetchHooks Function()
     >;
 typedef $$PathsTableCreateCompanionBuilder =
     PathsCompanion Function({
-      required int id,
+      Value<int> id,
       required int pointAId,
       required int pointBId,
       required int pathType,
       Value<int?> buildingId,
-      Value<int> rowid,
     });
 typedef $$PathsTableUpdateCompanionBuilder =
     PathsCompanion Function({
@@ -1711,49 +1610,9 @@ typedef $$PathsTableUpdateCompanionBuilder =
       Value<int> pointBId,
       Value<int> pathType,
       Value<int?> buildingId,
-      Value<int> rowid,
     });
 
-final class $$PathsTableReferences
-    extends BaseReferences<_$Database, $PathsTable, Path> {
-  $$PathsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $LocationsTable _pointAIdTable(_$Database db) => db.locations
-      .createAlias($_aliasNameGenerator(db.paths.pointAId, db.locations.id));
-
-  $$LocationsTableProcessedTableManager get pointAId {
-    final $_column = $_itemColumn<int>('point_a_id')!;
-
-    final manager = $$LocationsTableTableManager(
-      $_db,
-      $_db.locations,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_pointAIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $LocationsTable _pointBIdTable(_$Database db) => db.locations
-      .createAlias($_aliasNameGenerator(db.paths.pointBId, db.locations.id));
-
-  $$LocationsTableProcessedTableManager get pointBId {
-    final $_column = $_itemColumn<int>('point_b_id')!;
-
-    final manager = $$LocationsTableTableManager(
-      $_db,
-      $_db.locations,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_pointBIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$PathsTableFilterComposer extends Composer<_$Database, $PathsTable> {
+class $$PathsTableFilterComposer extends Composer<_$AppDatabase, $PathsTable> {
   $$PathsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -1766,6 +1625,16 @@ class $$PathsTableFilterComposer extends Composer<_$Database, $PathsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get pointAId => $composableBuilder(
+    column: $table.pointAId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pointBId => $composableBuilder(
+    column: $table.pointBId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get pathType => $composableBuilder(
     column: $table.pathType,
     builder: (column) => ColumnFilters(column),
@@ -1775,55 +1644,10 @@ class $$PathsTableFilterComposer extends Composer<_$Database, $PathsTable> {
     column: $table.buildingId,
     builder: (column) => ColumnFilters(column),
   );
-
-  $$LocationsTableFilterComposer get pointAId {
-    final $$LocationsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointAId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableFilterComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$LocationsTableFilterComposer get pointBId {
-    final $$LocationsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointBId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableFilterComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
-class $$PathsTableOrderingComposer extends Composer<_$Database, $PathsTable> {
+class $$PathsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PathsTable> {
   $$PathsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -1836,6 +1660,16 @@ class $$PathsTableOrderingComposer extends Composer<_$Database, $PathsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get pointAId => $composableBuilder(
+    column: $table.pointAId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pointBId => $composableBuilder(
+    column: $table.pointBId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get pathType => $composableBuilder(
     column: $table.pathType,
     builder: (column) => ColumnOrderings(column),
@@ -1845,55 +1679,10 @@ class $$PathsTableOrderingComposer extends Composer<_$Database, $PathsTable> {
     column: $table.buildingId,
     builder: (column) => ColumnOrderings(column),
   );
-
-  $$LocationsTableOrderingComposer get pointAId {
-    final $$LocationsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointAId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableOrderingComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$LocationsTableOrderingComposer get pointBId {
-    final $$LocationsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointBId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableOrderingComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
-class $$PathsTableAnnotationComposer extends Composer<_$Database, $PathsTable> {
+class $$PathsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PathsTable> {
   $$PathsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -1904,6 +1693,12 @@ class $$PathsTableAnnotationComposer extends Composer<_$Database, $PathsTable> {
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<int> get pointAId =>
+      $composableBuilder(column: $table.pointAId, builder: (column) => column);
+
+  GeneratedColumn<int> get pointBId =>
+      $composableBuilder(column: $table.pointBId, builder: (column) => column);
+
   GeneratedColumn<int> get pathType =>
       $composableBuilder(column: $table.pathType, builder: (column) => column);
 
@@ -1911,58 +1706,12 @@ class $$PathsTableAnnotationComposer extends Composer<_$Database, $PathsTable> {
     column: $table.buildingId,
     builder: (column) => column,
   );
-
-  $$LocationsTableAnnotationComposer get pointAId {
-    final $$LocationsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointAId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$LocationsTableAnnotationComposer get pointBId {
-    final $$LocationsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.pointBId,
-      referencedTable: $db.locations,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$LocationsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.locations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$PathsTableTableManager
     extends
         RootTableManager<
-          _$Database,
+          _$AppDatabase,
           $PathsTable,
           Path,
           $$PathsTableFilterComposer,
@@ -1970,11 +1719,11 @@ class $$PathsTableTableManager
           $$PathsTableAnnotationComposer,
           $$PathsTableCreateCompanionBuilder,
           $$PathsTableUpdateCompanionBuilder,
-          (Path, $$PathsTableReferences),
+          (Path, BaseReferences<_$AppDatabase, $PathsTable, Path>),
           Path,
-          PrefetchHooks Function({bool pointAId, bool pointBId})
+          PrefetchHooks Function()
         > {
-  $$PathsTableTableManager(_$Database db, $PathsTable table)
+  $$PathsTableTableManager(_$AppDatabase db, $PathsTable table)
     : super(
         TableManagerState(
           db: db,
@@ -1992,30 +1741,26 @@ class $$PathsTableTableManager
                 Value<int> pointBId = const Value.absent(),
                 Value<int> pathType = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => PathsCompanion(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
                 pathType: pathType,
                 buildingId: buildingId,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<int> id = const Value.absent(),
                 required int pointAId,
                 required int pointBId,
                 required int pathType,
                 Value<int?> buildingId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => PathsCompanion.insert(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
                 pathType: pathType,
                 buildingId: buildingId,
-                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>
@@ -2023,68 +1768,18 @@ class $$PathsTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          $$PathsTableReferences(db, table, e),
+                          BaseReferences(db, table, e),
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({pointAId = false, pointBId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                T extends TableManagerState<
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic,
-                  dynamic
-                >
-              >(state) {
-                if (pointAId) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.pointAId,
-                            referencedTable: $$PathsTableReferences
-                                ._pointAIdTable(db),
-                            referencedColumn:
-                                $$PathsTableReferences._pointAIdTable(db).id,
-                          )
-                          as T;
-                }
-                if (pointBId) {
-                  state =
-                      state.withJoin(
-                            currentTable: table,
-                            currentColumn: table.pointBId,
-                            referencedTable: $$PathsTableReferences
-                                ._pointBIdTable(db),
-                            referencedColumn:
-                                $$PathsTableReferences._pointBIdTable(db).id,
-                          )
-                          as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ),
       );
 }
 
 typedef $$PathsTableProcessedTableManager =
     ProcessedTableManager<
-      _$Database,
+      _$AppDatabase,
       $PathsTable,
       Path,
       $$PathsTableFilterComposer,
@@ -2092,14 +1787,14 @@ typedef $$PathsTableProcessedTableManager =
       $$PathsTableAnnotationComposer,
       $$PathsTableCreateCompanionBuilder,
       $$PathsTableUpdateCompanionBuilder,
-      (Path, $$PathsTableReferences),
+      (Path, BaseReferences<_$AppDatabase, $PathsTable, Path>),
       Path,
-      PrefetchHooks Function({bool pointAId, bool pointBId})
+      PrefetchHooks Function()
     >;
 
-class $DatabaseManager {
-  final _$Database _db;
-  $DatabaseManager(this._db);
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
   $$BuildingsTableTableManager get buildings =>
       $$BuildingsTableTableManager(_db, _db.buildings);
   $$LocationsTableTableManager get locations =>

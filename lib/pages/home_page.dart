@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:watmap/data/db/repositories/building.dart';
+import 'package:watmap/main.dart';
 import 'package:watmap/pages/components/uw_map.dart';
+// ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,7 +16,8 @@ class HomePage extends StatelessWidget {
         transformationController: TransformationController(Matrix4.identity()..translate(-2500.0, -1200.0)),
         minScale: 0.1,
         builder: (BuildContext context, Quad viewport) {
-          return UWMap();
+          return Center(child: Text(getIt<BuildingRepository>().readAllBuildings().toString()),);
+          // return UWMap();
         },
       ),
     );

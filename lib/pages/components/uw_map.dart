@@ -15,10 +15,11 @@ class _UWMapState extends State<UWMap> {
   @override
   void initState() {
     super.initState();
-    _loadBuildingData();
+    // _loadBuildingData();
   }
 
   Future<void> _loadBuildingData() async {
+    //TODO: load from db
     final String response = await rootBundle.loadString('assets/MapDat.json');
     final data = json.decode(response);
     setState(() {

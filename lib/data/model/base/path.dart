@@ -1,6 +1,6 @@
-import 'package:watmap/data/model/models.dart';
+// ignore_for_file: constant_identifier_names
+
 import 'package:drift/drift.dart';
-import 'location.dart';
 
 const int PATH_OUTSIDE = 1;
 const int PATH_INSIDE = 2;
@@ -16,15 +16,12 @@ class Paths extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// Starting and ending points of the path
-  IntColumn get pointAId => integer().customConstraint('REFERENCES locations(id)')();
-  IntColumn get pointBId => integer().customConstraint('REFERENCES locations(id)')();
+  IntColumn get pointAId => integer()();
+  IntColumn get pointBId => integer()();
 
   /// Type of the path
   IntColumn get pathType => integer()();
   IntColumn get buildingId => integer().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {pointAId, pointBId};
 }
 
 // // functions for Path

@@ -4,9 +4,9 @@ import '../model/models.dart';
 part 'database.g.dart';
 
 @DriftDatabase(tables: [Buildings, Locations, Paths])
-class Database extends _$Database {
+class AppDatabase extends _$AppDatabase {
 
-  Database(QueryExecutor e) : super(e);
+  AppDatabase(super.e);
 
   @override
   int get schemaVersion => 2;
