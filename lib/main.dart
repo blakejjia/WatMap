@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watmap/pages/bloc/map_bloc.dart';
 import 'package:watmap/pages/home_page.dart';
 import 'package:drift/native.dart';
 import 'package:get_it/get_it.dart';
@@ -37,7 +39,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HomePage(),
+      home: BlocProvider(
+        create: (context) => MapBloc(),
+        child: const HomePage(),
+      ),
     );
   }
 }

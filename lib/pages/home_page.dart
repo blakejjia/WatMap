@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:watmap/data/db/repositories/building.dart';
-import 'package:watmap/main.dart';
 import 'package:watmap/pages/components/uw_map.dart';
 // ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart';

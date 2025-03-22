@@ -6,6 +6,7 @@ import 'package:watmap/data/db/database.dart';
 import 'package:watmap/data/db/repositories/building.dart';
 import 'package:watmap/data/db/repositories/location.dart';
 import 'package:watmap/data/db/repositories/path.dart';
+import 'package:watmap/pages/bloc/map_bloc.dart';
 
 import '../../main.dart';
 import '../model/base/path.dart';

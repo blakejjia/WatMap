@@ -18,6 +18,7 @@ dependencies:
   csv: ^6.0.0
   sqlite3_flutter_libs: ^0.5.32
   drift_flutter: ^0.2.4
+  flutter_bloc: ^9.1.0
 
 dev_dependencies:
   flutter_test:
