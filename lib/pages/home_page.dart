@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watmap/pages/mapDat/UWMap.dart';
+import 'package:watmap/pages/components/uw_map.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class HomePage extends StatelessWidget {
