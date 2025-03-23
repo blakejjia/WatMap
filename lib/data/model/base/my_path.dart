@@ -10,8 +10,8 @@ const int PATH_TUNNEL = 5;
 const int PATH_BRIDGE = 6;
 const int PATH_BRIEFLY_OUTSIDE = 7;
 
-@DataClassName('Path')
-class Paths extends Table {
+@DataClassName('MyPath')
+class MyPaths extends Table {
   /// Unique id of the Path
   IntColumn get id => integer().autoIncrement()();
 

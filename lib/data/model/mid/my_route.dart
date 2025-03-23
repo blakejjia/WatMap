@@ -1,7 +1,7 @@
 import 'package:watmap/data/db/database.dart';
 
 class MyRoute{
-  final List<Path> paths;
+  final List<MyPath> paths;
   final Location start;
   final Location end;
 

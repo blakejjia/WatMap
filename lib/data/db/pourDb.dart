@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/services.dart';
@@ -6,10 +5,9 @@ import 'package:watmap/data/db/database.dart';
 import 'package:watmap/data/db/repositories/building.dart';
 import 'package:watmap/data/db/repositories/location.dart';
 import 'package:watmap/data/db/repositories/path.dart';
-import 'package:watmap/pages/bloc/map_bloc.dart';
 
 import '../../main.dart';
-import '../model/base/path.dart';
+import '../model/base/my_path.dart';
 
 Future<bool> pourDb() async {
   // Check if there is existing data in the database
@@ -70,7 +68,7 @@ Future<bool> pourDb() async {
     // S3: In Path table: path of stairs
     for (int i = 0; i < locations.length - 1; i++) {
       await getIt<PathRepository>().createPath(
-        PathsCompanion(
+        MyPathsCompanion(
           pointAId: Value(locations[i]),
           pointBId: Value(locations[i + 1]),
           pathType: Value(PATH_STAIRS),
@@ -106,7 +104,7 @@ Future<bool> pourDb() async {
   // insert:
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {
     await getIt<PathRepository>().createPath(
-      PathsCompanion(
+      MyPathsCompanion(
         pointAId: Value(row[0] as int),
         pointBId: Value(row[1] as int),
         pathType: Value(row[2] as int),

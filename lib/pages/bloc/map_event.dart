@@ -11,3 +11,10 @@ final class MapSelectBuilding extends MapEvent{
   MapSelectBuilding(this.building);
 }
 
+final class _MapFindRoute extends MapEvent{
+  final Building start;
+  final Building end;
+
+  _MapFindRoute(this.start, this.end);
+}
+

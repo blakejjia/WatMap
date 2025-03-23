@@ -9,7 +9,7 @@ class MyMap {
   final List<Location> locations;
 
   /// There are many paths in the map
-  final List<Path> paths;
+  final List<MyPath> paths;
 
   MyMap(this.buildings, this.locations, this.paths);
 }

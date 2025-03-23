@@ -3,24 +3,28 @@ part of 'map_bloc.dart';
 @immutable
 sealed class MapState {}
 
-final class MapInitial extends MapState {}
+final class MapInitial extends MapState {
+  final MyMap map;
 
-final class MapIdeal extends MapState{
-  final List<Building> buildings;
+  MapInitial(this.map);
+}
+
+final class MapIdeal extends MapState {
   final List<Building?> selectedBuildings;
   final MyRoute? route;
+  final MyMap map;
 
-  MapIdeal(this.buildings, this.selectedBuildings, this.route);
+  MapIdeal(this.selectedBuildings, this.route, this.map);
 
   copyWith({
-    List<Building>? buildings,
     List<Building>? selectedBuildings,
     MyRoute? route,
+    MyMap? map,
   }) {
     return MapIdeal(
-      buildings ?? this.buildings,
       selectedBuildings ?? this.selectedBuildings,
-      route ?? this.route,
+      route,
+      map ?? this.map,
     );
   }
 }

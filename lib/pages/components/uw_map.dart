@@ -20,12 +20,16 @@ class UWMap extends StatelessWidget {
         ];
       case MapIdeal:
         return [
-          ... (state as MapIdeal).buildings.map((building) {
+          ...(state as MapIdeal).map.buildings.map((building) {
             return _buildings(building, context);
-          }).toList(),
-          ... (state as MapIdeal).selectedBuildings.map((building) {
+          }),
+          ...state.selectedBuildings.map((building) {
             return _selectedWidget(building!, context);
-          }).toList(),
+          }),
+          ...state.route?.paths.map((path) {
+                return _path(state, path, context);
+              }) ??
+              [],
         ];
 
       default:
@@ -48,16 +52,25 @@ class UWMap extends StatelessWidget {
   }
 }
 
-Widget _buildings(Building building, BuildContext context){
+Widget _buildings(Building building, BuildContext context) {
   return Positioned(
     left: building.x.toDouble(),
     top: building.y.toDouble(),
     child: IconButton(
-      icon: Icon(
-        Icons.circle,
-        color: Colors.orange.withOpacity(0.3),
-        size: 50,
-      ),
+      icon: Icon(Icons.circle, color: Colors.orange.withOpacity(0.3), size: 50),
+      onPressed: () {
+        context.read<MapBloc>().add(MapSelectBuilding(building));
+      },
+    ),
+  );
+}
+
+Widget _selectedWidget(Building building, BuildContext context) {
+  return Positioned(
+    left: building.x.toDouble(),
+    top: building.y.toDouble(),
+    child: IconButton(
+      icon: Icon(Icons.circle, color: Colors.red.withOpacity(1), size: 50),
       onPressed: () {
         context.read<MapBloc>().add(MapSelectBuilding(building));
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,25 +84,42 @@ Widget _buildings(Building building, BuildContext context){
   );
 }
 
-Widget _selectedWidget(Building building, BuildContext context){
-  return Positioned(
-    left: building.x.toDouble(),
-    top: building.y.toDouble(),
-    child: IconButton(
-      icon: Icon(
-        Icons.circle,
-        color: Colors.red.withOpacity(1),
-        size: 50,
-      ),
-      onPressed: () {
-        context.read<MapBloc>().add(MapSelectBuilding(building));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Clicked on ${building.name}'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      },
-    ),
-  );
+Widget _path(MapIdeal state, MyPath path, BuildContext context) {
+  final pointA =
+      state.map.locations
+          .where((location) => location.id == path.pointAId)
+          .first;
+  final pointB =
+      state.map.locations
+          .where((location) => location.id == path.pointBId)
+          .first;
+  return CustomPaint(painter: PathPainter(pointA, pointB));
+}
+
+class PathPainter extends CustomPainter {
+  final Location pointA;
+  final Location pointB;
+
+  PathPainter(this.pointA, this.pointB);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.blue
+          ..strokeWidth = 6.0
+          ..style = PaintingStyle.stroke;
+
+    final path =
+        Path()
+          ..moveTo(pointA.x.toDouble()+33, pointA.y.toDouble()+32)
+          ..lineTo(pointB.x.toDouble()+33, pointB.y.toDouble()+32);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
 }

@@ -785,11 +785,11 @@ class LocationsCompanion extends UpdateCompanion<Location> {
   }
 }
 
-class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
+class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PathsTable(this.attachedDatabase, [this._alias]);
+  $MyPathsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -859,10 +859,10 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'paths';
+  static const String $name = 'my_paths';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Path> instance, {
+    Insertable<MyPath> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -906,9 +906,9 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Path map(Map<String, dynamic> data, {String? tablePrefix}) {
+  MyPath map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Path(
+    return MyPath(
       id:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -937,12 +937,12 @@ class $PathsTable extends Paths with TableInfo<$PathsTable, Path> {
   }
 
   @override
-  $PathsTable createAlias(String alias) {
-    return $PathsTable(attachedDatabase, alias);
+  $MyPathsTable createAlias(String alias) {
+    return $MyPathsTable(attachedDatabase, alias);
   }
 }
 
-class Path extends DataClass implements Insertable<Path> {
+class MyPath extends DataClass implements Insertable<MyPath> {
   /// Unique id of the Path
   final int id;
 
@@ -953,7 +953,7 @@ class Path extends DataClass implements Insertable<Path> {
   /// Type of the path
   final int pathType;
   final int? buildingId;
-  const Path({
+  const MyPath({
     required this.id,
     required this.pointAId,
     required this.pointBId,
@@ -973,8 +973,8 @@ class Path extends DataClass implements Insertable<Path> {
     return map;
   }
 
-  PathsCompanion toCompanion(bool nullToAbsent) {
-    return PathsCompanion(
+  MyPathsCompanion toCompanion(bool nullToAbsent) {
+    return MyPathsCompanion(
       id: Value(id),
       pointAId: Value(pointAId),
       pointBId: Value(pointBId),
@@ -986,12 +986,12 @@ class Path extends DataClass implements Insertable<Path> {
     );
   }
 
-  factory Path.fromJson(
+  factory MyPath.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Path(
+    return MyPath(
       id: serializer.fromJson<int>(json['id']),
       pointAId: serializer.fromJson<int>(json['pointAId']),
       pointBId: serializer.fromJson<int>(json['pointBId']),
@@ -1011,21 +1011,21 @@ class Path extends DataClass implements Insertable<Path> {
     };
   }
 
-  Path copyWith({
+  MyPath copyWith({
     int? id,
     int? pointAId,
     int? pointBId,
     int? pathType,
     Value<int?> buildingId = const Value.absent(),
-  }) => Path(
+  }) => MyPath(
     id: id ?? this.id,
     pointAId: pointAId ?? this.pointAId,
     pointBId: pointBId ?? this.pointBId,
     pathType: pathType ?? this.pathType,
     buildingId: buildingId.present ? buildingId.value : this.buildingId,
   );
-  Path copyWithCompanion(PathsCompanion data) {
-    return Path(
+  MyPath copyWithCompanion(MyPathsCompanion data) {
+    return MyPath(
       id: data.id.present ? data.id.value : this.id,
       pointAId: data.pointAId.present ? data.pointAId.value : this.pointAId,
       pointBId: data.pointBId.present ? data.pointBId.value : this.pointBId,
@@ -1037,7 +1037,7 @@ class Path extends DataClass implements Insertable<Path> {
 
   @override
   String toString() {
-    return (StringBuffer('Path(')
+    return (StringBuffer('MyPath(')
           ..write('id: $id, ')
           ..write('pointAId: $pointAId, ')
           ..write('pointBId: $pointBId, ')
@@ -1052,7 +1052,7 @@ class Path extends DataClass implements Insertable<Path> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Path &&
+      (other is MyPath &&
           other.id == this.id &&
           other.pointAId == this.pointAId &&
           other.pointBId == this.pointBId &&
@@ -1060,20 +1060,20 @@ class Path extends DataClass implements Insertable<Path> {
           other.buildingId == this.buildingId);
 }
 
-class PathsCompanion extends UpdateCompanion<Path> {
+class MyPathsCompanion extends UpdateCompanion<MyPath> {
   final Value<int> id;
   final Value<int> pointAId;
   final Value<int> pointBId;
   final Value<int> pathType;
   final Value<int?> buildingId;
-  const PathsCompanion({
+  const MyPathsCompanion({
     this.id = const Value.absent(),
     this.pointAId = const Value.absent(),
     this.pointBId = const Value.absent(),
     this.pathType = const Value.absent(),
     this.buildingId = const Value.absent(),
   });
-  PathsCompanion.insert({
+  MyPathsCompanion.insert({
     this.id = const Value.absent(),
     required int pointAId,
     required int pointBId,
@@ -1082,7 +1082,7 @@ class PathsCompanion extends UpdateCompanion<Path> {
   }) : pointAId = Value(pointAId),
        pointBId = Value(pointBId),
        pathType = Value(pathType);
-  static Insertable<Path> custom({
+  static Insertable<MyPath> custom({
     Expression<int>? id,
     Expression<int>? pointAId,
     Expression<int>? pointBId,
@@ -1098,14 +1098,14 @@ class PathsCompanion extends UpdateCompanion<Path> {
     });
   }
 
-  PathsCompanion copyWith({
+  MyPathsCompanion copyWith({
     Value<int>? id,
     Value<int>? pointAId,
     Value<int>? pointBId,
     Value<int>? pathType,
     Value<int?>? buildingId,
   }) {
-    return PathsCompanion(
+    return MyPathsCompanion(
       id: id ?? this.id,
       pointAId: pointAId ?? this.pointAId,
       pointBId: pointBId ?? this.pointBId,
@@ -1137,7 +1137,7 @@ class PathsCompanion extends UpdateCompanion<Path> {
 
   @override
   String toString() {
-    return (StringBuffer('PathsCompanion(')
+    return (StringBuffer('MyPathsCompanion(')
           ..write('id: $id, ')
           ..write('pointAId: $pointAId, ')
           ..write('pointBId: $pointBId, ')
@@ -1153,7 +1153,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $BuildingsTable buildings = $BuildingsTable(this);
   late final $LocationsTable locations = $LocationsTable(this);
-  late final $PathsTable paths = $PathsTable(this);
+  late final $MyPathsTable myPaths = $MyPathsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1161,7 +1161,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     buildings,
     locations,
-    paths,
+    myPaths,
   ];
 }
 
@@ -1595,16 +1595,16 @@ typedef $$LocationsTableProcessedTableManager =
       Location,
       PrefetchHooks Function()
     >;
-typedef $$PathsTableCreateCompanionBuilder =
-    PathsCompanion Function({
+typedef $$MyPathsTableCreateCompanionBuilder =
+    MyPathsCompanion Function({
       Value<int> id,
       required int pointAId,
       required int pointBId,
       required int pathType,
       Value<int?> buildingId,
     });
-typedef $$PathsTableUpdateCompanionBuilder =
-    PathsCompanion Function({
+typedef $$MyPathsTableUpdateCompanionBuilder =
+    MyPathsCompanion Function({
       Value<int> id,
       Value<int> pointAId,
       Value<int> pointBId,
@@ -1612,8 +1612,9 @@ typedef $$PathsTableUpdateCompanionBuilder =
       Value<int?> buildingId,
     });
 
-class $$PathsTableFilterComposer extends Composer<_$AppDatabase, $PathsTable> {
-  $$PathsTableFilterComposer({
+class $$MyPathsTableFilterComposer
+    extends Composer<_$AppDatabase, $MyPathsTable> {
+  $$MyPathsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1646,9 +1647,9 @@ class $$PathsTableFilterComposer extends Composer<_$AppDatabase, $PathsTable> {
   );
 }
 
-class $$PathsTableOrderingComposer
-    extends Composer<_$AppDatabase, $PathsTable> {
-  $$PathsTableOrderingComposer({
+class $$MyPathsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MyPathsTable> {
+  $$MyPathsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1681,9 +1682,9 @@ class $$PathsTableOrderingComposer
   );
 }
 
-class $$PathsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $PathsTable> {
-  $$PathsTableAnnotationComposer({
+class $$MyPathsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MyPathsTable> {
+  $$MyPathsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1708,32 +1709,32 @@ class $$PathsTableAnnotationComposer
   );
 }
 
-class $$PathsTableTableManager
+class $$MyPathsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $PathsTable,
-          Path,
-          $$PathsTableFilterComposer,
-          $$PathsTableOrderingComposer,
-          $$PathsTableAnnotationComposer,
-          $$PathsTableCreateCompanionBuilder,
-          $$PathsTableUpdateCompanionBuilder,
-          (Path, BaseReferences<_$AppDatabase, $PathsTable, Path>),
-          Path,
+          $MyPathsTable,
+          MyPath,
+          $$MyPathsTableFilterComposer,
+          $$MyPathsTableOrderingComposer,
+          $$MyPathsTableAnnotationComposer,
+          $$MyPathsTableCreateCompanionBuilder,
+          $$MyPathsTableUpdateCompanionBuilder,
+          (MyPath, BaseReferences<_$AppDatabase, $MyPathsTable, MyPath>),
+          MyPath,
           PrefetchHooks Function()
         > {
-  $$PathsTableTableManager(_$AppDatabase db, $PathsTable table)
+  $$MyPathsTableTableManager(_$AppDatabase db, $MyPathsTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer:
-              () => $$PathsTableFilterComposer($db: db, $table: table),
+              () => $$MyPathsTableFilterComposer($db: db, $table: table),
           createOrderingComposer:
-              () => $$PathsTableOrderingComposer($db: db, $table: table),
+              () => $$MyPathsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer:
-              () => $$PathsTableAnnotationComposer($db: db, $table: table),
+              () => $$MyPathsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -1741,7 +1742,7 @@ class $$PathsTableTableManager
                 Value<int> pointBId = const Value.absent(),
                 Value<int> pathType = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
-              }) => PathsCompanion(
+              }) => MyPathsCompanion(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
@@ -1755,7 +1756,7 @@ class $$PathsTableTableManager
                 required int pointBId,
                 required int pathType,
                 Value<int?> buildingId = const Value.absent(),
-              }) => PathsCompanion.insert(
+              }) => MyPathsCompanion.insert(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
@@ -1777,18 +1778,18 @@ class $$PathsTableTableManager
       );
 }
 
-typedef $$PathsTableProcessedTableManager =
+typedef $$MyPathsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $PathsTable,
-      Path,
-      $$PathsTableFilterComposer,
-      $$PathsTableOrderingComposer,
-      $$PathsTableAnnotationComposer,
-      $$PathsTableCreateCompanionBuilder,
-      $$PathsTableUpdateCompanionBuilder,
-      (Path, BaseReferences<_$AppDatabase, $PathsTable, Path>),
-      Path,
+      $MyPathsTable,
+      MyPath,
+      $$MyPathsTableFilterComposer,
+      $$MyPathsTableOrderingComposer,
+      $$MyPathsTableAnnotationComposer,
+      $$MyPathsTableCreateCompanionBuilder,
+      $$MyPathsTableUpdateCompanionBuilder,
+      (MyPath, BaseReferences<_$AppDatabase, $MyPathsTable, MyPath>),
+      MyPath,
       PrefetchHooks Function()
     >;
 
@@ -1799,6 +1800,6 @@ class $AppDatabaseManager {
       $$BuildingsTableTableManager(_db, _db.buildings);
   $$LocationsTableTableManager get locations =>
       $$LocationsTableTableManager(_db, _db.locations);
-  $$PathsTableTableManager get paths =>
-      $$PathsTableTableManager(_db, _db.paths);
+  $$MyPathsTableTableManager get myPaths =>
+      $$MyPathsTableTableManager(_db, _db.myPaths);
 }
