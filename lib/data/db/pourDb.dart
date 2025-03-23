@@ -10,14 +10,6 @@ import '../../main.dart';
 import '../model/base/my_path.dart';
 
 Future<bool> pourDb() async {
-  // Check if there is existing data in the database
-  // TODO: This is a temporary solution. We need to implement a better way to check if the database is empty.
-  final existingBuildings =
-      await getIt<BuildingRepository>().readAllBuildings();
-  if (existingBuildings.isNotEmpty) {
-    return false;
-  }
-
   // Destroy existing data
   await getIt<BuildingRepository>().destroyAllBuildings();
   await getIt<LocationRepository>().destroyAllLocations();
@@ -101,14 +93,31 @@ Future<bool> pourDb() async {
   final pathsData = await rootBundle.loadString('assets/mapDat/paths.csv');
   rowsAsListOfValues = const CsvToListConverter().convert(pathsData);
 
-  // insert:
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {
+    //buildingA	floorA	buildingB	floorB	pathType
+    int buildingA = await getIt<BuildingRepository>().getIdByName(
+      row[0] as String,
+    );
+    int floorA = row[1] as int;
+    int buildingB = await getIt<BuildingRepository>().getIdByName(
+      row[2] as String,
+    );
+    int floorB = row[3] as int;
+
+    Location locationA = await getIt<LocationRepository>().getLocation(
+      buildingA,
+      floorA,
+    );
+    Location locationB = await getIt<LocationRepository>().getLocation(
+      buildingB,
+      floorB,
+    );
+    // insert:
     await getIt<PathRepository>().createPath(
       MyPathsCompanion(
-        pointAId: Value(row[0] as int),
-        pointBId: Value(row[1] as int),
-        pathType: Value(row[2] as int),
-        buildingId: Value(row[3] as int),
+        pointAId: Value(locationA.id),
+        pointBId: Value(locationB.id),
+        pathType: Value(PATH_BRIDGE),
       ),
     );
   });

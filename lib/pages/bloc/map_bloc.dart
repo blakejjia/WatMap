@@ -73,7 +73,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _mapFindRoute(_MapFindRoute event, Emitter<MapState> emit) async {
-    final route = findRoute((state as MapIdeal).map, event.start, event.end);
+    final route = await findRoute((state as MapIdeal).map, event.start, event.end);
     emit((state as MapIdeal).copyWith(route: route));
   }
 }

@@ -112,8 +112,8 @@ class PathPainter extends CustomPainter {
 
     final path =
         Path()
-          ..moveTo(pointA.x.toDouble()+33, pointA.y.toDouble()+32)
-          ..lineTo(pointB.x.toDouble()+33, pointB.y.toDouble()+32);
+          ..moveTo(pointA.x.toDouble() + 33, pointA.y.toDouble() + 32)
+          ..lineTo(pointB.x.toDouble() + 33, pointB.y.toDouble() + 32);
 
     canvas.drawPath(path, paint);
   }

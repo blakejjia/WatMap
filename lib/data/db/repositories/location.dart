@@ -9,6 +9,12 @@ class LocationRepository {
     return db.into(db.locations).insert(location);
   }
 
+  Future<Location> getLocation(int building, int floor) async {
+    return (db.select(db.locations)
+      ..where((tbl) => tbl.buildingId.equals(building))
+      ..where((tbl) => tbl.floor.equals(floor))).getSingle();
+  }
+
   Future<Location?> readLocation(int id) {
     return (db.select(db.locations)
       ..where((tbl) => tbl.id.equals(id))).getSingleOrNull();

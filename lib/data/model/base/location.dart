@@ -18,6 +18,3 @@ class Locations extends Table {
   /// If a location is inside a building, here should have its id.
   IntColumn get buildingId => integer().nullable()();
 }
-// Euclidean distance
-// double distanceTo(Location a) {
-//   return sqrt(pow(x - a.x, 2) + pow(y - a.y, 2));
