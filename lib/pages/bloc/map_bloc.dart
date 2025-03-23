@@ -26,42 +26,39 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final buildings = await getIt<BuildingRepository>().readAllBuildings();
     final locations = await getIt<LocationRepository>().readAllLocations();
     final paths = await getIt<PathRepository>().readAllPaths();
-    emit(MapIdeal([], null, MyMap(buildings, locations, paths)));
+    emit(MapIdeal([], MyMap(buildings, locations, paths)));
   }
 
   void _mapSelectBuilding(MapSelectBuilding event, Emitter<MapState> emit) {
+    // you have to init first
+    if (state is MapInitial) {
+      return;
+    }
+
+    // count how many we have already
     int count = (state as MapIdeal).selectedBuildings.length;
     if ((state as MapIdeal).selectedBuildings.contains(event.building)) {
       // If the building is already in the list, remove it
       emit(
-        (state as MapIdeal).copyWith(
-          route: null,
-          selectedBuildings:
-              (state as MapIdeal).selectedBuildings
-                  .where((b) => b != event.building)
-                  .whereType<Building>()
-                  .toList(),
-        ),
+        MapIdeal((state as MapIdeal).selectedBuildings
+            .where((b) => b != event.building)
+            .whereType<Building>()
+            .toList(), state.map),
       );
     } else if (count == 2) {
       // If there are already two buildings selected, clear the list and route.
       emit(
-        (state as MapIdeal).copyWith(
-          selectedBuildings: [event.building],
-          route: null,
-        ),
+        MapIdeal([event.building], state.map),
       );
     } else {
       // Find route when 2 is selected.
       emit(
-        (state as MapIdeal).copyWith(
-          selectedBuildings: [
-            ...(state as MapIdeal).selectedBuildings
-                .where((b) => b != null)
-                .cast<Building>(),
-            event.building,
-          ],
-        ),
+        MapIdeal([
+          ...(state as MapIdeal).selectedBuildings
+              .where((b) => b != null)
+              .cast<Building>(),
+          event.building,
+        ], state.map),
       );
       add(
         _MapFindRoute(
@@ -74,6 +71,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   void _mapFindRoute(_MapFindRoute event, Emitter<MapState> emit) async {
     final route = await findRoute((state as MapIdeal).map, event.start, event.end);
-    emit((state as MapIdeal).copyWith(route: route));
+    if (route == null){
+      return;
+    }
+    emit(MapFoundRoute((state as MapIdeal).selectedBuildings, route, (state as MapIdeal).map));
   }
 }

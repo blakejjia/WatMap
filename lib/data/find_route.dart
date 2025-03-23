@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:watmap/data/db/repositories/path.dart';
 
 import 'package:watmap/data/model/mid/my_route.dart';
 
@@ -14,8 +15,6 @@ import 'model/mid/my_map.dart';
 // TODO: here!!!
 // TODO: here!!!
 Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
-  print(start);
-  print(end);
   // Real start from the main floor of each building
   Location locationA = await getIt<LocationRepository>().getLocation(
     start.id,
@@ -27,9 +26,7 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   );
 
   // here we find path
-  // TODO: algorithm to find path
   List<Location> locations = dijkstra(locationA, locationB, map);
-  print(locations);
   List<MyPath> paths = [];
   for (int i = 0; i < locations.length - 1; i++) {
     Location locA = locations[i];
@@ -133,39 +130,5 @@ class LocationAndDistance {
   @override
   String toString() {
     return '$distance: $location';
-  }
-}
-
-extension MyPathExtensions on MyPath {
-  bool isInside() {
-    switch (pathType) {
-      case PATH_INSIDE:
-      case PATH_STAIRS:
-      case PATH_ELEVATOR:
-      case PATH_TUNNEL:
-      case PATH_BRIDGE:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  double getCost(Location pointA, Location pointB) {
-    if (pathType == PATH_STAIRS) {
-      return (pointA.floor - pointB.floor).abs() * 30;
-    }
-    // Otherwise use the Euclidean distance.
-    double cost = pointA.distanceTo(pointB);
-    // Penalize going outside.
-    if (!isInside()) {
-      cost *= 1.5;
-    }
-    return cost;
-  }
-}
-
-extension LocationExtensions on Location {
-  double distanceTo(Location a) {
-    return sqrt(pow(x - a.x, 2) + pow(y - a.y, 2));
   }
 }

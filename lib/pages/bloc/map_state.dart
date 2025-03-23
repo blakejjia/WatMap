@@ -1,30 +1,25 @@
 part of 'map_bloc.dart';
 
 @immutable
-sealed class MapState {}
-
-final class MapInitial extends MapState {
+sealed class MapState {
   final MyMap map;
 
-  MapInitial(this.map);
+  const MapState(this.map);
+}
+
+final class MapInitial extends MapState {
+  MapInitial(MyMap map) : super(map);
 }
 
 final class MapIdeal extends MapState {
   final List<Building?> selectedBuildings;
-  final MyRoute? route;
-  final MyMap map;
 
-  MapIdeal(this.selectedBuildings, this.route, this.map);
+  MapIdeal(this.selectedBuildings, MyMap map) : super(map);
+}
 
-  copyWith({
-    List<Building>? selectedBuildings,
-    MyRoute? route,
-    MyMap? map,
-  }) {
-    return MapIdeal(
-      selectedBuildings ?? this.selectedBuildings,
-      route,
-      map ?? this.map,
-    );
-  }
+final class MapFoundRoute extends MapIdeal {
+  final MyRoute route;
+
+  MapFoundRoute(List<Building?> selectedBuildings, this.route, MyMap map)
+    : super(selectedBuildings, map);
 }

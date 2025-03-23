@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../database.dart';
 
 class LocationRepository {
@@ -34,5 +36,11 @@ class LocationRepository {
 
   Future<int> destroyAllLocations() {
     return db.delete(db.locations).go();
+  }
+}
+
+extension LocationExtensions on Location {
+  double distanceTo(Location a) {
+    return sqrt(pow(x - a.x, 2) + pow(y - a.y, 2));
   }
 }

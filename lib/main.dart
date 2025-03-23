@@ -23,7 +23,6 @@ void init() {
   getIt.registerSingleton<BuildingRepository>(BuildingRepository(getIt<AppDatabase>()));
   getIt.registerSingleton<LocationRepository>(LocationRepository(getIt<AppDatabase>()));
   getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));
-  pourDb();
 }
 
 class MyApp extends StatelessWidget {
