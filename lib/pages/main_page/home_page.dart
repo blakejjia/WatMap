@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/data/db/pourDb.dart';
+import 'package:watmap/data/model/base/my_path.dart';
 import 'package:watmap/pages/bloc/map_bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart' as vector_math;
+import 'package:watmap/pages/route_page/route_page.dart';
 
-import '../data/db/database.dart';
+import '../../data/db/database.dart';
+import '../../data/model/mid/my_map.dart';
 
-part './mapComponent/uw_map.dart';
-part './mapComponent/map_ideal.dart';
-part './mapComponent/map_found_route.dart';
+part 'components/uw_map.dart';
+part 'components/map_ideal.dart';
+part 'components/map_found_route.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

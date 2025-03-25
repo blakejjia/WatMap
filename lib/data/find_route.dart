@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:watmap/data/db/repositories/path.dart';
+import 'package:watmap/data/repositories/path.dart';
 
 import 'package:watmap/data/model/mid/my_route.dart';
 
 import '../main.dart';
 import 'db/database.dart';
-import 'db/repositories/location.dart';
+import 'repositories/location.dart';
 import 'model/base/my_path.dart';
 import 'model/mid/my_map.dart';
 
@@ -28,14 +28,14 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   // here we find path
   List<Location> locations = dijkstra(locationA, locationB, map);
   List<MyPath> paths = [];
-  for (int i = 0; i < locations.length - 1; i++) {
+  for (int i = 0; i < locations.length - 2; i++) {
     Location locA = locations[i];
     Location locB = locations[i + 1];
     MyPath? path = map.paths.firstWhere(
       (element) =>
-          (element.pointAId == locA.id && element.pointBId == locB.id) ||
-          (element.pointAId == locB.id && element.pointBId == locA.id),
+          (element.pointAId == locA.id && element.pointBId == locB.id),
       orElse:
+          // usually it should not happen...
           () => MyPath(
             id: 0,
             pointAId: locations[i].id,

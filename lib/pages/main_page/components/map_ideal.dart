@@ -21,12 +21,6 @@ Widget _selectedWidget(Building building, BuildContext context) {
       icon: Icon(Icons.circle, color: Colors.red.withOpacity(1), size: 50),
       onPressed: () {
         context.read<MapBloc>().add(MapSelectBuilding(building));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Clicked on ${building.name}'),
-            duration: Duration(seconds: 2),
-          ),
-        );
       },
     ),
   );

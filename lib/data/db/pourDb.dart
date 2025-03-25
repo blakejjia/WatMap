@@ -2,9 +2,9 @@ import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/services.dart';
 import 'package:watmap/data/db/database.dart';
-import 'package:watmap/data/db/repositories/building.dart';
-import 'package:watmap/data/db/repositories/location.dart';
-import 'package:watmap/data/db/repositories/path.dart';
+import 'package:watmap/data/repositories/building.dart';
+import 'package:watmap/data/repositories/location.dart';
+import 'package:watmap/data/repositories/path.dart';
 
 import '../../main.dart';
 import '../model/base/my_path.dart';
@@ -59,14 +59,26 @@ Future<bool> pourDb() async {
 
     // S3: In Path table: path of stairs
     for (int i = 0; i < locations.length - 1; i++) {
-      await getIt<PathRepository>().createPath(
-        MyPathsCompanion(
-          pointAId: Value(locations[i]),
-          pointBId: Value(locations[i + 1]),
-          pathType: Value(PATH_STAIRS),
-          buildingId: Value(buildingId),
-        ),
-      );
+      for (int j = i + 1; j < locations.length; j++) {
+        // Upstairs
+        await getIt<PathRepository>().createPath(
+          MyPathsCompanion(
+            pointAId: Value(locations[i]),
+            pointBId: Value(locations[j]),
+            pathType: Value(PATH_STAIRS),
+            buildingId: Value(buildingId),
+          ),
+        );
+        // Downstairs
+        await getIt<PathRepository>().createPath(
+          MyPathsCompanion(
+            pointAId: Value(locations[j]),
+            pointBId: Value(locations[i]),
+            pathType: Value(PATH_STAIRS),
+            buildingId: Value(buildingId),
+          ),
+        );
+      }
     }
   });
 
@@ -94,33 +106,45 @@ Future<bool> pourDb() async {
   rowsAsListOfValues = const CsvToListConverter().convert(pathsData);
 
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {
-    //buildingA	floorA	buildingB	floorB	pathType
-    int buildingA = await getIt<BuildingRepository>().getIdByName(
-      row[0] as String,
-    );
-    int floorA = row[1] as int;
-    int buildingB = await getIt<BuildingRepository>().getIdByName(
-      row[2] as String,
-    );
-    int floorB = row[3] as int;
+    try{
+      //buildingA	floorA	buildingB	floorB	pathType
+      int buildingA = await getIt<BuildingRepository>().getIdByName(
+        row[0] as String,
+      );
+      int floorA = row[1] as int;
+      int buildingB = await getIt<BuildingRepository>().getIdByName(
+        row[2] as String,
+      );
+      int floorB = row[3] as int;
 
-    Location locationA = await getIt<LocationRepository>().getLocation(
-      buildingA,
-      floorA,
-    );
-    Location locationB = await getIt<LocationRepository>().getLocation(
-      buildingB,
-      floorB,
-    );
-    // insert:
-    await getIt<PathRepository>().createPath(
-      MyPathsCompanion(
-        pointAId: Value(locationA.id),
-        pointBId: Value(locationB.id),
-        pathType: Value(PATH_BRIDGE),
-      ),
-    );
+      Location locationA = await getIt<LocationRepository>().getLocation(
+        buildingA,
+        floorA,
+      );
+      Location locationB = await getIt<LocationRepository>().getLocation(
+        buildingB,
+        floorB,
+      );
+      // insert:
+      await getIt<PathRepository>().createPath(
+        MyPathsCompanion(
+          pointAId: Value(locationA.id),
+          pointBId: Value(locationB.id),
+          pathType: Value(PATH_BRIDGE),
+        ),
+      );
+      await getIt<PathRepository>().createPath(
+        MyPathsCompanion(
+          pointAId: Value(locationB.id),
+          pointBId: Value(locationA.id),
+          pathType: Value(PATH_BRIDGE),
+        ),
+      );
+    }catch(e){
+      print("cannot insert path: "+row[0].toString()+ row[1].toString()+ row[2].toString()+ row[3].toString());
+    }
   });
 
+  print('done');
   return true;
 }

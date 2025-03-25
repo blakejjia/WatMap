@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import '../../data/db/database.dart';
-import '../../data/db/repositories/building.dart';
-import '../../data/db/repositories/location.dart';
-import '../../data/db/repositories/path.dart';
+import '../../data/repositories/building.dart';
+import '../../data/repositories/location.dart';
+import '../../data/repositories/path.dart';
 import '../../data/find_route.dart';
 import '../../data/model/mid/my_map.dart';
 import '../../data/model/mid/my_route.dart';
@@ -30,6 +30,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _mapSelectBuilding(MapSelectBuilding event, Emitter<MapState> emit) {
+    print(event.building.name);
     // you have to init first
     if (state is MapInitial) {
       return;

@@ -1,7 +1,7 @@
-import 'package:watmap/data/db/repositories/location.dart';
+import 'package:watmap/data/repositories/location.dart';
 
-import '../../model/base/my_path.dart';
-import '../database.dart';
+import '../model/base/my_path.dart';
+import '../db/database.dart';
 
 class PathRepository {
   final AppDatabase db;

@@ -1,6 +1,9 @@
-# WatMap
+<p align="center">
+  <img src="assets/LaunchIcon.png" width="300px" alt="lunch icon">
+</p>
+<h2 align="center">WatMap - A map for your waterloo</h2>
 
-A interactive map app🗺️ help you hang around in UWaterloo, finding best routes📍 and make your life in UWaterloo better😀~
+An interactive map app🗺️ help you hang around in your Waterloo, finding best routes📍 and make your life in UWaterloo better😀~
 
 ## Features
 - [x] Inside mode🌧️ - help you find routes inside buildings (if available)

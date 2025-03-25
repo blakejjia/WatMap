@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../database.dart';
+import '../db/database.dart';
 
 class LocationRepository {
   final AppDatabase db;

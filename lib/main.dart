@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/pages/bloc/map_bloc.dart';
-import 'package:watmap/pages/home_page.dart';
+import 'package:watmap/pages/main_page/home_page.dart';
 import 'package:get_it/get_it.dart';
 
 import 'data/db/database.dart';
-import 'data/db/pourDb.dart';
-import 'data/db/repositories/building.dart';
-import 'data/db/repositories/location.dart';
-import 'data/db/repositories/path.dart';
+import 'data/repositories/building.dart';
+import 'data/repositories/location.dart';
+import 'data/repositories/path.dart';
 
 final getIt = GetIt.instance;
 
