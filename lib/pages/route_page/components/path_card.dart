@@ -1,6 +1,6 @@
 part of '../route_page.dart';
 
-Widget _path_card(MyPath path, MyMap map, int index) {
+Widget _pathCard(MyPath path, MyMap map, int index) {
   index = index - 1;
   return Card(
     margin: EdgeInsets.fromLTRB(20, 6, 20, 6),

@@ -19,7 +19,9 @@ void main() {
 
 void init() {
   WidgetsFlutterBinding.ensureInitialized();
-  getIt.registerSingleton<MapHttpService>(MapHttpService('pourdb://174.92.30.3'));
+  getIt.registerSingleton<MapHttpService>(
+    MapHttpService('http://174.92.30.3'),
+  );
   getIt.registerSingleton<AppDatabase>(AppDatabase());
   getIt.registerSingleton<BuildingRepository>(
     BuildingRepository(getIt<AppDatabase>()),

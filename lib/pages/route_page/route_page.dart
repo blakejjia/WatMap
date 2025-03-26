@@ -28,7 +28,7 @@ class RoutePage extends StatelessWidget {
               } else if (index == route.paths.length + 1) {
                 return _endCard(route.paths[route.paths.length - 1], map);
               } else {
-                return _path_card(route.paths[index - 1], map, index);
+                return _pathCard(route.paths[index - 1], map, index);
               }
             },
       ),

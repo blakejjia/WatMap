@@ -8,18 +8,18 @@ sealed class MapState {
 }
 
 final class MapInitial extends MapState {
-  MapInitial(MyMap map) : super(map);
+  const MapInitial(super.map);
 }
 
 final class MapIdeal extends MapState {
   final List<Building?> selectedBuildings;
 
-  MapIdeal(this.selectedBuildings, MyMap map) : super(map);
+  const MapIdeal(this.selectedBuildings, MyMap map) : super(map);
 }
 
 final class MapFoundRoute extends MapIdeal {
   final MyRoute route;
 
-  MapFoundRoute(List<Building?> selectedBuildings, this.route, MyMap map)
+  const MapFoundRoute(List<Building?> selectedBuildings, this.route, MyMap map)
     : super(selectedBuildings, map);
 }

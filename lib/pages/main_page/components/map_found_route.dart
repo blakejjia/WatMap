@@ -38,7 +38,7 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
 String _formatRoute(MapFoundRoute state) {
   String output = "";
 
-  if (state.route.paths.length == 0) {
+  if (state.route.paths.isEmpty) {
     return "No route found";
   }
 

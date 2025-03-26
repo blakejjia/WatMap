@@ -1,6 +1,6 @@
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../data/db/database.dart';
 import '../../data/repositories/building.dart';
@@ -30,7 +30,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _mapSelectBuilding(MapSelectBuilding event, Emitter<MapState> emit) {
-    print(event.building.name);
     // you have to init first
     if (state is MapInitial) {
       return;

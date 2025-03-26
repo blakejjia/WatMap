@@ -1,6 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:watmap/data/db/database.dart';
 import 'package:watmap/data/repositories/building.dart';
 import 'package:watmap/data/repositories/location.dart';
@@ -9,6 +10,7 @@ import 'package:watmap/data/repositories/path.dart';
 import '../../main.dart';
 import '../model/base/my_path.dart';
 
+// TODO: if server not available, use this function to pour data from local csv files
 Future<bool> pourDbFile() async {
   // Destroy existing data
   await getIt<BuildingRepository>().destroyAllBuildings();
@@ -141,10 +143,10 @@ Future<bool> pourDbFile() async {
         ),
       );
     }catch(e){
-      print("cannot insert path: "+row[0].toString()+ row[1].toString()+ row[2].toString()+ row[3].toString());
+      //TODO: handle exception
     }
   });
 
-  print('done');
+  Fluttertoast.showToast(msg: "Database updated successfully");
   return true;
 }

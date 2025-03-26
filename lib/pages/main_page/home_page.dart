@@ -8,7 +8,7 @@ import 'package:watmap/pages/route_page/route_page.dart';
 
 import '../../data/db/database.dart';
 import '../../data/model/mid/my_map.dart';
-import '../../data/pourdb/pourDb_http.dart';
+import '../../data/pourdb/pour_db_http.dart';
 
 part 'components/uw_map.dart';
 part 'components/map_ideal.dart';

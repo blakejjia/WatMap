@@ -20,7 +20,7 @@ class UWMap extends StatelessWidget {
 
   List<Widget> _buildingMarkers(MapState state, BuildContext context) {
     switch (state.runtimeType) {
-      case MapInitial:
+      case const (MapInitial):
         return [
           Center(
             child: ElevatedButton(
@@ -29,7 +29,7 @@ class UWMap extends StatelessWidget {
             ),
           ),
         ];
-      case MapIdeal:
+      case const (MapIdeal):
         return [
           ...(state as MapIdeal).map.buildings.map((building) {
             return _buildings(building, context);
@@ -38,7 +38,7 @@ class UWMap extends StatelessWidget {
             return _selectedWidget(building!, context);
           }),
         ];
-      case MapFoundRoute:
+      case const (MapFoundRoute):
         return [
           ...(state as MapFoundRoute).map.buildings.map((building) {
             return _buildings(building, context);

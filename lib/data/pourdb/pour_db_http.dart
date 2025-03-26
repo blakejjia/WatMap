@@ -1,6 +1,5 @@
-import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:watmap/data/db/database.dart';
 import 'package:watmap/data/repositories/building.dart';
 import 'package:watmap/data/repositories/location.dart';
@@ -69,7 +68,7 @@ Future<bool> pourDbHttp() async {
       }
     });
   } catch (e) {
-    print('Failed to fetch buildings: $e');
+    //TODO: handle exception
   }
 
   // locations table ----------------------------------------------------------------
@@ -80,7 +79,7 @@ Future<bool> pourDbHttp() async {
       await getIt<LocationRepository>().createLocation(location);
     });
   } catch (e) {
-    print('Failed to fetch buildings: $e');
+    //TODO: handle exception
   }
 
   // paths table ----------------------------------------------------------------
@@ -97,9 +96,9 @@ Future<bool> pourDbHttp() async {
       );
     });
   } catch (e) {
-    print(e);
+    //TODO: handle exception
   }
 
-  print('done');
+  Fluttertoast.showToast(msg: "Database updated successfully");
   return true;
 }
