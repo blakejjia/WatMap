@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watmap/data/db/pourDb.dart';
 import 'package:watmap/data/model/base/my_path.dart';
 import 'package:watmap/pages/bloc/map_bloc.dart';
 // ignore: depend_on_referenced_packages
@@ -9,6 +8,7 @@ import 'package:watmap/pages/route_page/route_page.dart';
 
 import '../../data/db/database.dart';
 import '../../data/model/mid/my_map.dart';
+import '../../data/pourdb/pourDb_http.dart';
 
 part 'components/uw_map.dart';
 part 'components/map_ideal.dart';
@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await pourDb();
+              await pourDbHttp();
               context.read<MapBloc>().add(MapLoad());
             },
             icon: Icon(Icons.refresh),

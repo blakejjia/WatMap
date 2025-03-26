@@ -5,6 +5,7 @@ import 'package:watmap/pages/main_page/home_page.dart';
 import 'package:get_it/get_it.dart';
 
 import 'data/db/database.dart';
+import 'data/pourdb/http.dart';
 import 'data/repositories/building.dart';
 import 'data/repositories/location.dart';
 import 'data/repositories/path.dart';
@@ -18,9 +19,14 @@ void main() {
 
 void init() {
   WidgetsFlutterBinding.ensureInitialized();
+  getIt.registerSingleton<MapHttpService>(MapHttpService('pourdb://174.92.30.3'));
   getIt.registerSingleton<AppDatabase>(AppDatabase());
-  getIt.registerSingleton<BuildingRepository>(BuildingRepository(getIt<AppDatabase>()));
-  getIt.registerSingleton<LocationRepository>(LocationRepository(getIt<AppDatabase>()));
+  getIt.registerSingleton<BuildingRepository>(
+    BuildingRepository(getIt<AppDatabase>()),
+  );
+  getIt.registerSingleton<LocationRepository>(
+    LocationRepository(getIt<AppDatabase>()),
+  );
   getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));
 }
 

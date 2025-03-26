@@ -9,7 +9,7 @@ import 'package:watmap/data/repositories/path.dart';
 import '../../main.dart';
 import '../model/base/my_path.dart';
 
-Future<bool> pourDb() async {
+Future<bool> pourDbFile() async {
   // Destroy existing data
   await getIt<BuildingRepository>().destroyAllBuildings();
   await getIt<LocationRepository>().destroyAllLocations();
@@ -24,16 +24,16 @@ Future<bool> pourDb() async {
   );
 
   List<BuildingsCompanion> buildings =
-      rowsAsListOfValues.skip(1).map((row) {
-        return BuildingsCompanion(
-          id: Value(row[0] as int),
-          name: Value(row[1] as String),
-          floor: Value(row[2] as int),
-          mainFloor: Value(row[3] as int),
-          x: Value(row[4] as int),
-          y: Value(row[5] as int),
-        );
-      }).toList();
+  rowsAsListOfValues.skip(1).map((row) {
+    return BuildingsCompanion(
+      id: Value(row[0] as int),
+      name: Value(row[1] as String),
+      floor: Value(row[2] as int),
+      mainFloor: Value(row[3] as int),
+      x: Value(row[4] as int),
+      y: Value(row[5] as int),
+    );
+  }).toList();
 
   // insert:
   await Future.forEach(buildings, (building) async {
