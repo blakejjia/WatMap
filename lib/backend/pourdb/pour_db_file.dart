@@ -1,22 +1,6 @@
-import 'package:csv/csv.dart';
-import 'package:drift/drift.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:watmap/backend/db/database.dart';
-import 'package:watmap/backend/repositories/building.dart';
-import 'package:watmap/backend/repositories/location.dart';
-import 'package:watmap/backend/repositories/path.dart';
+part of 'pour_db.dart';
 
-import '../../main.dart';
-import '../model/base/my_path.dart';
-
-// TODO: if server not available, use this function to pour data from local csv files
 Future<bool> pourDbFile() async {
-  // Destroy existing data
-  await getIt<BuildingRepository>().destroyAllBuildings();
-  await getIt<LocationRepository>().destroyAllLocations();
-  await getIt<PathRepository>().destroyAllPaths();
-
   // buildings table ----------------------------------------------------------------
   final buildingsData = await rootBundle.loadString(
     'assets/mapDat/buildings.csv',
@@ -143,10 +127,9 @@ Future<bool> pourDbFile() async {
         ),
       );
     } catch (e) {
-      //TODO: handle exception
+      final logMessage = 'Error while rebuilding paths data: $e\nrow: $row\n';
+      print(logMessage);
     }
   });
-
-  Fluttertoast.showToast(msg: "Database updated successfully");
   return true;
 }

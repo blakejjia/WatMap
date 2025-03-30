@@ -1,22 +1,7 @@
-import 'package:drift/drift.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:watmap/backend/db/database.dart';
-import 'package:watmap/backend/repositories/building.dart';
-import 'package:watmap/backend/repositories/location.dart';
-import 'package:watmap/backend/repositories/path.dart';
-
-import '../../main.dart';
-import '../model/base/my_path.dart';
-import 'http.dart';
+part of 'pour_db.dart';
 
 Future<bool> pourDbHttp() async {
-  // Destroy existing data
-  await getIt<BuildingRepository>().destroyAllBuildings();
-  await getIt<LocationRepository>().destroyAllLocations();
-  await getIt<PathRepository>().destroyAllPaths();
-
   // buildings table ----------------------------------------------------------------
-  Fluttertoast.showToast(msg: "rebuilding data, please wait...");
   try {
     List<BuildingsCompanion> buildings =
         await getIt<MapHttpService>().fetchBuildings();
@@ -71,6 +56,7 @@ Future<bool> pourDbHttp() async {
   } catch (e) {
     final logMessage = 'Error while rebuilding buildings data: $e';
     print(logMessage);
+    return false;
   }
 
   // locations table ----------------------------------------------------------------
@@ -83,6 +69,7 @@ Future<bool> pourDbHttp() async {
   } catch (e) {
     final logMessage = 'Error while rebuilding buildings data: $e';
     print(logMessage);
+    return false;
   }
 
   // paths table ----------------------------------------------------------------
@@ -101,8 +88,8 @@ Future<bool> pourDbHttp() async {
   } catch (e) {
     final logMessage = 'Error while rebuilding buildings data: $e';
     print(logMessage);
+    return false;
   }
 
-  Fluttertoast.showToast(msg: "Database updated successfully");
   return true;
 }

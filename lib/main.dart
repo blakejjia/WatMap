@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:watmap/frontend/bloc/map_bloc.dart';
-import 'package:watmap/frontend/pages/main_page/home_page.dart';
+import 'package:watmap/frontend/pages/HomePage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
 
 import 'backend/db/database.dart';
 import 'backend/pourdb/http.dart';
@@ -12,14 +15,22 @@ import 'backend/repositories/path.dart';
 
 final getIt = GetIt.instance;
 
-void main() {
-  init();
+void main() async {
+  await init();
   runApp(const MyApp());
 }
 
-void init() {
+Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
-  getIt.registerSingleton<MapHttpService>(MapHttpService('http://174.92.30.3'));
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: HydratedStorageDirectory(
+      (await getApplicationDocumentsDirectory()).path,
+    ),
+  );
+
+  getIt.registerSingleton<MapHttpService>(
+    MapHttpService('http://174.92.30.3/uwmap'),
+  );
   getIt.registerSingleton<AppDatabase>(AppDatabase());
   getIt.registerSingleton<BuildingRepository>(
     BuildingRepository(getIt<AppDatabase>()),
@@ -28,6 +39,8 @@ void init() {
     LocationRepository(getIt<AppDatabase>()),
   );
   getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));
+  getIt.registerSingleton<SettingsBloc>(SettingsBloc());
+  getIt.registerSingleton<MapBloc>(MapBloc());
 }
 
 class MyApp extends StatelessWidget {
@@ -42,9 +55,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: BlocProvider(
-        create: (context) => MapBloc(),
-        child: const HomePage(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<MapBloc>(create: (context) => getIt<MapBloc>()),
+          BlocProvider<SettingsBloc>(
+            create: (context) => getIt<SettingsBloc>(),
+          ),
+        ],
+        child: const Homepage(),
       ),
     );
   }

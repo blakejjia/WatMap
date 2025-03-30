@@ -13,11 +13,29 @@ import '../repositories/location.dart';
 
 class MapHttpService {
   final String baseUrl;
+  final Duration timeoutDuration = const Duration(seconds: 10);
 
   MapHttpService(this.baseUrl);
 
+  Future<bool> pingServer() async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/ping'))
+          .timeout(timeoutDuration);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<List<BuildingsCompanion>> fetchBuildings() async {
-    final response = await http.get(Uri.parse('$baseUrl/uwmap/buildings'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/buildings'))
+        .timeout(timeoutDuration);
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: "loading buildings data...");
       List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter()
@@ -42,7 +60,9 @@ class MapHttpService {
   }
 
   Future<List<MyPathsCompanion>> fetchPaths() async {
-    final response = await http.get(Uri.parse('$baseUrl/uwmap/paths'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/paths'))
+        .timeout(timeoutDuration);
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: "loading paths data...");
       List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter()
@@ -82,7 +102,9 @@ class MapHttpService {
   }
 
   Future<List<LocationsCompanion>> fetchLocations() async {
-    final response = await http.get(Uri.parse('$baseUrl/uwmap/locations'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/locations'))
+        .timeout(timeoutDuration);
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: "loading locations data...");
       List<List<dynamic>> locationsData = const CsvToListConverter().convert(

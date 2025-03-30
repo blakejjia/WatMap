@@ -1,4 +1,4 @@
-part of '../home_page.dart';
+part of '../map_page.dart';
 
 class UWMap extends StatelessWidget {
   const UWMap({super.key});

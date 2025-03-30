@@ -22,7 +22,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     add(MapLoad());
   }
 
-  void _mapLoad(MapLoad event, Emitter<MapState> emit) async {
+  Future<void> _mapLoad(MapLoad event, Emitter<MapState> emit) async {
     final buildings = await getIt<BuildingRepository>().readAllBuildings();
     final locations = await getIt<LocationRepository>().readAllLocations();
     final paths = await getIt<PathRepository>().readAllPaths();

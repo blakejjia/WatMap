@@ -1,4 +1,4 @@
-part of '../home_page.dart';
+part of '../map_page.dart';
 
 Widget _path(MapFoundRoute state, MyPath path, BuildContext context) {
   final pointA =
@@ -17,7 +17,7 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
     left: 0,
     top: 0,
     child: InkWell(
-      onTap: (){
+      onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => RoutePage(state)),
@@ -43,7 +43,9 @@ String _formatRoute(MapFoundRoute state) {
   }
 
   // Starting point
-  Location startPoint = state.map.locations.firstWhere((element) => element.id == state.route.paths[0].pointAId);
+  Location startPoint = state.map.locations.firstWhere(
+    (element) => element.id == state.route.paths[0].pointAId,
+  );
   output += "Starting at ${startPoint.name}\n";
 
   for (var path in state.route.paths) {
@@ -51,7 +53,10 @@ String _formatRoute(MapFoundRoute state) {
   }
 
   // ending point
-  Location endPoint = state.map.locations.firstWhere((element) => element.id == state.route.paths[state.route.paths.length - 1].pointBId);
+  Location endPoint = state.map.locations.firstWhere(
+    (element) =>
+        element.id == state.route.paths[state.route.paths.length - 1].pointBId,
+  );
   output += "Ending at ${endPoint.name}\n";
 
   return output;
@@ -59,13 +64,19 @@ String _formatRoute(MapFoundRoute state) {
 
 String _formatPath(MyPath path, MyMap map) {
   String output = "";
-  Location pointA = map.locations.firstWhere((element) => element.id == path.pointAId);
-  Location pointB = map.locations.firstWhere((element) => element.id == path.pointBId);
-  if (path.pathType == PATH_STAIRS){
-    output += "climb up ${pointB.floor - pointA.floor} floors to ${pointB.name}";
+  Location pointA = map.locations.firstWhere(
+    (element) => element.id == path.pointAId,
+  );
+  Location pointB = map.locations.firstWhere(
+    (element) => element.id == path.pointBId,
+  );
+  if (path.pathType == PATH_STAIRS) {
+    output +=
+        "climb up ${pointB.floor - pointA.floor} floors to ${pointB.name}";
   }
-  if (path.pathType == PATH_BRIDGE){
-    output += "Take bridge from ${pointA.name.substring(0,3)} to ${pointB.name.substring(0,3)}";
+  if (path.pathType == PATH_BRIDGE) {
+    output +=
+        "Take bridge from ${pointA.name.substring(0, 3)} to ${pointB.name.substring(0, 3)}";
   }
   return output;
 }
