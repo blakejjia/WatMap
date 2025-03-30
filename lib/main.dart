@@ -6,6 +6,7 @@ import 'package:watmap/frontend/bloc/map_bloc.dart';
 import 'package:watmap/frontend/pages/HomePage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
+import 'package:watmap/frontend/pages/settings_page/components/report_route/bloc/report_bloc.dart';
 
 import 'backend/db/database.dart';
 import 'backend/pourdb/http.dart';
@@ -41,6 +42,7 @@ Future<void> init() async {
   getIt.registerSingleton<PathRepository>(PathRepository(getIt<AppDatabase>()));
   getIt.registerSingleton<SettingsBloc>(SettingsBloc());
   getIt.registerSingleton<MapBloc>(MapBloc());
+  getIt.registerSingleton<ReportBloc>(ReportBloc());
 }
 
 class MyApp extends StatelessWidget {
@@ -49,20 +51,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WatMap',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider<MapBloc>(create: (context) => getIt<MapBloc>()),
-          BlocProvider<SettingsBloc>(
-            create: (context) => getIt<SettingsBloc>(),
-          ),
-        ],
-        child: const Homepage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MapBloc>(create: (context) => getIt<MapBloc>()),
+        BlocProvider<SettingsBloc>(create: (context) => getIt<SettingsBloc>()),
+        BlocProvider(create: (context) => ReportBloc()),
+      ],
+      child: MaterialApp(
+        title: 'WatMap',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: const Homepage(),
       ),
     );
   }

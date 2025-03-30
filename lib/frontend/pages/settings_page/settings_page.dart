@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
+import 'package:watmap/frontend/pages/settings_page/components/report_route/bloc/report_bloc.dart';
+import 'package:watmap/frontend/pages/settings_page/components/report_route/report_route_page.dart';
+import 'package:watmap/main.dart';
 
 part 'components/group_tile.dart';
 part 'components/info_view.dart';
@@ -54,6 +57,14 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.add_location_alt),
                   title: Text("report a route"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReportRoutePage(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
