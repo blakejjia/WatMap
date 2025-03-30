@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:watmap/data/db/database.dart';
+import 'package:watmap/backend/db/database.dart';
 
 import '../../main.dart';
 import '../model/base/my_path.dart';
@@ -20,7 +19,7 @@ class MapHttpService {
   Future<List<BuildingsCompanion>> fetchBuildings() async {
     final response = await http.get(Uri.parse('$baseUrl/uwmap/buildings'));
     if (response.statusCode == 200) {
-      successToast();
+      Fluttertoast.showToast(msg: "loading buildings data...");
       List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter()
           .convert(jsonDecode(response.body)['message']);
       List<BuildingsCompanion> buildings =
@@ -37,7 +36,7 @@ class MapHttpService {
 
       return buildings;
     } else {
-      failedToast();
+      Fluttertoast.showToast(msg: "failed to load buildings data");
       throw HttpException('Failed to fetch data');
     }
   }
@@ -45,7 +44,7 @@ class MapHttpService {
   Future<List<MyPathsCompanion>> fetchPaths() async {
     final response = await http.get(Uri.parse('$baseUrl/uwmap/paths'));
     if (response.statusCode == 200) {
-      successToast();
+      Fluttertoast.showToast(msg: "loading paths data...");
       List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter()
           .convert(jsonDecode(response.body)['message']);
       List<MyPathsCompanion> paths = await Future.wait(
@@ -70,15 +69,14 @@ class MapHttpService {
           return MyPathsCompanion(
             pointAId: Value(locationA.id),
             pointBId: Value(locationB.id),
-            // TODO: PATH_BRIDGE turn to said in csv
-            pathType: Value(PATH_BRIDGE),
+            pathType: Value(processPathtype(row[4])),
           );
         }).toList(),
       );
 
       return paths;
     } else {
-      failedToast();
+      Fluttertoast.showToast(msg: "failed to load paths data");
       throw HttpException('Failed to fetch data');
     }
   }
@@ -86,7 +84,7 @@ class MapHttpService {
   Future<List<LocationsCompanion>> fetchLocations() async {
     final response = await http.get(Uri.parse('$baseUrl/uwmap/locations'));
     if (response.statusCode == 200) {
-      successToast();
+      Fluttertoast.showToast(msg: "loading locations data...");
       List<List<dynamic>> locationsData = const CsvToListConverter().convert(
         jsonDecode(response.body)['message'],
       );
@@ -103,32 +101,27 @@ class MapHttpService {
 
       return locations;
     } else {
-      failedToast();
+      Fluttertoast.showToast(msg: "failed to load locations data");
       throw HttpException('Failed to fetch data');
     }
   }
 }
 
-void successToast() {
-  Fluttertoast.showToast(
-    msg: "Success to fetch data",
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    timeInSecForIosWeb: 2,
-    backgroundColor: Colors.green,
-    textColor: Colors.white,
-    fontSize: 16.0,
-  );
-}
-
-void failedToast() {
-  Fluttertoast.showToast(
-    msg: "Failed to fetch data",
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    timeInSecForIosWeb: 2,
-    backgroundColor: Colors.red,
-    textColor: Colors.white,
-    fontSize: 16.0,
-  );
+int processPathtype(String pathType) {
+  switch (pathType) {
+    case 'INSIDE':
+      return PATH_INSIDE;
+    case 'OUTSIDE':
+      return PATH_OUTSIDE;
+    case 'STAIRS':
+      return PATH_STAIRS;
+    case 'ELECATOR':
+      return PATH_ELEVATOR;
+    case 'BRIDGE':
+      return PATH_BRIDGE;
+    case 'TUNNEL':
+      return PATH_TUNNEL;
+    default:
+      return PATH_OUTSIDE; // Default value if none matchs
+  }
 }

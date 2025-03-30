@@ -1,6 +1,6 @@
-import 'package:watmap/data/db/database.dart';
+import 'package:watmap/backend/db/database.dart';
 
-class MyRoute{
+class MyRoute {
   final List<MyPath> paths;
   final Location start;
   final Location end;

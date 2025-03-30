@@ -355,7 +355,7 @@ packages:
   http:
     dependency: "direct main"
     description:
-      name: pourdb
+      name: http
       sha256: fe7ab022b76f3034adc518fb6ea04a82387620e19977665ea18d30a1cf43442f
       url: "https://pub.dev"
     source: hosted

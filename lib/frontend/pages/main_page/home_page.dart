@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watmap/data/model/base/my_path.dart';
-import 'package:watmap/pages/bloc/map_bloc.dart';
+import 'package:watmap/backend/model/base/my_path.dart';
+import 'package:watmap/frontend/bloc/map_bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart' as vector_math;
-import 'package:watmap/pages/route_page/route_page.dart';
+import 'package:watmap/frontend/pages/route_page/route_page.dart';
 
-import '../../data/db/database.dart';
-import '../../data/model/mid/my_map.dart';
-import '../../data/pourdb/pour_db_http.dart';
+import '../../../backend/db/database.dart';
+import '../../../backend/model/mid/my_map.dart';
+import '../../../backend/pourdb/pour_db_http.dart';
 
 part 'components/uw_map.dart';
 part 'components/map_ideal.dart';

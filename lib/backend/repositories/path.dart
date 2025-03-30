@@ -1,4 +1,4 @@
-import 'package:watmap/data/repositories/location.dart';
+import 'package:watmap/backend/repositories/location.dart';
 
 import '../model/base/my_path.dart';
 import '../db/database.dart';

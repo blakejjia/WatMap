@@ -1,8 +1,8 @@
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
-import 'package:watmap/data/repositories/path.dart';
+import 'package:watmap/backend/repositories/path.dart';
 
-import 'package:watmap/data/model/mid/my_route.dart';
+import 'package:watmap/backend/model/mid/my_route.dart';
 
 import '../main.dart';
 import 'db/database.dart';
@@ -32,8 +32,7 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
     Location locA = locations[i];
     Location locB = locations[i + 1];
     MyPath? path = map.paths.firstWhere(
-      (element) =>
-          (element.pointAId == locA.id && element.pointBId == locB.id),
+      (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
       orElse:
           // usually it should not happen...
           () => MyPath(

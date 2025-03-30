@@ -2,13 +2,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/db/database.dart';
-import '../../data/repositories/building.dart';
-import '../../data/repositories/location.dart';
-import '../../data/repositories/path.dart';
-import '../../data/find_route.dart';
-import '../../data/model/mid/my_map.dart';
-import '../../data/model/mid/my_route.dart';
+import '../../backend/db/database.dart';
+import '../../backend/repositories/building.dart';
+import '../../backend/repositories/location.dart';
+import '../../backend/repositories/path.dart';
+import '../../backend/find_route.dart';
+import '../../backend/model/mid/my_map.dart';
+import '../../backend/model/mid/my_route.dart';
 import '../../main.dart';
 
 part 'map_event.dart';
@@ -40,16 +40,17 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     if ((state as MapIdeal).selectedBuildings.contains(event.building)) {
       // If the building is already in the list, remove it
       emit(
-        MapIdeal((state as MapIdeal).selectedBuildings
-            .where((b) => b != event.building)
-            .whereType<Building>()
-            .toList(), state.map),
+        MapIdeal(
+          (state as MapIdeal).selectedBuildings
+              .where((b) => b != event.building)
+              .whereType<Building>()
+              .toList(),
+          state.map,
+        ),
       );
     } else if (count == 2) {
       // If there are already two buildings selected, clear the list and route.
-      emit(
-        MapIdeal([event.building], state.map),
-      );
+      emit(MapIdeal([event.building], state.map));
     } else {
       // Find route when 2 is selected.
       emit(
@@ -70,10 +71,20 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _mapFindRoute(_MapFindRoute event, Emitter<MapState> emit) async {
-    final route = await findRoute((state as MapIdeal).map, event.start, event.end);
-    if (route == null){
+    final route = await findRoute(
+      (state as MapIdeal).map,
+      event.start,
+      event.end,
+    );
+    if (route == null) {
       return;
     }
-    emit(MapFoundRoute((state as MapIdeal).selectedBuildings, route, (state as MapIdeal).map));
+    emit(
+      MapFoundRoute(
+        (state as MapIdeal).selectedBuildings,
+        route,
+        (state as MapIdeal).map,
+      ),
+    );
   }
 }

@@ -2,10 +2,10 @@ import 'package:csv/csv.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:watmap/data/db/database.dart';
-import 'package:watmap/data/repositories/building.dart';
-import 'package:watmap/data/repositories/location.dart';
-import 'package:watmap/data/repositories/path.dart';
+import 'package:watmap/backend/db/database.dart';
+import 'package:watmap/backend/repositories/building.dart';
+import 'package:watmap/backend/repositories/location.dart';
+import 'package:watmap/backend/repositories/path.dart';
 
 import '../../main.dart';
 import '../model/base/my_path.dart';
@@ -26,16 +26,16 @@ Future<bool> pourDbFile() async {
   );
 
   List<BuildingsCompanion> buildings =
-  rowsAsListOfValues.skip(1).map((row) {
-    return BuildingsCompanion(
-      id: Value(row[0] as int),
-      name: Value(row[1] as String),
-      floor: Value(row[2] as int),
-      mainFloor: Value(row[3] as int),
-      x: Value(row[4] as int),
-      y: Value(row[5] as int),
-    );
-  }).toList();
+      rowsAsListOfValues.skip(1).map((row) {
+        return BuildingsCompanion(
+          id: Value(row[0] as int),
+          name: Value(row[1] as String),
+          floor: Value(row[2] as int),
+          mainFloor: Value(row[3] as int),
+          x: Value(row[4] as int),
+          y: Value(row[5] as int),
+        );
+      }).toList();
 
   // insert:
   await Future.forEach(buildings, (building) async {
@@ -108,7 +108,7 @@ Future<bool> pourDbFile() async {
   rowsAsListOfValues = const CsvToListConverter().convert(pathsData);
 
   await Future.forEach(rowsAsListOfValues.skip(1), (row) async {
-    try{
+    try {
       //buildingA	floorA	buildingB	floorB	pathType
       int buildingA = await getIt<BuildingRepository>().getIdByName(
         row[0] as String,
@@ -142,7 +142,7 @@ Future<bool> pourDbFile() async {
           pathType: Value(PATH_BRIDGE),
         ),
       );
-    }catch(e){
+    } catch (e) {
       //TODO: handle exception
     }
   });
