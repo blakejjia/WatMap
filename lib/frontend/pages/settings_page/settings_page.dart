@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
-import 'package:watmap/frontend/pages/settings_page/components/report_route/bloc/report_bloc.dart';
-import 'package:watmap/frontend/pages/settings_page/components/report_route/report_route_page.dart';
-import 'package:watmap/main.dart';
+import 'package:watmap/frontend/pages/report_route_page/report_route_page.dart';
 
 part 'components/group_tile.dart';
 part 'components/info_view.dart';

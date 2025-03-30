@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watmap/frontend/pages/settings_page/components/report_route/bloc/report_bloc.dart';
+import 'package:watmap/frontend/pages/report_route_page/bloc/report_bloc.dart';
 
 part 'components/map_data_field.dart';
 

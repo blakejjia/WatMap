@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:watmap/frontend/pages/settings_page/components/report_route/report_type.dart';
+import 'package:watmap/frontend/pages/report_route_page/report_type.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';

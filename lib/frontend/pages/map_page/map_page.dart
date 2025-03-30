@@ -5,7 +5,7 @@ import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/bloc/map_bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart' as vector_math;
-import 'package:watmap/frontend/pages/route_page/route_page.dart';
+import 'package:watmap/frontend/pages/map_page/route_page/route_page.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
 import 'package:watmap/main.dart';
 

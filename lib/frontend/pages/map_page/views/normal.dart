@@ -32,6 +32,5 @@ class NormalMapView extends StatelessWidget {
         ),
       ],
     );
-    ;
   }
 }

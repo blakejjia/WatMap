@@ -6,8 +6,7 @@ import 'package:watmap/frontend/bloc/map_bloc.dart';
 import 'package:watmap/frontend/pages/HomePage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
-import 'package:watmap/frontend/pages/settings_page/components/report_route/bloc/report_bloc.dart';
-
+import 'package:watmap/frontend/pages/report_route_page/bloc/report_bloc.dart';
 import 'backend/db/database.dart';
 import 'backend/pourdb/http.dart';
 import 'backend/repositories/building.dart';

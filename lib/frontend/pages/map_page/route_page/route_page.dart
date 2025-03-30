@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:watmap/frontend/bloc/map_bloc.dart';
-import '../../../backend/model/models.dart';
+import '../../../../backend/model/models.dart';
 
 part 'components/path_card.dart';
 
