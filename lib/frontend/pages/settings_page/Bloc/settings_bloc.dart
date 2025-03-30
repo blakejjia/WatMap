@@ -21,10 +21,25 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       emit(state.copyWith(lastMapRefreshTime: _now()));
     });
     on<RetriveDataEvent>((event, emit) async {
-      emit(state.copyWith(lastServerRetriveTime: 'building db...'));
-      await pourDb();
+      emit(
+        state.copyWith(
+          lastServerRetriveTime: 'building db...',
+          lastMapRefreshTime: 'building db...',
+        ),
+      );
+      int code = await pourDb();
       add(RefreshMapEvent());
-      emit(state.copyWith(lastServerRetriveTime: _now()));
+      if (code == 0) {
+        emit(state.copyWith(lastServerRetriveTime: _now()));
+      } else if (code == 1) {
+        emit(
+          state.copyWith(
+            lastServerRetriveTime: 'retrived from local file only',
+          ),
+        );
+      } else {
+        emit(state.copyWith(lastServerRetriveTime: 'error occured'));
+      }
     });
   }
 

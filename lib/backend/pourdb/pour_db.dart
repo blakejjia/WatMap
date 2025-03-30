@@ -8,6 +8,7 @@ import 'package:watmap/backend/pourdb/http.dart';
 import 'package:watmap/backend/repositories/building.dart';
 import 'package:watmap/backend/repositories/location.dart';
 import 'package:watmap/backend/repositories/path.dart';
+import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
 import 'package:watmap/main.dart';
 
 part 'pour_db_http.dart';
@@ -37,7 +38,8 @@ Future<int> pourDb({bool? isOnline}) async {
   }
 
   // Fallback to fetching data from local file
-  if (await pourDbFile()) {
+  if (getIt<SettingsState>().lastServerRetriveTime == NEWUSER &&
+      await pourDbFile()) {
     Fluttertoast.showToast(msg: "Database updated from local file");
     return isOnline ? 1 : 1; // 1 indicates local file success
   }

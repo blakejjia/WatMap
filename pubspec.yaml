@@ -25,6 +25,7 @@ dependencies:
   flutter_bloc: ^9.1.0
   hydrated_bloc: ^10.0.0
   path_provider: ^2.1.5
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:
