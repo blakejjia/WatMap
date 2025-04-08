@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/LaunchIcon.png" width="300px" alt="lunch icon">
+  <img src="https://raw.githubusercontent.com/blakejjia/WatMap/main/assets/LaunchIcon.png" width="300px" alt="lunch icon">
 </p>
 <h2 align="center">WatMap - A map for your waterloo</h2>
 
