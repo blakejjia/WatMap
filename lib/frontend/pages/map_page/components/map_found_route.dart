@@ -76,7 +76,7 @@ String _formatPath(MyPath path, MyMap map) {
   }
   if (path.pathType == PATH_BRIDGE) {
     output +=
-        "Take bridge from ${pointA.name.substring(0, 3)} to ${pointB.name.substring(0, 3)}";
+        "Take bridge from ${pointA.name.length > 3 ? pointA.name.substring(0, 3) : pointA.name} to ${pointB.name.length > 3 ? pointB.name.substring(0, 3) : pointB.name}";
   }
   return output;
 }

@@ -10,20 +10,37 @@ class ReportRoutePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Report a route")),
+      appBar: AppBar(title: const Text("New route")),
       body: BlocBuilder<ReportBloc, ReportState>(
         builder: (context, state) {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
               const MapDataField(),
-              // _currentData(context),
-              // _uWMap(context),
-              Text(state.message, style: const TextStyle(fontSize: 16.0)),
+              _messgae(state)
             ],
           );
         },
       ),
     );
   }
+}
+
+Widget _messgae(ReportState state){
+  return Center(
+    child: Container(
+      margin: const EdgeInsets.all(8.0),
+      child: Text(
+        state.message,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: state.status == "success"
+              ? Colors.green
+              : state.status == "error"
+              ? Colors.red
+              : Colors.black,
+        ),
+      ),
+    ),
+  );
 }

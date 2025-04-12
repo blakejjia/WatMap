@@ -16,14 +16,17 @@ import 'model/mid/my_map.dart';
 // TODO: here!!!
 Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   // Real start from the main floor of each building
-  Location locationA = await getIt<LocationRepository>().getLocation(
+  Location? locationA = await getIt<LocationRepository>().getLocation(
     start.id,
     start.mainFloor,
   );
-  Location locationB = await getIt<LocationRepository>().getLocation(
+  Location? locationB = await getIt<LocationRepository>().getLocation(
     end.id,
     end.mainFloor,
   );
+  if (locationA == null || locationB == null) {
+    return null;
+  }
 
   // here we find path
   List<Location> locations = dijkstra(locationA, locationB, map);

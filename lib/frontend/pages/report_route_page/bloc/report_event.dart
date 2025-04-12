@@ -5,16 +5,25 @@ sealed class ReportEvent {}
 
 class ReportRouteEvent extends ReportEvent {
   final String buildingA;
-  final String floorA;
+  final int floorA;
   final String buildingB;
-  final String floorB;
+  final int floorB;
   final String pathType;
 
   ReportRouteEvent({
-    required this.buildingA,
-    required this.floorA,
-    required this.buildingB,
-    required this.floorB,
+    required String buildingA,
+    required String floorA,
+    required String buildingB,
+    required String floorB,
     required this.pathType,
-  });
+  }) : buildingA = buildingA.toUpperCase(),
+       floorA = extractNumber(floorA),
+       buildingB = buildingB.toUpperCase(),
+       floorB = extractNumber(floorB);
+}
+
+int extractNumber(String input) {
+  final RegExp regex = RegExp(r'\d+');
+  final Match? match = regex.firstMatch(input);
+  return match != null ? int.parse(match.group(0)!) : 0;
 }

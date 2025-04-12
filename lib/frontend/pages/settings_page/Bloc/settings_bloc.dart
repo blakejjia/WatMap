@@ -1,5 +1,5 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:watmap/backend/pourdb/pour_db.dart';
+import 'package:watmap/backend/services/pour_db.dart';
 import 'package:watmap/frontend/bloc/map_bloc.dart';
 import 'package:watmap/main.dart';
 
@@ -27,16 +27,10 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
           lastMapRefreshTime: 'building db...',
         ),
       );
-      int code = await pourDb();
+      bool isSuccess = await pourDb();
       add(RefreshMapEvent());
-      if (code == 0) {
+      if (isSuccess) {
         emit(state.copyWith(lastServerRetriveTime: _now()));
-      } else if (code == 1) {
-        emit(
-          state.copyWith(
-            lastServerRetriveTime: 'retrived from local file only',
-          ),
-        );
       } else {
         emit(state.copyWith(lastServerRetriveTime: 'error occured'));
       }

@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
               children: [
                 ListTile(
                   leading: Icon(Icons.add_location_alt),
-                  title: Text("report a route"),
+                  title: Text("Tell us a undiscovered route"),
                   onTap: () {
                     Navigator.push(
                       context,
