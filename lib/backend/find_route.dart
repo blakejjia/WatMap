@@ -31,23 +31,26 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   // here we find path
   List<Location> locations = dijkstra(locationA, locationB, map);
   List<MyPath> paths = [];
-  for (int i = 0; i < locations.length - 2; i++) {
+  for (int i = 0; i < locations.length - 1; i++) {
     Location locA = locations[i];
     Location locB = locations[i + 1];
     MyPath? path = map.paths.firstWhere(
       (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
       orElse:
-          // usually it should not happen...
           () => MyPath(
             id: 0,
-            pointAId: locations[i].id,
-            pointBId: locations[i + 1].id,
+            pointAId: locA.id,
+            pointBId: locB.id,
             pathType: PATH_OUTSIDE,
           ),
     );
     paths.add(path);
   }
 
+  // Check if the last path is a "STAIR" and remove it if so
+  if (paths.isNotEmpty && paths.last.pathType == PATH_STAIRS) {
+    paths.removeLast();
+  }
   // return route
   final route = MyRoute(paths, locationA, locationB);
   return route;

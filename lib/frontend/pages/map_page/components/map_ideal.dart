@@ -2,8 +2,8 @@ part of '../map_page.dart';
 
 Widget _buildings(Building building, BuildContext context) {
   return Positioned(
-    left: building.x.toDouble(),
-    top: building.y.toDouble(),
+    left: _offsetX(building.x),
+    top: _offsetY(building.y),
     child: IconButton(
       icon: Icon(
         Icons.circle,
@@ -19,8 +19,8 @@ Widget _buildings(Building building, BuildContext context) {
 
 Widget _selectedWidget(Building building, BuildContext context) {
   return Positioned(
-    left: building.x.toDouble(),
-    top: building.y.toDouble(),
+    left: _offsetX(building.x),
+    top: _offsetY(building.y),
     child: IconButton(
       icon: Icon(
         Icons.circle,

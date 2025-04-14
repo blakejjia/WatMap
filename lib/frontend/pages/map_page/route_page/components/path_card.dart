@@ -9,7 +9,7 @@ Widget _pathCard(MyPath path, MyMap map, int index) {
       child: Column(
         children: [
           Text(
-            "At ${_location(path.pointAId, map)},",
+            "At ${_location(path.pointAId, map)}",
             style: TextStyle(fontSize: 18),
           ),
           Text(_parsePath(path), style: TextStyle(fontSize: 18, color: Colors.brown)),
@@ -39,7 +39,8 @@ Widget _endCard(MyPath path, MyMap map) {
 }
 
 String _location(int id, MyMap map) {
-  return map.locations.firstWhere((location) => location.id == id).name;
+  Location location = map.locations.firstWhere((location) => location.id == id);
+  return "${location.name} Lv.${location.floor}";
 }
 
 String _parsePath(MyPath path) {

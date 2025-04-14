@@ -847,6 +847,15 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _routeMeta = const VerificationMeta('route');
+  @override
+  late final GeneratedColumn<String> route = GeneratedColumn<String>(
+    'route',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -854,6 +863,7 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
     pointBId,
     pathType,
     buildingId,
+    route,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -900,6 +910,12 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
         buildingId.isAcceptableOrUnknown(data['building_id']!, _buildingIdMeta),
       );
     }
+    if (data.containsKey('route')) {
+      context.handle(
+        _routeMeta,
+        route.isAcceptableOrUnknown(data['route']!, _routeMeta),
+      );
+    }
     return context;
   }
 
@@ -933,6 +949,10 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
         DriftSqlType.int,
         data['${effectivePrefix}building_id'],
       ),
+      route: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}route'],
+      ),
     );
   }
 
@@ -953,12 +973,16 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   /// Type of the path
   final int pathType;
   final int? buildingId;
+
+  /// optional if there is a route
+  final String? route;
   const MyPath({
     required this.id,
     required this.pointAId,
     required this.pointBId,
     required this.pathType,
     this.buildingId,
+    this.route,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -969,6 +993,9 @@ class MyPath extends DataClass implements Insertable<MyPath> {
     map['path_type'] = Variable<int>(pathType);
     if (!nullToAbsent || buildingId != null) {
       map['building_id'] = Variable<int>(buildingId);
+    }
+    if (!nullToAbsent || route != null) {
+      map['route'] = Variable<String>(route);
     }
     return map;
   }
@@ -983,6 +1010,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
           buildingId == null && nullToAbsent
               ? const Value.absent()
               : Value(buildingId),
+      route:
+          route == null && nullToAbsent ? const Value.absent() : Value(route),
     );
   }
 
@@ -997,6 +1026,7 @@ class MyPath extends DataClass implements Insertable<MyPath> {
       pointBId: serializer.fromJson<int>(json['pointBId']),
       pathType: serializer.fromJson<int>(json['pathType']),
       buildingId: serializer.fromJson<int?>(json['buildingId']),
+      route: serializer.fromJson<String?>(json['route']),
     );
   }
   @override
@@ -1008,6 +1038,7 @@ class MyPath extends DataClass implements Insertable<MyPath> {
       'pointBId': serializer.toJson<int>(pointBId),
       'pathType': serializer.toJson<int>(pathType),
       'buildingId': serializer.toJson<int?>(buildingId),
+      'route': serializer.toJson<String?>(route),
     };
   }
 
@@ -1017,12 +1048,14 @@ class MyPath extends DataClass implements Insertable<MyPath> {
     int? pointBId,
     int? pathType,
     Value<int?> buildingId = const Value.absent(),
+    Value<String?> route = const Value.absent(),
   }) => MyPath(
     id: id ?? this.id,
     pointAId: pointAId ?? this.pointAId,
     pointBId: pointBId ?? this.pointBId,
     pathType: pathType ?? this.pathType,
     buildingId: buildingId.present ? buildingId.value : this.buildingId,
+    route: route.present ? route.value : this.route,
   );
   MyPath copyWithCompanion(MyPathsCompanion data) {
     return MyPath(
@@ -1032,6 +1065,7 @@ class MyPath extends DataClass implements Insertable<MyPath> {
       pathType: data.pathType.present ? data.pathType.value : this.pathType,
       buildingId:
           data.buildingId.present ? data.buildingId.value : this.buildingId,
+      route: data.route.present ? data.route.value : this.route,
     );
   }
 
@@ -1042,13 +1076,15 @@ class MyPath extends DataClass implements Insertable<MyPath> {
           ..write('pointAId: $pointAId, ')
           ..write('pointBId: $pointBId, ')
           ..write('pathType: $pathType, ')
-          ..write('buildingId: $buildingId')
+          ..write('buildingId: $buildingId, ')
+          ..write('route: $route')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, pointAId, pointBId, pathType, buildingId);
+  int get hashCode =>
+      Object.hash(id, pointAId, pointBId, pathType, buildingId, route);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1057,7 +1093,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
           other.pointAId == this.pointAId &&
           other.pointBId == this.pointBId &&
           other.pathType == this.pathType &&
-          other.buildingId == this.buildingId);
+          other.buildingId == this.buildingId &&
+          other.route == this.route);
 }
 
 class MyPathsCompanion extends UpdateCompanion<MyPath> {
@@ -1066,12 +1103,14 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   final Value<int> pointBId;
   final Value<int> pathType;
   final Value<int?> buildingId;
+  final Value<String?> route;
   const MyPathsCompanion({
     this.id = const Value.absent(),
     this.pointAId = const Value.absent(),
     this.pointBId = const Value.absent(),
     this.pathType = const Value.absent(),
     this.buildingId = const Value.absent(),
+    this.route = const Value.absent(),
   });
   MyPathsCompanion.insert({
     this.id = const Value.absent(),
@@ -1079,6 +1118,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     required int pointBId,
     required int pathType,
     this.buildingId = const Value.absent(),
+    this.route = const Value.absent(),
   }) : pointAId = Value(pointAId),
        pointBId = Value(pointBId),
        pathType = Value(pathType);
@@ -1088,6 +1128,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     Expression<int>? pointBId,
     Expression<int>? pathType,
     Expression<int>? buildingId,
+    Expression<String>? route,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1095,6 +1136,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
       if (pointBId != null) 'point_b_id': pointBId,
       if (pathType != null) 'path_type': pathType,
       if (buildingId != null) 'building_id': buildingId,
+      if (route != null) 'route': route,
     });
   }
 
@@ -1104,6 +1146,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     Value<int>? pointBId,
     Value<int>? pathType,
     Value<int?>? buildingId,
+    Value<String?>? route,
   }) {
     return MyPathsCompanion(
       id: id ?? this.id,
@@ -1111,6 +1154,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
       pointBId: pointBId ?? this.pointBId,
       pathType: pathType ?? this.pathType,
       buildingId: buildingId ?? this.buildingId,
+      route: route ?? this.route,
     );
   }
 
@@ -1132,6 +1176,9 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     if (buildingId.present) {
       map['building_id'] = Variable<int>(buildingId.value);
     }
+    if (route.present) {
+      map['route'] = Variable<String>(route.value);
+    }
     return map;
   }
 
@@ -1142,7 +1189,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
           ..write('pointAId: $pointAId, ')
           ..write('pointBId: $pointBId, ')
           ..write('pathType: $pathType, ')
-          ..write('buildingId: $buildingId')
+          ..write('buildingId: $buildingId, ')
+          ..write('route: $route')
           ..write(')'))
         .toString();
   }
@@ -1602,6 +1650,7 @@ typedef $$MyPathsTableCreateCompanionBuilder =
       required int pointBId,
       required int pathType,
       Value<int?> buildingId,
+      Value<String?> route,
     });
 typedef $$MyPathsTableUpdateCompanionBuilder =
     MyPathsCompanion Function({
@@ -1610,6 +1659,7 @@ typedef $$MyPathsTableUpdateCompanionBuilder =
       Value<int> pointBId,
       Value<int> pathType,
       Value<int?> buildingId,
+      Value<String?> route,
     });
 
 class $$MyPathsTableFilterComposer
@@ -1643,6 +1693,11 @@ class $$MyPathsTableFilterComposer
 
   ColumnFilters<int> get buildingId => $composableBuilder(
     column: $table.buildingId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get route => $composableBuilder(
+    column: $table.route,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1680,6 +1735,11 @@ class $$MyPathsTableOrderingComposer
     column: $table.buildingId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get route => $composableBuilder(
+    column: $table.route,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MyPathsTableAnnotationComposer
@@ -1707,6 +1767,9 @@ class $$MyPathsTableAnnotationComposer
     column: $table.buildingId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get route =>
+      $composableBuilder(column: $table.route, builder: (column) => column);
 }
 
 class $$MyPathsTableTableManager
@@ -1742,12 +1805,14 @@ class $$MyPathsTableTableManager
                 Value<int> pointBId = const Value.absent(),
                 Value<int> pathType = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
+                Value<String?> route = const Value.absent(),
               }) => MyPathsCompanion(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
                 pathType: pathType,
                 buildingId: buildingId,
+                route: route,
               ),
           createCompanionCallback:
               ({
@@ -1756,12 +1821,14 @@ class $$MyPathsTableTableManager
                 required int pointBId,
                 required int pathType,
                 Value<int?> buildingId = const Value.absent(),
+                Value<String?> route = const Value.absent(),
               }) => MyPathsCompanion.insert(
                 id: id,
                 pointAId: pointAId,
                 pointBId: pointBId,
                 pathType: pathType,
                 buildingId: buildingId,
+                route: route,
               ),
           withReferenceMapper:
               (p0) =>

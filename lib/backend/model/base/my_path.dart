@@ -21,4 +21,7 @@ class MyPaths extends Table {
   /// Type of the path
   IntColumn get pathType => integer()();
   IntColumn get buildingId => integer().nullable()();
+
+  /// optional if there is a route
+  TextColumn get route => text().nullable()();
 }

@@ -107,6 +107,7 @@ Future<bool> pourDb() async {
           pointAId: Value(pointAId),
           pointBId: Value(pointBId),
           pathType: Value(prasePathType(path.pathType)),
+          route: Value(path.route.toString()),
         ),
       );
       await getIt<PathRepository>().createPath(
@@ -114,6 +115,7 @@ Future<bool> pourDb() async {
           pointAId: Value(pointBId),
           pointBId: Value(pointAId),
           pathType: Value(prasePathType(path.pathType)),
+          route: Value(path.route.toString()),
         ),
       );
     });

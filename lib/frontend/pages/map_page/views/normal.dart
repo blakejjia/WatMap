@@ -14,7 +14,7 @@ class NormalMapView extends StatelessWidget {
               ..translate(-1400.0, -620.0)
               ..scale(0.6, 0.6, 0.6),
           ),
-          minScale: 0.1,
+          minScale: 0.12,
           builder: (BuildContext context, vector_math.Quad viewport) {
             return UWMap();
           },

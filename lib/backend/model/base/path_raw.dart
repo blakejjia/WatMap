@@ -9,6 +9,7 @@ class RawPath {
   final String buildingB;
   final int floorB;
   final String pathType;
+  final List<List<List<int>>>? route;
 
   RawPath({
     required this.buildingA,
@@ -16,6 +17,7 @@ class RawPath {
     required this.buildingB,
     required this.floorB,
     required this.pathType,
+    this.route,
   });
 
   factory RawPath.fromJson(Map<String, dynamic> json) =>

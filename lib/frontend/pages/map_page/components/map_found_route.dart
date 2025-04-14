@@ -1,15 +1,7 @@
 part of '../map_page.dart';
 
 Widget _path(MapFoundRoute state, MyPath path, BuildContext context) {
-  final pointA =
-      state.map.locations
-          .where((location) => location.id == path.pointAId)
-          .first;
-  final pointB =
-      state.map.locations
-          .where((location) => location.id == path.pointBId)
-          .first;
-  return CustomPaint(painter: PathPainter(pointA, pointB));
+  return CustomPaint(painter: PathPainter(state.map, path));
 }
 
 Widget _dialogBox(MapFoundRoute state, BuildContext context) {
@@ -34,7 +26,6 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
   );
 }
 
-// TODO: better format route
 String _formatRoute(MapFoundRoute state) {
   String output = "";
 
@@ -43,7 +34,7 @@ String _formatRoute(MapFoundRoute state) {
   }
 
   // Starting point
-  Location startPoint = state.map.locations.firstWhere(
+  Location? startPoint = state.map.locations.firstWhere(
     (element) => element.id == state.route.paths[0].pointAId,
   );
   output += "Starting at ${startPoint.name}\n";
@@ -52,8 +43,8 @@ String _formatRoute(MapFoundRoute state) {
     output += "${_formatPath(path, state.map)}\n";
   }
 
-  // ending point
-  Location endPoint = state.map.locations.firstWhere(
+  // Ending point
+  Location? endPoint = state.map.locations.firstWhere(
     (element) =>
         element.id == state.route.paths[state.route.paths.length - 1].pointBId,
   );
@@ -70,37 +61,83 @@ String _formatPath(MyPath path, MyMap map) {
   Location pointB = map.locations.firstWhere(
     (element) => element.id == path.pointBId,
   );
-  if (path.pathType == PATH_STAIRS) {
-    output +=
-        "climb up ${pointB.floor - pointA.floor} floors to ${pointB.name}";
-  }
-  if (path.pathType == PATH_BRIDGE) {
-    output +=
-        "Take bridge from ${pointA.name.length > 3 ? pointA.name.substring(0, 3) : pointA.name} to ${pointB.name.length > 3 ? pointB.name.substring(0, 3) : pointB.name}";
+  switch (path.pathType) {
+    case PATH_STAIRS:
+      output += "climb to ${pointB.name} Lv ${pointB.floor}";
+      break;
+    case PATH_BRIDGE:
+      output += "${pointA.name} -> ${pointB.name} by bridge";
+      break;
+    // Add cases for other pathTypes here as needed
+    case PATH_TUNNEL:
+      output += "${pointA.name} -> ${pointB.name} by tunnel";
+      break;
+    default:
+      output += "Unknown path type";
+      break;
   }
   return output;
 }
 
 class PathPainter extends CustomPainter {
-  final Location pointA;
-  final Location pointB;
-
-  PathPainter(this.pointA, this.pointB);
+  final MyMap map;
+  final MyPath path;
+  PathPainter(this.map, this.path);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
+    var paint =
         Paint()
           ..color = Colors.blue
           ..strokeWidth = 6.0
-          ..style = PaintingStyle.stroke;
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
-    final path =
-        Path()
-          ..moveTo(pointA.x.toDouble() + 33, pointA.y.toDouble() + 32)
-          ..lineTo(pointB.x.toDouble() + 33, pointB.y.toDouble() + 32);
+    var drawingPath = Path();
 
-    canvas.drawPath(path, paint);
+    if (path.route != null && path.route!.isNotEmpty && path.route != "null") {
+      // Parse the route string into a list of segments, each containing two points
+      List<List<List<int>>> routeSegments = List<List<List<int>>>.from(
+        jsonDecode(path.route!).map(
+          (segment) => List<List<int>>.from(
+            segment.map((point) => List<int>.from(point)),
+          ),
+        ),
+      );
+
+      for (var segment in routeSegments) {
+        if (segment.length >= 2) {
+          // Start drawing from the first point of the segment
+          drawingPath.moveTo(
+            segment[0][0].toDouble(),
+            segment[0][1].toDouble(),
+          );
+
+          // Draw lines connecting all points in the segment
+          for (int i = 1; i < segment.length; i++) {
+            drawingPath.lineTo(
+              segment[i][0].toDouble(),
+              segment[i][1].toDouble(),
+            );
+          }
+        }
+      }
+    } else {
+      // Fallback to drawing a line between pointA and pointB
+      Location? pointA = map.locations.firstWhere(
+        (location) => location.id == path.pointAId,
+      );
+      Location? pointB = map.locations.firstWhere(
+        (location) => location.id == path.pointBId,
+      );
+
+      drawingPath
+        ..moveTo(pointA.x.toDouble(), pointA.y.toDouble())
+        ..lineTo(pointB.x.toDouble(), pointB.y.toDouble());
+    }
+
+    // Draw the path on the canvas
+    canvas.drawPath(drawingPath, paint);
   }
 
   @override

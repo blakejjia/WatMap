@@ -10,7 +10,7 @@ class UWMap extends StatelessWidget {
       builder: (context, state) {
         return Stack(
           children: [
-            Image.asset('assets/campusMap.png', fit: BoxFit.contain),
+            Image.asset('assets/campusMap.png'),
             ...(_buildingMarkers(state, context)),
           ],
         );
@@ -54,4 +54,11 @@ class UWMap extends StatelessWidget {
         return [];
     }
   }
+}
+
+double _offsetX(int x) {
+  return x.toDouble() - 31.0;
+}
+double _offsetY(int y) {
+  return y.toDouble() - 31.0;
 }

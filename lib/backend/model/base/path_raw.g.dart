@@ -12,6 +12,20 @@ RawPath _$RawPathFromJson(Map<String, dynamic> json) => RawPath(
   buildingB: json['buildingB'] as String,
   floorB: (json['floorB'] as num).toInt(),
   pathType: json['pathType'] as String,
+  route:
+      (json['route'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                (e as List<dynamic>)
+                    .map(
+                      (e) =>
+                          (e as List<dynamic>)
+                              .map((e) => (e as num).toInt())
+                              .toList(),
+                    )
+                    .toList(),
+          )
+          .toList(),
 );
 
 Map<String, dynamic> _$RawPathToJson(RawPath instance) => <String, dynamic>{
@@ -20,4 +34,5 @@ Map<String, dynamic> _$RawPathToJson(RawPath instance) => <String, dynamic>{
   'buildingB': instance.buildingB,
   'floorB': instance.floorB,
   'pathType': instance.pathType,
+  'route': instance.route,
 };

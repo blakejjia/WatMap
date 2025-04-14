@@ -76,6 +76,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       event.start,
       event.end,
     );
+    print(route?.paths.toString());
     if (route == null) {
       return;
     }
