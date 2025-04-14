@@ -16,31 +16,74 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
         );
       },
       child: Container(
-        color: Colors.white,
+        margin: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white.withAlpha(245),
+          border: Border.all(color: Colors.black, width: 1.0),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(_formatRoute(state)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Route found\n",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+
+              ..._formatRoute(state).map(
+                (e) => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:
+                      e
+                          .map(
+                            (text) =>
+                                e.indexOf(text) == e.length - 1
+                                    ? Text(
+                                      text,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                    : Text("$text "),
+                          )
+                          .toList(),
+                ),
+              ),
+              const Text(
+                "\n Click here for details",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ),
   );
 }
 
-String _formatRoute(MapFoundRoute state) {
-  String output = "";
+List<List<String>> _formatRoute(MapFoundRoute state) {
+  List<List<String>> output = [];
 
   if (state.route.paths.isEmpty) {
-    return "No route found";
+    return [
+      ["", "No route found"],
+    ];
   }
 
   // Starting point
   Location? startPoint = state.map.locations.firstWhere(
     (element) => element.id == state.route.paths[0].pointAId,
   );
-  output += "Starting at ${startPoint.name}\n";
+  output.add(["Starting at \n", "${startPoint.name}\n"]);
 
-  for (var path in state.route.paths) {
-    output += "${_formatPath(path, state.map)}\n";
+  for (var i = 0; i < state.route.paths.length; i++) {
+    var path = state.route.paths[i];
+    output.add(["${i + 1}.", ..._formatPath(path, state.map)]);
   }
 
   // Ending point
@@ -48,13 +91,14 @@ String _formatRoute(MapFoundRoute state) {
     (element) =>
         element.id == state.route.paths[state.route.paths.length - 1].pointBId,
   );
-  output += "Ending at ${endPoint.name}\n";
+  output.add(["Ending at", (endPoint.name)]);
 
   return output;
 }
 
-String _formatPath(MyPath path, MyMap map) {
-  String output = "";
+// output[-1] will be blooded
+List<String> _formatPath(MyPath path, MyMap map) {
+  List<String> output = [];
   Location pointA = map.locations.firstWhere(
     (element) => element.id == path.pointAId,
   );
@@ -63,17 +107,26 @@ String _formatPath(MyPath path, MyMap map) {
   );
   switch (path.pathType) {
     case PATH_STAIRS:
-      output += "climb to ${pointB.name} Lv ${pointB.floor}";
+      output.add("climb to");
+      output.add("${pointB.name} (floor ${pointB.floor})");
       break;
     case PATH_BRIDGE:
-      output += "${pointA.name} -> ${pointB.name} by bridge";
+      output.add("Take bridge to");
+      output.add(pointB.name);
       break;
-    // Add cases for other pathTypes here as needed
     case PATH_TUNNEL:
-      output += "${pointA.name} -> ${pointB.name} by tunnel";
+      output.add("Take tunnel to");
+      output.add(pointB.name);
       break;
+    case PATH_OUTSIDE:
+      output.add("Go out side walk to");
+      output.add(pointB.name);
+      break;
+    case PATH_INSIDE:
+      output.add("Go straight through to");
+      output.add(pointB.name);
     default:
-      output += "Unknown path type";
+      output.add("Unknown path type");
       break;
   }
   return output;
@@ -88,7 +141,7 @@ class PathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var paint =
         Paint()
-          ..color = Colors.blue
+          ..color = Color.fromARGB(255, 220, 161, 255)
           ..strokeWidth = 6.0
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round;
