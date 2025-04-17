@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,6 +24,7 @@ void main() async {
 
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "config/properties.env");
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
       (await getApplicationDocumentsDirectory()).path,
@@ -30,8 +32,8 @@ Future<void> init() async {
   );
 
   await Supabase.initialize(
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inljcmtqem9pY3JmeXd0bmdibnV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxMjY4OTQsImV4cCI6MjA1OTcwMjg5NH0.4uzt1ttVx70ZWmHR1M-I6YxbVPHE1f-bUL7UgoxUd6Q",
-    url: 'https://ycrkjzoicrfywtngbnut.supabase.co'
+    anonKey: dotenv.env['API_KEY'] ?? "",
+    url: dotenv.env['SUPABASE_URL'] ?? "",
   );
   final db = Supabase.instance.client;
   getIt.registerSingleton<SupaService>(SupaService(db));

@@ -2,7 +2,7 @@ name: watmap
 description: "A app help you hang around uwaterloo"
 publish_to: 'none'
 
-version: 0.1.1+2
+version: 1.0.1+5
 
 environment:
   sdk: ^3.7.0
@@ -21,6 +21,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   supabase_flutter: ^2.8.4
   json_annotation: ^4.9.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +31,6 @@ dev_dependencies:
   build_runner: ^2.4.15
   drift_dev: ^2.26.0
   json_serializable: ^6.9.4
-
 
 flutter_launcher_icons:
   android: true
@@ -43,4 +43,5 @@ flutter:
   assets:
     - assets/campusMap.png
     - assets/lang/appInfo.json
+    - config/properties.env
 
