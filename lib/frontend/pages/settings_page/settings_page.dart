@@ -40,10 +40,10 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.cloud_download),
-                  title: Text("retrive data"),
-                  trailing: Text(state.lastServerRetriveTime),
+                  title: Text("update data"),
+                  trailing: Text(state.lastUpdateTime),
                   onTap: () {
-                    context.read<SettingsBloc>().add(RetriveDataEvent());
+                    context.read<SettingsBloc>().add(UpdateDataEvent());
                   },
                 ),
               ],

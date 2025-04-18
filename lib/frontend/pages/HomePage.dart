@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/pages/map_page/map_page.dart';
+import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
 import 'package:watmap/frontend/pages/settings_page/settings_page.dart';
 
 class Homepage extends StatefulWidget {
@@ -24,7 +26,21 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('WATMAP')),
-      body: _pages[_selectedIndex],
+      body: BlocListener<SettingsBloc, SettingsState>(
+        // listen for db status, to tell use
+        listener: (context, state) {
+          if (state.isBuilt == false) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.lastMapRefreshTime),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+        child: _pages[_selectedIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Map'),

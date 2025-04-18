@@ -2,35 +2,46 @@ part of 'settings_bloc.dart';
 
 class SettingsState {
   final String lastMapRefreshTime;
-  final String lastServerRetriveTime;
+  final String lastUpdateTime;
+  final bool isBuilt;
+  final bool newUsr;
 
   SettingsState({
     required this.lastMapRefreshTime,
-    required this.lastServerRetriveTime,
+    required this.lastUpdateTime,
+    required this.isBuilt,
+    required this.newUsr,
   });
 
   factory SettingsState.fromMap(Map<String, dynamic> map) {
     return SettingsState(
-      lastMapRefreshTime: map['LastMapRefreshTime'] ?? '',
-      lastServerRetriveTime: map['lastServerRetriveTime'] ?? '',
+      lastMapRefreshTime: map['LastMapRefreshTime']?.toString() ?? '',
+      lastUpdateTime: map['lastUpdateTime']?.toString() ?? '',
+      isBuilt: map['isBuilt'] as bool? ?? false,
+      newUsr: map['newUsr'] as bool? ?? true,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'LastMapRefreshTime': lastMapRefreshTime,
-      'lastServerRetriveTime': lastServerRetriveTime,
+      'lastUpdateTime': lastUpdateTime,
+      'isBuilt': isBuilt,
+      'newUsr': newUsr,
     };
   }
 
   SettingsState copyWith({
     String? lastMapRefreshTime,
-    String? lastServerRetriveTime,
+    String? lastUpdateTime,
+    bool? isBuilt,
+    bool? newUsr,
   }) {
     return SettingsState(
       lastMapRefreshTime: lastMapRefreshTime ?? this.lastMapRefreshTime,
-      lastServerRetriveTime:
-          lastServerRetriveTime ?? this.lastServerRetriveTime,
+      lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
+      isBuilt: isBuilt ?? this.isBuilt,
+      newUsr: newUsr ?? this.newUsr,
     );
   }
 }

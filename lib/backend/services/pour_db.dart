@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:watmap/backend/model/base/path_raw.dart';
 import 'package:watmap/backend/services/SupaService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,7 +12,6 @@ import '../repositories/location.dart';
 import '../repositories/path.dart';
 
 Future<bool> pourDb() async {
-  Fluttertoast.showToast(msg: "building db, this may take a while");
   await getIt<BuildingRepository>().destroyAllBuildings();
   await getIt<LocationRepository>().destroyAllLocations();
   await getIt<PathRepository>().destroyAllPaths();
@@ -126,7 +126,6 @@ Future<bool> pourDb() async {
     print(stack);
     return false;
   }
-  Fluttertoast.showToast(msg: "db built, enjoy~");
   return true;
 }
 

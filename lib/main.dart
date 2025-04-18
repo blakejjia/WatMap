@@ -64,10 +64,20 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'WatMap',
-        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          snackBarTheme: SnackBarThemeData(
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            behavior: SnackBarBehavior.floating,
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            contentTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondaryContainer, fontSize: 15),
+          ),
+
         ),
+        debugShowCheckedModeBanner: false,
         home: const Homepage(),
       ),
     );

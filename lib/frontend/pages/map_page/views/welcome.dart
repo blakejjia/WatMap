@@ -51,7 +51,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                     "Grant location access to unlock the full potential of WatMap and start your journey today.",
                 button: ElevatedButton(
                   onPressed: () {
-                    getIt<SettingsBloc>().add(RetriveDataEvent());
+                    context.read<SettingsBloc>().add(NotNewUsr());
                   },
                   child: Text("getStarted"),
                 ),

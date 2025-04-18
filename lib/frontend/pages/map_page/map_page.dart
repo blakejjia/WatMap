@@ -27,7 +27,7 @@ class MapPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
-        if (state.lastMapRefreshTime == NEWUSER) {
+        if (state.newUsr) {
           return const WelcomeView();
         } else {
           return const NormalMapView();
