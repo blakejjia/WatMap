@@ -24,7 +24,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         emit(
           state.copyWith(
             status: "success",
-            message: "It will be reviewed by blake within 3 days, try retrieve data after hood.",
+            message: "It will be reviewed by blake within 3 days, try update data after hood.",
           ),
         );
       } else {

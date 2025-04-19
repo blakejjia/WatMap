@@ -3,16 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:vector_math/vector_math.dart' as vector_math;
 import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/bloc/map_bloc.dart';
 // ignore: depend_on_referenced_packages
-import 'package:vector_math/vector_math_64.dart' as vector_math;
+import 'package:vector_math/vector_math_64.dart' as vector_math64;
 import 'package:watmap/frontend/pages/map_page/route_page/route_page.dart';
 import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
 import 'package:watmap/main.dart';
 
 import '../../../backend/db/database.dart';
 import '../../../backend/model/mid/my_map.dart';
+import 'components/removeOpposite.dart';
 
 part 'components/uw_map.dart';
 part 'components/map_ideal.dart';

@@ -976,6 +976,7 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 
   /// optional if there is a route
   final String? route;
+
   const MyPath({
     required this.id,
     required this.pointAId,

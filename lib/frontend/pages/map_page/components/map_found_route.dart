@@ -1,7 +1,14 @@
 part of '../map_page.dart';
 
-Widget _path(MapFoundRoute state, MyPath path, BuildContext context) {
-  return CustomPaint(painter: PathPainter(state.map, path));
+Widget _path(
+    MapFoundRoute state,
+    List<MyPath> paths,
+    BuildContext context,
+    ) {
+  final segments = buildSegments(state.map, paths);
+  return CustomPaint(
+    painter: FullRoutePainter(state.map, segments),
+  );
 }
 
 Widget _dialogBox(MapFoundRoute state, BuildContext context) {
@@ -132,69 +139,28 @@ List<String> _formatPath(MyPath path, MyMap map) {
   return output;
 }
 
-class PathPainter extends CustomPainter {
+class FullRoutePainter extends CustomPainter {
   final MyMap map;
-  final MyPath path;
-  PathPainter(this.map, this.path);
+  final List<Segment> segments;
+  FullRoutePainter(this.map, this.segments);
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint =
-        Paint()
-          ..color = Color.fromARGB(255, 220, 161, 255)
-          ..strokeWidth = 6.0
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round;
+    final paint = Paint()
+      ..color = const Color(0xFFDCA1FF)
+      ..strokeWidth = 6
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-    var drawingPath = Path();
-
-    if (path.route != null && path.route!.isNotEmpty && path.route != "null") {
-      // Parse the route string into a list of segments, each containing two points
-      List<List<List<int>>> routeSegments = List<List<List<int>>>.from(
-        jsonDecode(path.route!).map(
-          (segment) => List<List<int>>.from(
-            segment.map((point) => List<int>.from(point)),
-          ),
-        ),
-      );
-
-      for (var segment in routeSegments) {
-        if (segment.length >= 2) {
-          // Start drawing from the first point of the segment
-          drawingPath.moveTo(
-            segment[0][0].toDouble(),
-            segment[0][1].toDouble(),
-          );
-
-          // Draw lines connecting all points in the segment
-          for (int i = 1; i < segment.length; i++) {
-            drawingPath.lineTo(
-              segment[i][0].toDouble(),
-              segment[i][1].toDouble(),
-            );
-          }
-        }
-      }
-    } else {
-      // Fallback to drawing a line between pointA and pointB
-      Location? pointA = map.locations.firstWhere(
-        (location) => location.id == path.pointAId,
-      );
-      Location? pointB = map.locations.firstWhere(
-        (location) => location.id == path.pointBId,
-      );
-
-      drawingPath
-        ..moveTo(pointA.x.toDouble(), pointA.y.toDouble())
-        ..lineTo(pointB.x.toDouble(), pointB.y.toDouble());
+    final path = Path();
+    for (final seg in segments) {
+      path.moveTo(seg[0].x, seg[0].y);
+      path.lineTo(seg[1].x, seg[1].y);
     }
-
-    // Draw the path on the canvas
-    canvas.drawPath(drawingPath, paint);
+    canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

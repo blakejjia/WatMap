@@ -46,9 +46,7 @@ class UWMap extends StatelessWidget {
           ...state.selectedBuildings.map((building) {
             return _selectedWidget(building!, context);
           }),
-          ...state.route.paths.map((path) {
-            return _path(state, path, context);
-          }),
+          _path(state, state.route.paths, context),
         ];
       default:
         return [];
