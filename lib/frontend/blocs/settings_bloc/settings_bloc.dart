@@ -14,38 +14,56 @@ const String BUILDING = 'building db... takes';
 
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
   SettingsBloc()
-      : super(
-    SettingsState(
-      lastMapRefreshTime: NEWUSER,
-      lastUpdateTime: NEWUSER,
-      isBuilt: false,
-      newUsr: true,
-    ),
-  ) {
+    : super(
+        SettingsState(
+          lastMapRefreshTime: NEWUSER,
+          lastUpdateTime: NEWUSER,
+          weather: Weather.snowy,
+          isBuilt: false,
+          newUsr: true,
+        ),
+      ) {
     on<RefreshMapEvent>(_onRefreshMap);
     on<UpdateDataEvent>(_onUpdateData);
     on<NotNewUsr>(_noNotNewUser);
-    if(state.isBuilt == false) {
+    on<ChangeWeather>(_onChangeWeather);
+    if (state.isBuilt == false) {
       // user killed while building
       emit(state.copyWith(isBuilt: true));
       add(UpdateDataEvent());
     }
   }
 
-  Future<void> _onRefreshMap(RefreshMapEvent event, Emitter<SettingsState> emit) async {
+  Future<void> _onRefreshMap(
+    RefreshMapEvent event,
+    Emitter<SettingsState> emit,
+  ) async {
     if (state.isBuilt == false) return;
     getIt<MapBloc>().add(MapLoad());
     emit(state.copyWith(lastMapRefreshTime: _now()));
   }
 
-  Future<void> _onUpdateData(UpdateDataEvent event, Emitter<SettingsState> emit) async {
+  Future<void> _onChangeWeather(
+    ChangeWeather event,
+    Emitter<SettingsState> emit,
+  ) async {
+    if (state.isBuilt == false) return;
+    emit(state.copyWith(weather: event.weather));
+  }
+
+  Future<void> _onUpdateData(
+    UpdateDataEvent event,
+    Emitter<SettingsState> emit,
+  ) async {
     if (state.isBuilt == false) return;
     emit(state.copyWith(isBuilt: false));
     _buildingTicker(emit);
     bool isSuccess = await pourDb();
 
     if (isSuccess == true) {
-      emit(state.copyWith(lastUpdateTime: SUCCESS, lastMapRefreshTime: SUCCESS));
+      emit(
+        state.copyWith(lastUpdateTime: SUCCESS, lastMapRefreshTime: SUCCESS),
+      );
       add(RefreshMapEvent());
       emit(state.copyWith(lastUpdateTime: _now()));
     } else {
@@ -54,7 +72,10 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(isBuilt: true));
   }
 
-  Future<void> _noNotNewUser(NotNewUsr event, Emitter<SettingsState> emit) async {
+  Future<void> _noNotNewUser(
+    NotNewUsr event,
+    Emitter<SettingsState> emit,
+  ) async {
     emit(state.copyWith(newUsr: false));
   }
 
@@ -62,10 +83,12 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     int counter = 0;
     while (state.isBuilt == false) {
       counter++;
-      emit(state.copyWith(
-        lastUpdateTime: "$BUILDING $counter s",
-        lastMapRefreshTime: "$BUILDING $counter s",
-      ));
+      emit(
+        state.copyWith(
+          lastUpdateTime: "$BUILDING $counter s",
+          lastMapRefreshTime: "$BUILDING $counter s",
+        ),
+      );
       await Future.delayed(const Duration(seconds: 1));
     }
     return;

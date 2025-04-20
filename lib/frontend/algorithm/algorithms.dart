@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:vector_math/vector_math.dart';
 import 'package:watmap/backend/model/base/my_path.dart';
+import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import '../../backend/db/database.dart';
 import '../../backend/model/mid/my_map.dart';
 
@@ -22,12 +23,14 @@ const double EPS = 0.1;
 const double PT_EPS = 1;
 
 double STAIRS_COST = 30; // depends on usr settings, typically ~30
-double OUTSIDE_COST_MULTIPLIER = 1.5; // if sunny, 1; if rain or snow, 1.5~2
+double OUTSIDE_COST_MULTIPLIER = 4; // if sunny, 1; if snow, this number
 double WALK_SPEED = 3; // on map, needs more investigation.
 
 extension MyPathExtensions on MyPath {
-  // TODO: customize according to getCost
   double typeMultiplier() {
+    if (getIt<SettingsBloc>().state.weather == Weather.sunny) {
+      return 1;
+    }
     switch (pathType) {
       case PATH_INSIDE:
       case PATH_ELEVATOR:

@@ -25,7 +25,27 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('WATMAP')),
+      appBar: AppBar(
+        title: const Text('WATMAP'),
+        actions: [
+          BlocBuilder<SettingsBloc, SettingsState>(
+            builder: (context, state) {
+              return IconButton(
+                onPressed: () {
+                  context.read<SettingsBloc>().add(ChangeWeather(state.weather));
+                },
+                icon: Icon(
+                  state.weather == Weather.snowy
+                      ? Icons.snowing
+                      : state.weather == Weather.sunny
+                      ? Icons.sunny
+                      : Icons.cloud,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: BlocListener<SettingsBloc, SettingsState>(
         // listen for db status, to tell use
         listener: (context, state) {
