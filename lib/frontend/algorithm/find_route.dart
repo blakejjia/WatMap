@@ -1,14 +1,4 @@
-// ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
-import 'package:watmap/backend/repositories/path.dart';
-
-import 'package:watmap/backend/model/mid/my_route.dart';
-
-import '../main.dart';
-import 'db/database.dart';
-import 'repositories/location.dart';
-import 'model/base/my_path.dart';
-import 'model/mid/my_map.dart';
+part of 'algorithms.dart';
 
 // TODO: here!!!
 // TODO: here!!!
@@ -35,14 +25,14 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
     Location locA = locations[i];
     Location locB = locations[i + 1];
     MyPath? path = map.paths.firstWhere(
-      (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
+          (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
       orElse:
           () => MyPath(
-            id: 0,
-            pointAId: locA.id,
-            pointBId: locB.id,
-            pathType: PATH_OUTSIDE,
-          ),
+        id: 0,
+        pointAId: locA.id,
+        pointBId: locB.id,
+        pathType: PATH_OUTSIDE,
+      ),
     );
     paths.add(path);
   }
@@ -68,7 +58,7 @@ List<Location> dijkstra(Location loc1, Location loc2, MyMap map) {
 
   // Priority queue to efficiently get the next node with smallest distance
   PriorityQueue<Location> queue = PriorityQueue<Location>(
-    (a, b) => distTable[a]!.compareTo(distTable[b]!),
+        (a, b) => distTable[a]!.compareTo(distTable[b]!),
   );
   queue.add(loc1);
 
@@ -109,14 +99,14 @@ List<LocationAndDistance> getAdjacentLocations(Location loc, MyMap map) {
   for (MyPath path in map.paths) {
     if (path.pointAId == loc.id) {
       Location adjacent = map.locations.firstWhere(
-        (element) => element.id == path.pointBId,
+            (element) => element.id == path.pointBId,
       );
       double dist = path.getCost(loc, adjacent);
       adjacents.add(LocationAndDistance(adjacent, dist));
     }
     if (path.pointBId == loc.id) {
       Location adjacent = map.locations.firstWhere(
-        (element) => element.id == path.pointAId,
+            (element) => element.id == path.pointAId,
       );
       double dist = path.getCost(loc, adjacent);
       adjacents.add(LocationAndDistance(adjacent, dist));

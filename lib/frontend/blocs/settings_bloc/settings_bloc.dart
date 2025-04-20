@@ -1,7 +1,8 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:watmap/backend/services/pour_db.dart';
-import 'package:watmap/frontend/bloc/map_bloc.dart';
 import 'package:watmap/main.dart';
+
+import '../map_bloc/map_bloc.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';

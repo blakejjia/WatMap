@@ -1,6 +1,4 @@
-import 'package:watmap/backend/repositories/location.dart';
 
-import '../model/base/my_path.dart';
 import '../db/database.dart';
 
 class PathRepository {
@@ -31,33 +29,5 @@ class PathRepository {
 
   Future<int> destroyAllPaths() {
     return db.delete(db.myPaths).go();
-  }
-}
-
-extension MyPathExtensions on MyPath {
-  bool isInside() {
-    switch (pathType) {
-      case PATH_INSIDE:
-      case PATH_STAIRS:
-      case PATH_ELEVATOR:
-      case PATH_TUNNEL:
-      case PATH_BRIDGE:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  double getCost(Location pointA, Location pointB) {
-    if (pathType == PATH_STAIRS) {
-      return (pointA.floor - pointB.floor).abs() * 30;
-    }
-    // Otherwise use the Euclidean distance.
-    double cost = pointA.distanceTo(pointB);
-    // Penalize going outside.
-    if (!isInside()) {
-      cost *= 1.5;
-    }
-    return cost;
   }
 }

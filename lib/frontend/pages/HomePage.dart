@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/pages/map_page/map_page.dart';
-import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
+import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import 'package:watmap/frontend/pages/settings_page/settings_page.dart';
 
 class Homepage extends StatefulWidget {

@@ -4,16 +4,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:watmap/frontend/bloc/map_bloc.dart';
 import 'package:watmap/frontend/pages/HomePage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:watmap/frontend/pages/settings_page/Bloc/settings_bloc.dart';
-import 'package:watmap/frontend/pages/report_route_page/bloc/report_bloc.dart';
+import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
+import 'package:watmap/frontend/blocs/report_bloc/report_bloc.dart';
 import 'backend/db/database.dart';
 import 'backend/repositories/building.dart';
 import 'backend/repositories/location.dart';
 import 'backend/repositories/path.dart';
 import 'backend/services/SupaService.dart';
+import 'frontend/blocs/map_bloc/map_bloc.dart';
 
 final getIt = GetIt.instance;
 

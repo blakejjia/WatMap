@@ -2,14 +2,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../backend/db/database.dart';
-import '../../backend/repositories/building.dart';
-import '../../backend/repositories/location.dart';
-import '../../backend/repositories/path.dart';
-import '../../backend/find_route.dart';
-import '../../backend/model/mid/my_map.dart';
-import '../../backend/model/mid/my_route.dart';
-import '../../main.dart';
+import '../../../backend/db/database.dart';
+import '../../../backend/repositories/building.dart';
+import '../../../backend/repositories/location.dart';
+import '../../../backend/repositories/path.dart';
+import '../../../backend/model/mid/my_map.dart';
+import '../../../backend/model/mid/my_route.dart';
+import '../../../main.dart';
+import '../../algorithm/algorithms.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';

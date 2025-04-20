@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:watmap/backend/model/base/path_raw.dart';
 import 'package:watmap/backend/services/SupaService.dart';
 
-import '../../../../main.dart';
+import '../../../main.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
