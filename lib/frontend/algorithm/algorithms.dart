@@ -3,6 +3,7 @@ import 'package:vector_math/vector_math.dart';
 import 'package:watmap/backend/model/base/my_path.dart';
 import '../../backend/db/database.dart';
 import '../../backend/model/mid/my_map.dart';
+
 import 'package:collection/collection.dart';
 import 'package:watmap/backend/model/mid/my_route.dart';
 import '../../main.dart';
@@ -20,17 +21,23 @@ typedef Segment = List<Point>;
 const double EPS = 0.1;
 const double PT_EPS = 1;
 
+double STAIRS_COST = 30; // depends on usr settings, typically ~30
+double OUTSIDE_COST_MULTIPLIER = 1.5; // if sunny, 1; if rain or snow, 1.5~2
+double WALK_SPEED = 3; // on map, needs more investigation.
+
 extension MyPathExtensions on MyPath {
-  bool isInside() {
+  // TODO: customize according to getCost
+  double typeMultiplier() {
     switch (pathType) {
       case PATH_INSIDE:
-      case PATH_STAIRS:
       case PATH_ELEVATOR:
       case PATH_TUNNEL:
       case PATH_BRIDGE:
-        return true;
+        return 1;
+      case PATH_BRIEFLY_OUTSIDE:
+        return 1 + (OUTSIDE_COST_MULTIPLIER - 1) * 0.5;
       default:
-        return false;
+        return OUTSIDE_COST_MULTIPLIER;
     }
   }
 
@@ -38,8 +45,13 @@ extension MyPathExtensions on MyPath {
     return pathType == PATH_STAIRS;
   }
 
+  bool isBridgeOrTunnel() {
+    return pathType == PATH_BRIDGE || pathType == PATH_TUNNEL;
+  }
+
   List<Segment> getRoute(MyMap map) {
-    if (route == null) {
+    if(pathType == PATH_STAIRS) {return [];}
+    if (route == null || route == "null") {
       final a = map.locations.firstWhere((e) => e.id == pointAId);
       final b = map.locations.firstWhere((e) => e.id == pointBId);
       return [
@@ -60,7 +72,6 @@ extension MyPathExtensions on MyPath {
         .toList();
   }
 
-  // TODO: customize according to getCost
   double getCost(MyMap map) {
     final a = map.locations.firstWhere((e) => e.id == pointAId);
     final b = map.locations.firstWhere((e) => e.id == pointBId);
@@ -68,11 +79,9 @@ extension MyPathExtensions on MyPath {
       return (a.floor - b.floor).abs() * 30;
     }
     // Otherwise use the Euclidean distance.
-    double cost = a.distanceTo(b);
+    double cost = a.distanceTo(b); // on need to use real, cause low speed
     // Penalize going outside.
-    if (!isInside()) {
-      cost *= 1.5;
-    }
+    cost *= typeMultiplier();
     return cost;
   }
 
@@ -84,12 +93,12 @@ extension MyPathExtensions on MyPath {
       return 50 + (floorDifference - 1) * 30;
     }
     // Otherwise use the Euclidean distance.
-    final route = getRoute(getIt<MapBloc>().state.map);
+    final route = getRoute(map);
     double dist = 0;
     for (final seg in route) {
       dist += seg[0].distanceTo(seg[1]);
     }
-    double time = dist * 0.15;
+    double time = dist / WALK_SPEED;
     return time;
   }
 }
@@ -100,7 +109,6 @@ extension MyRouuteExtension on MyRoute {
     for (final path in paths) {
       time += path.getTime(getIt<MapBloc>().state.map);
     }
-    time += 60; // prepare to go
     return time;
   }
 
@@ -112,6 +120,16 @@ extension MyRouuteExtension on MyRoute {
       }
     }
     return stairsCount;
+  }
+
+  int getBridgeOrTunnelCount() {
+    int bridgeOrTunnel = 0;
+    for (final path in paths) {
+      if (path.isBridgeOrTunnel()) {
+        bridgeOrTunnel++;
+      }
+    }
+    return bridgeOrTunnel;
   }
 
   List<Segment> getRoute(MyMap map) {

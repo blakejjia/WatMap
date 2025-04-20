@@ -1,26 +1,22 @@
 part of '../map_page.dart';
 
-Widget _path(
-    MapFoundRoute state,
-    MyRoute route,
-    BuildContext context,
-    ) {
+Widget _path(MapTriedFoundRoute state, MyRoute route, BuildContext context) {
   final segments = buildSegments(state.map, route);
-  return CustomPaint(
-    painter: FullRoutePainter(state.map, segments),
-  );
+  return CustomPaint(painter: FullRoutePainter(state.map, segments));
 }
 
-Widget _dialogBox(MapFoundRoute state, BuildContext context) {
+Widget _dialogBox(MapTriedFoundRoute state, BuildContext context) {
   return Positioned(
     left: 0,
     top: 0,
     child: InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RoutePage(state)),
-        );
+        if (state.isFound) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RoutePage(state)),
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.all(15),
@@ -30,44 +26,71 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Route found\n",
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-              ),
+          child:
+              (state.isFound)
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Route found\n",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-              ...formatRoute(state).map(
-                (e) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:
-                      e
-                          .map(
-                            (text) =>
-                                e.indexOf(text) == e.length - 1
-                                    ? Text(
-                                      text,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                    : Text("$text "),
-                          )
-                          .toList(),
-                ),
-              ),
+                      ...formatRoute(state).map(
+                        (e) => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:
+                              e
+                                  .map(
+                                    (text) =>
+                                        e.indexOf(text) == e.length - 1
+                                            ? Text(
+                                              text,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                            : Text("$text "),
+                                  )
+                                  .toList(),
+                        ),
+                      ),
 
-              const Text(
-                "\n Click here for details",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ],
-          ),
+                      const Text(
+                        "\n Click here for details",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Text(
+                        "Time: ${Duration(seconds: state.route.getTime().round()).inMinutes} minutes",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  )
+                  : Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "route not found",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("If you believe this is wrong"),
+                        Text("settings -> tell us a route"),
+                      ],
+                    ),
+                  ),
         ),
       ),
     ),
@@ -81,11 +104,12 @@ class FullRoutePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFDCA1FF)
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = const Color(0xFFDCA1FF)
+          ..strokeWidth = 6
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     final path = Path();
     for (final seg in segments) {
@@ -98,4 +122,3 @@ class FullRoutePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

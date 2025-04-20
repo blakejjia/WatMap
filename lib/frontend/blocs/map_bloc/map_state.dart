@@ -17,9 +17,12 @@ final class MapIdeal extends MapState {
   const MapIdeal(this.selectedBuildings, MyMap map) : super(map);
 }
 
-final class MapFoundRoute extends MapIdeal {
+/// State where route finding is used
+/// CAN BE ROUTE NOT FOUND
+final class MapTriedFoundRoute extends MapIdeal {
   final MyRoute route;
+  final bool isFound;
 
-  const MapFoundRoute(List<Building?> selectedBuildings, this.route, MyMap map)
+  const MapTriedFoundRoute(List<Building?> selectedBuildings, this.route, this.isFound, MyMap map)
     : super(selectedBuildings, map);
 }

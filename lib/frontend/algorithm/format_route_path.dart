@@ -1,6 +1,6 @@
 part of 'algorithms.dart';
 
-List<List<String>> formatRoute(MapFoundRoute state) {
+List<List<String>> formatRoute(MapTriedFoundRoute state) {
   List<List<String>> output = [];
 
   if (state.route.paths.isEmpty) {
@@ -26,10 +26,6 @@ List<List<String>> formatRoute(MapFoundRoute state) {
         element.id == state.route.paths[state.route.paths.length - 1].pointBId,
   );
   output.add(["Ending at", (endPoint.name)]);
-  output.add([
-    "It takes about",
-    "${Duration(seconds: state.route.getTime().round()).inMinutes} minutes",
-  ]);
 
   return output;
 }
@@ -60,6 +56,10 @@ List<String> _formatPath(MyPath path, MyMap map) {
     case PATH_INSIDE:
       output.add("Go straight through to");
       output.add(pointB.name);
+    case PATH_BRIEFLY_OUTSIDE:
+      output.add("Go briefly outside to");
+      output.add(pointB.name);
+      break;
     default:
       output.add("Unknown path type");
       break;

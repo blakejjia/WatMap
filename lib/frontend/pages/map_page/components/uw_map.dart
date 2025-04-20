@@ -38,9 +38,9 @@ class UWMap extends StatelessWidget {
             return _selectedWidget(building!, context);
           }),
         ];
-      case const (MapFoundRoute):
+      case const (MapTriedFoundRoute):
         return [
-          ...(state as MapFoundRoute).map.buildings.map((building) {
+          ...(state as MapTriedFoundRoute).map.buildings.map((building) {
             return _buildings(building, context);
           }),
           ...state.selectedBuildings.map((building) {

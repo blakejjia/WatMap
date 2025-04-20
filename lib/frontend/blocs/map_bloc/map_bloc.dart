@@ -30,43 +30,33 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _mapSelectBuilding(MapSelectBuilding event, Emitter<MapState> emit) {
-    // you have to init first
-    if (state is MapInitial) {
-      return;
-    }
+    if (state is MapInitial) return;
 
-    // count how many we have already
-    int count = (state as MapIdeal).selectedBuildings.length;
-    if ((state as MapIdeal).selectedBuildings.contains(event.building)) {
-      // If the building is already in the list, remove it
-      emit(
-        MapIdeal(
-          (state as MapIdeal).selectedBuildings
-              .where((b) => b != event.building)
-              .whereType<Building>()
-              .toList(),
-          state.map,
-        ),
-      );
-    } else if (count == 2) {
-      // If there are already two buildings selected, clear the list and route.
-      emit(MapIdeal([event.building], state.map));
+    final currentState = state as MapIdeal;
+    final currentSelection = currentState.selectedBuildings;
+
+    if (currentSelection.contains(event.building)) {
+      // Remove the building
+      final updated = currentSelection
+          .where((b) => b != event.building)
+          .toList();
+
+      emit(MapIdeal(updated, currentState.map));
     } else {
-      // Find route when 2 is selected.
-      emit(
-        MapIdeal([
-          ...(state as MapIdeal).selectedBuildings
-              .where((b) => b != null)
-              .cast<Building>(),
-          event.building,
-        ], state.map),
-      );
-      add(
-        _MapFindRoute(
-          (state as MapIdeal).selectedBuildings[0]!,
-          event.building,
-        ),
-      );
+      List<Building> updated;
+      if (currentSelection.length == 2) {
+        // Clear and start over with new building
+        updated = [event.building];
+      } else {
+        updated = [...currentSelection.whereType<Building>(), event.building];
+      }
+
+      emit(MapIdeal(updated, currentState.map));
+
+      // Only add route if we have exactly 2 now
+      if (updated.length == 2) {
+        add(_MapFindRoute(updated[0], updated[1]));
+      }
     }
   }
 
@@ -76,13 +66,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       event.start,
       event.end,
     );
-    if (route == null) {
-      return;
+    bool isFound = false;
+    if (route != null && route.isNotEmpty) {
+      isFound = true;
     }
     emit(
-      MapFoundRoute(
+      MapTriedFoundRoute(
         (state as MapIdeal).selectedBuildings,
-        route,
+        route!,
+        isFound,
         (state as MapIdeal).map,
       ),
     );

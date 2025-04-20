@@ -6,4 +6,6 @@ class MyRoute {
   final Location end;
 
   MyRoute(this.paths, this.start, this.end);
+
+  bool get isNotEmpty => paths.isNotEmpty;
 }

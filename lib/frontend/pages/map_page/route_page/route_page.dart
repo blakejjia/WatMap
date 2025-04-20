@@ -5,7 +5,7 @@ import '../../../blocs/map_bloc/map_bloc.dart';
 part 'components/path_card.dart';
 
 class RoutePage extends StatelessWidget {
-  final MapFoundRoute state;
+  final MapTriedFoundRoute state;
   const RoutePage(this.state, {super.key});
 
   @override

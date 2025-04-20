@@ -24,7 +24,7 @@ class NormalMapView extends StatelessWidget {
         BlocBuilder<MapBloc, MapState>(
           buildWhen: (prev, current) => prev.runtimeType != current.runtimeType,
           builder: (context, state) {
-            if (state is MapFoundRoute) {
+            if (state is MapTriedFoundRoute) {
               return _dialogBox(state, context);
             }
             return Container();
