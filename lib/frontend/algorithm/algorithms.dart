@@ -12,7 +12,6 @@ import '../blocs/map_bloc/map_bloc.dart';
 part 'clean_route.dart';
 part 'find_route.dart';
 part 'format_route_path.dart';
-part 'path_cost_time.dart';
 
 typedef Point = Vector2;
 typedef Segment = List<Point>;
@@ -33,6 +32,10 @@ extension MyPathExtensions on MyPath {
       default:
         return false;
     }
+  }
+
+  bool isStair() {
+    return pathType == PATH_STAIRS;
   }
 
   List<Segment> getRoute(MyMap map) {
@@ -57,12 +60,15 @@ extension MyPathExtensions on MyPath {
         .toList();
   }
 
-  double getCost(Location pointA, Location pointB) {
+  // TODO: customize according to getCost
+  double getCost(MyMap map) {
+    final a = map.locations.firstWhere((e) => e.id == pointAId);
+    final b = map.locations.firstWhere((e) => e.id == pointBId);
     if (pathType == PATH_STAIRS) {
-      return (pointA.floor - pointB.floor).abs() * 30;
+      return (a.floor - b.floor).abs() * 30;
     }
     // Otherwise use the Euclidean distance.
-    double cost = pointA.distanceTo(pointB);
+    double cost = a.distanceTo(b);
     // Penalize going outside.
     if (!isInside()) {
       cost *= 1.5;
@@ -70,17 +76,50 @@ extension MyPathExtensions on MyPath {
     return cost;
   }
 
-  // double getTime(Location pointA, Location pointB) {
-  //   if (pathType == PATH_STAIRS) {
-  //     return (pointA.floor - pointB.floor).abs() * 40 / 60;
-  //   }
-  //   // Otherwise use the Euclidean distance.
-  //   if (this.route != null) {}
-  //   double time = pointA.distanceTo(pointB) / 60;
-  //   // Penalize going outside.
-  //   if (!isInside()) {
-  //     time *= 1.5;
-  //   }
-  //   return time;
-  // }
+  double getTime(MyMap map) {
+    final a = map.locations.firstWhere((e) => e.id == pointAId);
+    final b = map.locations.firstWhere((e) => e.id == pointBId);
+    if (pathType == PATH_STAIRS) {
+      int floorDifference = (a.floor - b.floor).abs();
+      return 50 + (floorDifference - 1) * 30;
+    }
+    // Otherwise use the Euclidean distance.
+    final route = getRoute(getIt<MapBloc>().state.map);
+    double dist = 0;
+    for (final seg in route) {
+      dist += seg[0].distanceTo(seg[1]);
+    }
+    double time = dist * 0.15;
+    return time;
+  }
+}
+
+extension MyRouuteExtension on MyRoute {
+  double getTime() {
+    double time = 0;
+    for (final path in paths) {
+      time += path.getTime(getIt<MapBloc>().state.map);
+    }
+    time += 60; // prepare to go
+    return time;
+  }
+
+  int getStairsCount() {
+    int stairsCount = 0;
+    for (final path in paths) {
+      if (path.pathType == PATH_STAIRS) {
+        stairsCount++;
+      }
+    }
+    return stairsCount;
+  }
+
+  List<Segment> getRoute(MyMap map) {
+    List<Segment> route = [];
+    for (final p in paths) {
+      if (p.pathType == PATH_STAIRS) continue;
+      route.addAll(p.getRoute(map));
+    }
+    return route;
+  }
 }

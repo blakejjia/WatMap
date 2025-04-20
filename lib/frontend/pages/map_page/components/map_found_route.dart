@@ -2,10 +2,10 @@ part of '../map_page.dart';
 
 Widget _path(
     MapFoundRoute state,
-    List<MyPath> paths,
+    MyRoute route,
     BuildContext context,
     ) {
-  final segments = buildSegments(state.map, paths);
+  final segments = buildSegments(state.map, route);
   return CustomPaint(
     painter: FullRoutePainter(state.map, segments),
   );
@@ -57,6 +57,7 @@ Widget _dialogBox(MapFoundRoute state, BuildContext context) {
                           .toList(),
                 ),
               ),
+
               const Text(
                 "\n Click here for details",
                 style: TextStyle(

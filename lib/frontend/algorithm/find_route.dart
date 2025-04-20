@@ -101,14 +101,14 @@ List<LocationAndDistance> getAdjacentLocations(Location loc, MyMap map) {
       Location adjacent = map.locations.firstWhere(
             (element) => element.id == path.pointBId,
       );
-      double dist = path.getCost(loc, adjacent);
+      double dist = path.getCost(map);
       adjacents.add(LocationAndDistance(adjacent, dist));
     }
     if (path.pointBId == loc.id) {
       Location adjacent = map.locations.firstWhere(
             (element) => element.id == path.pointAId,
       );
-      double dist = path.getCost(loc, adjacent);
+      double dist = path.getCost(map);
       adjacents.add(LocationAndDistance(adjacent, dist));
     }
   }

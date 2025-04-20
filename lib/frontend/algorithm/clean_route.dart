@@ -1,22 +1,7 @@
 part of 'algorithms.dart';
 
-List<Segment> buildSegments(MyMap map, List<MyPath> paths) {
-  final all = <Segment>[];
-
-  for (final p in paths) {
-    if (p.route != null && p.route!.isNotEmpty && p.route != 'null') {
-      all.addAll(p.getRoute(map));
-      continue;
-    } else {
-      if (p.pathType == PATH_STAIRS) continue;
-      final a = map.locations.firstWhere((e) => e.id == p.pointAId);
-      final b = map.locations.firstWhere((e) => e.id == p.pointBId);
-      all.add([
-        Point(a.x.toDouble(), a.y.toDouble()),
-        Point(b.x.toDouble(), b.y.toDouble()),
-      ]);
-    }
-  }
+List<Segment> buildSegments(MyMap map, MyRoute route) {
+  final all = route.getRoute(map);
 
   try {
     List<Segment> cleanedSeg;

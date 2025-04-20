@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // ignore: depend_on_referenced_packages
 import 'package:vector_math/vector_math_64.dart' as vector_math64;
+import 'package:watmap/backend/model/mid/my_route.dart';
 import 'package:watmap/frontend/pages/map_page/route_page/route_page.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 

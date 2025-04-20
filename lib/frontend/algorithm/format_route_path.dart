@@ -11,7 +11,7 @@ List<List<String>> formatRoute(MapFoundRoute state) {
 
   // Starting point
   Location? startPoint = state.map.locations.firstWhere(
-        (element) => element.id == state.route.paths[0].pointAId,
+    (element) => element.id == state.route.paths[0].pointAId,
   );
   output.add(["Starting at \n", "${startPoint.name}\n"]);
 
@@ -22,10 +22,14 @@ List<List<String>> formatRoute(MapFoundRoute state) {
 
   // Ending point
   Location? endPoint = state.map.locations.firstWhere(
-        (element) =>
-    element.id == state.route.paths[state.route.paths.length - 1].pointBId,
+    (element) =>
+        element.id == state.route.paths[state.route.paths.length - 1].pointBId,
   );
   output.add(["Ending at", (endPoint.name)]);
+  output.add([
+    "It takes about",
+    "${Duration(seconds: state.route.getTime().round()).inMinutes} minutes",
+  ]);
 
   return output;
 }
@@ -34,7 +38,7 @@ List<List<String>> formatRoute(MapFoundRoute state) {
 List<String> _formatPath(MyPath path, MyMap map) {
   List<String> output = [];
   Location pointB = map.locations.firstWhere(
-        (element) => element.id == path.pointBId,
+    (element) => element.id == path.pointBId,
   );
   switch (path.pathType) {
     case PATH_STAIRS:
