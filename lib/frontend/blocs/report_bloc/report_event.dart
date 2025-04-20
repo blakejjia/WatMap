@@ -27,3 +27,16 @@ int extractNumber(String input) {
   final Match? match = regex.firstMatch(input);
   return match != null ? int.parse(match.group(0)!) : 0;
 }
+
+// called inside the Message us page
+class SendUsMessageEvent extends ReportEvent {
+  final String message;
+  final String contact;
+
+  SendUsMessageEvent(this.message, this.contact);
+}
+
+// called when usr leave the report page.
+class RefreshReportEvent extends ReportEvent {
+  RefreshReportEvent();
+}

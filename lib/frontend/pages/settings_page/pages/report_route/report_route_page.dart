@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/blocs/report_bloc/report_bloc.dart';
 
-part 'components/map_data_field.dart';
+import '../../../../../main.dart';
 
-class ReportRoutePage extends StatelessWidget {
+part 'components/input_field.dart';
+
+class ReportRoutePage extends StatefulWidget {
   const ReportRoutePage({super.key});
 
+  @override
+  State<ReportRoutePage> createState() => _ReportRoutePageState();
+}
+
+class _ReportRoutePageState extends State<ReportRoutePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,17 +23,23 @@ class ReportRoutePage extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
-              const MapDataField(),
-              _messgae(state)
+              const _InputField(),
+              _message(state)
             ],
           );
         },
       ),
     );
   }
+
+  @override
+  void dispose() {
+    getIt<ReportBloc>().add(RefreshReportEvent());
+    super.dispose();
+  }
 }
 
-Widget _messgae(ReportState state){
+Widget _message(ReportState state){
   return Center(
     child: Container(
       margin: const EdgeInsets.all(8.0),

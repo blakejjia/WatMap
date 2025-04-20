@@ -1,13 +1,13 @@
 part of '../report_route_page.dart';
 
-class MapDataField extends StatefulWidget {
-  const MapDataField({super.key});
+class _InputField extends StatefulWidget {
+  const _InputField({super.key});
 
   @override
-  _MapDataFieldState createState() => _MapDataFieldState();
+  _InputFieldState createState() => _InputFieldState();
 }
 
-class _MapDataFieldState extends State<MapDataField> {
+class _InputFieldState extends State<_InputField> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController buildingAController = TextEditingController();

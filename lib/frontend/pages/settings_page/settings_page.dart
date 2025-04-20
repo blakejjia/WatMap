@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
-import 'package:watmap/frontend/pages/report_route_page/report_route_page.dart';
+import 'package:watmap/frontend/pages/settings_page/pages/message_us/message_us_page.dart';
+import 'package:watmap/frontend/pages/settings_page/pages/report_route/report_route_page.dart';
 
 part 'components/group_tile.dart';
 part 'components/info_view.dart';
@@ -80,6 +81,18 @@ class SettingsPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const InfoView()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.message),
+                    title: Text("Send us a message"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MessageUsPage(),
+                        ),
                       );
                     },
                   ),

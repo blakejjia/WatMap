@@ -32,4 +32,17 @@ class SupaService {
       return false;
     }
   }
+
+  Future<bool> reportMessage(String message, String contact) async {
+    try {
+      await db.from('messages').insert({
+        'message': message,
+        'contact': contact,
+      });
+      return true;
+    } catch (e) {
+      print('Error reporting message: $e');
+      return false;
+    }
+  }
 }

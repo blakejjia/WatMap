@@ -24,7 +24,7 @@ const double PT_EPS = 1;
 
 double STAIRS_COST = 30; // depends on usr settings, typically ~30
 double OUTSIDE_COST_MULTIPLIER = 4; // if sunny, 1; if snow, this number
-double WALK_SPEED = 3.5; // on map, needs more investigation.
+double WALK_SPEED = 4; // on map, needs more investigation.
 
 <<<<<<< HEAD
 =======
