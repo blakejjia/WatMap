@@ -7,7 +7,7 @@ Widget _buildings(Building building, BuildContext context) {
     child: IconButton(
       icon: Icon(
         Icons.circle,
-        color: Colors.orange.withValues(alpha: 0.3),
+        color: Theme.of(context).colorScheme.primary.withAlpha(10),
         size: 50,
       ),
       onPressed: () {

@@ -37,9 +37,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     if (currentSelection.contains(event.building)) {
       // Remove the building
-      final updated = currentSelection
-          .where((b) => b != event.building)
-          .toList();
+      final updated =
+          currentSelection.where((b) => b != event.building).toList();
 
       emit(MapIdeal(updated, currentState.map));
     } else {
@@ -67,13 +66,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       event.end,
     );
     bool isFound = false;
-    if (route != null && route.isNotEmpty) {
+    if (route == null) return;
+    if (route.isNotEmpty) {
       isFound = true;
     }
     emit(
       MapTriedFoundRoute(
         (state as MapIdeal).selectedBuildings,
-        route!,
+        route,
         isFound,
         (state as MapIdeal).map,
       ),

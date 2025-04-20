@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:watmap/frontend/pages/HomePage.dart';
+import 'package:watmap/frontend/pages/home_page/home_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import 'package:watmap/frontend/blocs/report_bloc/report_bloc.dart';
@@ -62,23 +62,35 @@ class MyApp extends StatelessWidget {
         BlocProvider<SettingsBloc>(create: (context) => getIt<SettingsBloc>()),
         BlocProvider(create: (context) => ReportBloc()),
       ],
-      child: MaterialApp(
-        title: 'WatMap',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          snackBarTheme: SnackBarThemeData(
-            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-            behavior: SnackBarBehavior.floating,
-            elevation: 10,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      child: BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'WatMap',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor:
+                    state.weather == Weather.snowy
+                        ? Colors.blue
+                        : Colors.yellow,
+              ),
+              snackBarTheme: SnackBarThemeData(
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
+                behavior: SnackBarBehavior.floating,
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                contentTextStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  fontSize: 15,
+                ),
+              ),
             ),
-            contentTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondaryContainer, fontSize: 15),
-          ),
-
-        ),
-        debugShowCheckedModeBanner: false,
-        home: const Homepage(),
+            debugShowCheckedModeBanner: false,
+            home: const Homepage(),
+          );
+        },
       ),
     );
   }

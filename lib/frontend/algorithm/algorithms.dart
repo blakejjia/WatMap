@@ -26,7 +26,7 @@ double STAIRS_COST = 30; // depends on usr settings, typically ~30
 double OUTSIDE_COST_MULTIPLIER = 4; // if sunny, 1; if snow, this number
 double WALK_SPEED = 3; // on map, needs more investigation.
 
-extension MyPathExtensions on MyPath {
+extension AlgorPath on MyPath {
   double typeMultiplier() {
     if (getIt<SettingsBloc>().state.weather == Weather.sunny) {
       return 1;
@@ -53,7 +53,9 @@ extension MyPathExtensions on MyPath {
   }
 
   List<Segment> getRoute(MyMap map) {
-    if(pathType == PATH_STAIRS) {return [];}
+    if (pathType == PATH_STAIRS) {
+      return [];
+    }
     if (route == null || route == "null") {
       final a = map.locations.firstWhere((e) => e.id == pointAId);
       final b = map.locations.firstWhere((e) => e.id == pointBId);
@@ -106,11 +108,20 @@ extension MyPathExtensions on MyPath {
   }
 }
 
-extension MyRouuteExtension on MyRoute {
-  double getTime() {
+extension AlgorRoute on MyRoute {
+  List<Segment> getRoute(MyMap map) {
+    List<Segment> route = [];
+    for (final p in paths) {
+      if (p.pathType == PATH_STAIRS) continue;
+      route.addAll(p.getRoute(map));
+    }
+    return route;
+  }
+
+  double getTime(MyMap map) {
     double time = 0;
     for (final path in paths) {
-      time += path.getTime(getIt<MapBloc>().state.map);
+      time += path.getTime(map);
     }
     return time;
   }
@@ -133,14 +144,5 @@ extension MyRouuteExtension on MyRoute {
       }
     }
     return bridgeOrTunnel;
-  }
-
-  List<Segment> getRoute(MyMap map) {
-    List<Segment> route = [];
-    for (final p in paths) {
-      if (p.pathType == PATH_STAIRS) continue;
-      route.addAll(p.getRoute(map));
-    }
-    return route;
   }
 }

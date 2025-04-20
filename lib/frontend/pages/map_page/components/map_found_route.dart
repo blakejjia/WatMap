@@ -19,7 +19,12 @@ Widget _dialogBox(MapTriedFoundRoute state, BuildContext context) {
         }
       },
       child: Container(
-        margin: const EdgeInsets.all(15),
+        margin: EdgeInsets.fromLTRB(
+          8.0,
+          8.0 + MediaQuery.of(context).padding.top,
+          8.0,
+          0,
+        ),
         decoration: BoxDecoration(
           color: Colors.white.withAlpha(245),
           border: Border.all(color: Colors.black, width: 1.0),
@@ -68,12 +73,14 @@ Widget _dialogBox(MapTriedFoundRoute state, BuildContext context) {
                         ),
                       ),
                       Text(
-                        "Time: ${Duration(seconds: state.route.getTime().round()).inMinutes} minutes",
+                        (state.route.time != null)
+                            ? "Time: ${Duration(seconds: state.route.time!.round()).inMinutes} minutes"
+                            : "Cannot calculate time",
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
-                      )
+                      ),
                     ],
                   )
                   : Center(

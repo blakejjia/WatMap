@@ -14,78 +14,81 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc, SettingsState>(
-      builder: (context, state) {
-        return ListView(
-          children: [
-            SizedBox(
-              height: 200,
-              child: Center(
-                child: Text(
-                  "settings",
-                  style: Theme.of(context).textTheme.displaySmall,
+    return Scaffold(
+      appBar: AppBar(),
+      body: BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (context, state) {
+          return ListView(
+            children: [
+              SizedBox(
+                height: 200,
+                child: Center(
+                  child: Text(
+                    "settings",
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
                 ),
               ),
-            ),
-            // ========== basic settings ==========
-            GroupedTile(
-              children: [
-                ListTile(
-                  title: Text("refresh map"),
-                  leading: Icon(Icons.refresh),
-                  trailing: Text(state.lastMapRefreshTime),
-                  onTap: () {
-                    context.read<SettingsBloc>().add(RefreshMapEvent());
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.cloud_download),
-                  title: Text("update data"),
-                  trailing: Text(state.lastUpdateTime),
-                  onTap: () {
-                    context.read<SettingsBloc>().add(UpdateDataEvent());
-                  },
-                ),
-              ],
-            ),
-            // ========== report ============
-            SizedBox(height: 20),
-            GroupedTile(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.add_location_alt),
-                  title: Text("Tell us a undiscovered route"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ReportRoutePage(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+              // ========== basic settings ==========
+              GroupedTile(
+                children: [
+                  ListTile(
+                    title: Text("refresh map"),
+                    leading: Icon(Icons.refresh),
+                    trailing: Text(state.lastMapRefreshTime),
+                    onTap: () {
+                      context.read<SettingsBloc>().add(RefreshMapEvent());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.cloud_download),
+                    title: Text("update data"),
+                    trailing: Text(state.lastUpdateTime),
+                    onTap: () {
+                      context.read<SettingsBloc>().add(UpdateDataEvent());
+                    },
+                  ),
+                ],
+              ),
+              // ========== report ============
+              SizedBox(height: 20),
+              GroupedTile(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.add_location_alt),
+                    title: Text("Tell us a undiscovered route"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReportRoutePage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
 
-            // ========== about ============
-            SizedBox(height: 20),
-            GroupedTile(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text("Software information"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const InfoView()),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+              // ========== about ============
+              SizedBox(height: 20),
+              GroupedTile(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.info_outline),
+                    title: Text("Software information"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const InfoView()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
