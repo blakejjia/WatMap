@@ -24,8 +24,24 @@ const double PT_EPS = 1;
 
 double STAIRS_COST = 30; // depends on usr settings, typically ~30
 double OUTSIDE_COST_MULTIPLIER = 4; // if sunny, 1; if snow, this number
-double WALK_SPEED = 3; // on map, needs more investigation.
+double WALK_SPEED = 3.5; // on map, needs more investigation.
 
+<<<<<<< HEAD
+=======
+
+MyPath createMyPath(Location locA, Location locB, MyMap map) {
+  return map.paths.firstWhere(
+        (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
+    orElse: () => MyPath(
+      id: 0,
+      pointAId: locA.id,
+      pointBId: locB.id,
+      pathType: PATH_OUTSIDE,
+    ),
+  );
+}
+
+>>>>>>> 9654b3d (refactored UI, transvered to A*)
 extension AlgorPath on MyPath {
   double typeMultiplier() {
     if (getIt<SettingsBloc>().state.weather == Weather.sunny) {

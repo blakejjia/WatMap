@@ -19,11 +19,12 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   }
 
   // here we find path
-  List<Location> locations = dijkstra(locationA, locationB, map);
+  List<Location> locations = aStar(locationA, locationB, map);
   List<MyPath> paths = [];
   for (int i = 0; i < locations.length - 1; i++) {
     Location locA = locations[i];
     Location locB = locations[i + 1];
+<<<<<<< HEAD
     MyPath? path = map.paths.firstWhere(
       (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
       orElse:
@@ -35,6 +36,9 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
           ),
     );
     paths.add(path);
+=======
+    paths.add(createMyPath(locA, locB, map));
+>>>>>>> 9654b3d (refactored UI, transvered to A*)
   }
 
   // Check if the last path is a "STAIR" and remove it if so
@@ -46,8 +50,7 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   return route;
 }
 
-List<Location> dijkstra(Location loc1, Location loc2, MyMap map) {
-  // Initialize distance and previous maps
+List<Location> aStar(Location loc1, Location loc2, MyMap map) {
   Map<Location, double> distTable = {};
   Map<Location, Location?> previous = {};
   for (Location loc in map.locations) {
@@ -56,16 +59,27 @@ List<Location> dijkstra(Location loc1, Location loc2, MyMap map) {
   }
   distTable[loc1] = 0.0;
 
-  // Priority queue to efficiently get the next node with smallest distance
+  int heuristic(Location a, Location b) {
+    // 简单欧几里得距离作为启发函数
+    return (a.x - b.x).abs() + (a.y - b.y).abs(); // Manhattan
+    // return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2)); // Euclidean
+  }
+
   PriorityQueue<Location> queue = PriorityQueue<Location>(
+<<<<<<< HEAD
     (a, b) => distTable[a]!.compareTo(distTable[b]!),
+=======
+    (a, b) => (distTable[a]! + heuristic(a, loc2)).compareTo(
+      distTable[b]! + heuristic(b, loc2),
+    ),
+>>>>>>> 9654b3d (refactored UI, transvered to A*)
   );
+
   queue.add(loc1);
 
   while (queue.isNotEmpty) {
     Location cur = queue.removeFirst();
 
-    // Early exit if we've reached the destination.
     if (cur == loc2) break;
 
     for (LocationAndDistance next in getAdjacentLocations(cur, map)) {
@@ -73,7 +87,7 @@ List<Location> dijkstra(Location loc1, Location loc2, MyMap map) {
       if (altDist < distTable[next.location]!) {
         distTable[next.location] = altDist;
         previous[next.location] = cur;
-        // Update priority queue by removing and re-adding if the node exists
+
         if (queue.contains(next.location)) {
           queue.remove(next.location);
         }
@@ -82,10 +96,8 @@ List<Location> dijkstra(Location loc1, Location loc2, MyMap map) {
     }
   }
 
-  // If the destination is unreachable, return an empty list
   if (distTable[loc2] == double.infinity) return [];
 
-  // Reconstruct the path from loc2 back to loc1 using the previous map.
   List<Location> path = [];
   for (Location? at = loc2; at != null; at = previous[at]) {
     path.add(at);
