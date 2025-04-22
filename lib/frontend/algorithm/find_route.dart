@@ -1,9 +1,5 @@
 part of 'algorithms.dart';
 
-// TODO: here!!!
-// TODO: here!!!
-// TODO: here!!!
-// TODO: here!!!
 Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   // Real start from the main floor of each building
   Location? locationA = await getIt<LocationRepository>().getLocation(
@@ -18,34 +14,21 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
     return null;
   }
 
-  // here we find path
+  // Here we find the path
   List<Location> locations = aStar(locationA, locationB, map);
   List<MyPath> paths = [];
   for (int i = 0; i < locations.length - 1; i++) {
     Location locA = locations[i];
     Location locB = locations[i + 1];
-<<<<<<< HEAD
-    MyPath? path = map.paths.firstWhere(
-      (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
-      orElse:
-          () => MyPath(
-            id: 0,
-            pointAId: locA.id,
-            pointBId: locB.id,
-            pathType: PATH_OUTSIDE,
-          ),
-    );
-    paths.add(path);
-=======
     paths.add(createMyPath(locA, locB, map));
->>>>>>> 9654b3d (refactored UI, transvered to A*)
   }
 
   // Check if the last path is a "STAIR" and remove it if so
   if (paths.isNotEmpty && paths.last.pathType == PATH_STAIRS) {
     paths.removeLast();
   }
-  // return route
+
+  // Return route
   final route = MyRoute.auto(paths, locationA, locationB, map);
   return route;
 }
@@ -60,19 +43,14 @@ List<Location> aStar(Location loc1, Location loc2, MyMap map) {
   distTable[loc1] = 0.0;
 
   int heuristic(Location a, Location b) {
-    // 简单欧几里得距离作为启发函数
-    return (a.x - b.x).abs() + (a.y - b.y).abs(); // Manhattan
-    // return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2)); // Euclidean
+    // Manhattan distance as the heuristic function
+    return (a.x - b.x).abs() + (a.y - b.y).abs();
   }
 
   PriorityQueue<Location> queue = PriorityQueue<Location>(
-<<<<<<< HEAD
-    (a, b) => distTable[a]!.compareTo(distTable[b]!),
-=======
     (a, b) => (distTable[a]! + heuristic(a, loc2)).compareTo(
       distTable[b]! + heuristic(b, loc2),
     ),
->>>>>>> 9654b3d (refactored UI, transvered to A*)
   );
 
   queue.add(loc1);

@@ -1,4 +1,4 @@
-package com.blake.watmap.watmap
+package com.jiayx.watmap
 
 import io.flutter.embedding.android.FlutterActivity
 
