@@ -1,7 +1,7 @@
 part of '../report_route_page.dart';
 
 class _InputField extends StatefulWidget {
-  const _InputField({super.key});
+  const _InputField();
 
   @override
   _InputFieldState createState() => _InputFieldState();

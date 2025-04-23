@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -67,6 +68,12 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'WatMap',
             theme: ThemeData(
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: {
+                  TargetPlatform.android: FadeThroughPageTransitionsBuilder(),
+                  TargetPlatform.iOS: FadeThroughPageTransitionsBuilder(),
+                },
+              ),
               colorScheme: ColorScheme.fromSeed(
                 seedColor:
                     state.weather == Weather.snowy
@@ -77,7 +84,6 @@ class MyApp extends StatelessWidget {
                 backgroundColor:
                     Theme.of(context).colorScheme.secondaryContainer,
                 behavior: SnackBarBehavior.floating,
-                elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

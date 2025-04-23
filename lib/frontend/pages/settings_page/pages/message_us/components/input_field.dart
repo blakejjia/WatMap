@@ -1,7 +1,7 @@
 part of '../message_us_page.dart';
 
 class _InputField extends StatelessWidget {
-  const _InputField({super.key});
+  const _InputField();
 
   @override
   Widget build(BuildContext context) {

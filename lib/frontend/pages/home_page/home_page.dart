@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watmap/frontend/pages/home_page/views/welcome_view.dart';
 import 'package:watmap/frontend/pages/map_page/map_page.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 
@@ -18,7 +19,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       body: Stack(
         children: [
-          BlocListener<SettingsBloc, SettingsState>(
+          BlocConsumer<SettingsBloc, SettingsState>(
             listener: (context, state) {
               if (state.isBuilt == false) {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -30,9 +31,13 @@ class _HomepageState extends State<Homepage> {
                 );
               }
             },
-            child: const MapPage(),
+            builder: (context, state) {
+              if (state.newUsr) {
+                return const WelcomeView();
+              }
+              return Stack(children: [const MapPage(), HomePageActions()]);
+            },
           ),
-          HomePageActions(),
         ],
       ),
     );
