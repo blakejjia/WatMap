@@ -9,8 +9,8 @@ class Locations extends Table {
   TextColumn get name => text()();
 
   /// Position of the location
-  IntColumn get x => integer()();
-  IntColumn get y => integer()();
+  RealColumn get lat => real()();
+  RealColumn get lng => real()();
 
   /// which floor
   IntColumn get floor => integer().withDefault(Constant(0))();

@@ -24,8 +24,8 @@ Future<bool> pourDb() async {
         BuildingsCompanion(
           name: Value(building.name),
           floor: Value(building.floor),
-          x: Value(building.x),
-          y: Value(building.y),
+          lat: Value(building.lat),
+          lng: Value(building.lng),
         ),
       );
 
@@ -35,8 +35,8 @@ Future<bool> pourDb() async {
         LocationsCompanion location = LocationsCompanion(
           name: Value(building.name),
           floor: Value(i),
-          x: Value(building.x),
-          y: Value(building.y),
+          lat: Value(building.lat),
+          lng: Value(building.lng),
           buildingId: Value(buildingId),
         );
         final insertedLocation = await getIt<LocationRepository>()
@@ -83,8 +83,8 @@ Future<bool> pourDb() async {
           buildingId: Value(location.buildingId),
           name: Value(location.name),
           floor: Value(location.floor),
-          x: Value(location.x),
-          y: Value(location.y),
+          lat: Value(location.lat),
+          lng: Value(location.lng),
         ),
       );
     });

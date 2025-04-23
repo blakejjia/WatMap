@@ -53,26 +53,26 @@ class $BuildingsTable extends Buildings
     requiredDuringInsert: false,
     defaultValue: Constant(1),
   );
-  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
-  late final GeneratedColumn<int> x = GeneratedColumn<int>(
-    'x',
+  late final GeneratedColumn<double> lat = GeneratedColumn<double>(
+    'lat',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
-  late final GeneratedColumn<int> y = GeneratedColumn<int>(
-    'y',
+  late final GeneratedColumn<double> lng = GeneratedColumn<double>(
+    'lng',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, floor, mainFloor, x, y];
+  List<GeneratedColumn> get $columns => [id, name, floor, mainFloor, lat, lng];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -108,15 +108,21 @@ class $BuildingsTable extends Buildings
         mainFloor.isAcceptableOrUnknown(data['main_floor']!, _mainFloorMeta),
       );
     }
-    if (data.containsKey('x')) {
-      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    if (data.containsKey('lat')) {
+      context.handle(
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
-      context.missing(_xMeta);
+      context.missing(_latMeta);
     }
-    if (data.containsKey('y')) {
-      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    if (data.containsKey('lng')) {
+      context.handle(
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
-      context.missing(_yMeta);
+      context.missing(_lngMeta);
     }
     return context;
   }
@@ -147,15 +153,15 @@ class $BuildingsTable extends Buildings
             DriftSqlType.int,
             data['${effectivePrefix}main_floor'],
           )!,
-      x:
+      lat:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}x'],
+            DriftSqlType.double,
+            data['${effectivePrefix}lat'],
           )!,
-      y:
+      lng:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}y'],
+            DriftSqlType.double,
+            data['${effectivePrefix}lng'],
           )!,
     );
   }
@@ -180,15 +186,15 @@ class Building extends DataClass implements Insertable<Building> {
   final int mainFloor;
 
   /// Position of the building
-  final int x;
-  final int y;
+  final double lat;
+  final double lng;
   const Building({
     required this.id,
     required this.name,
     required this.floor,
     required this.mainFloor,
-    required this.x,
-    required this.y,
+    required this.lat,
+    required this.lng,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -197,8 +203,8 @@ class Building extends DataClass implements Insertable<Building> {
     map['name'] = Variable<String>(name);
     map['floor'] = Variable<int>(floor);
     map['main_floor'] = Variable<int>(mainFloor);
-    map['x'] = Variable<int>(x);
-    map['y'] = Variable<int>(y);
+    map['lat'] = Variable<double>(lat);
+    map['lng'] = Variable<double>(lng);
     return map;
   }
 
@@ -208,8 +214,8 @@ class Building extends DataClass implements Insertable<Building> {
       name: Value(name),
       floor: Value(floor),
       mainFloor: Value(mainFloor),
-      x: Value(x),
-      y: Value(y),
+      lat: Value(lat),
+      lng: Value(lng),
     );
   }
 
@@ -223,8 +229,8 @@ class Building extends DataClass implements Insertable<Building> {
       name: serializer.fromJson<String>(json['name']),
       floor: serializer.fromJson<int>(json['floor']),
       mainFloor: serializer.fromJson<int>(json['mainFloor']),
-      x: serializer.fromJson<int>(json['x']),
-      y: serializer.fromJson<int>(json['y']),
+      lat: serializer.fromJson<double>(json['lat']),
+      lng: serializer.fromJson<double>(json['lng']),
     );
   }
   @override
@@ -235,8 +241,8 @@ class Building extends DataClass implements Insertable<Building> {
       'name': serializer.toJson<String>(name),
       'floor': serializer.toJson<int>(floor),
       'mainFloor': serializer.toJson<int>(mainFloor),
-      'x': serializer.toJson<int>(x),
-      'y': serializer.toJson<int>(y),
+      'lat': serializer.toJson<double>(lat),
+      'lng': serializer.toJson<double>(lng),
     };
   }
 
@@ -245,15 +251,15 @@ class Building extends DataClass implements Insertable<Building> {
     String? name,
     int? floor,
     int? mainFloor,
-    int? x,
-    int? y,
+    double? lat,
+    double? lng,
   }) => Building(
     id: id ?? this.id,
     name: name ?? this.name,
     floor: floor ?? this.floor,
     mainFloor: mainFloor ?? this.mainFloor,
-    x: x ?? this.x,
-    y: y ?? this.y,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
   );
   Building copyWithCompanion(BuildingsCompanion data) {
     return Building(
@@ -261,8 +267,8 @@ class Building extends DataClass implements Insertable<Building> {
       name: data.name.present ? data.name.value : this.name,
       floor: data.floor.present ? data.floor.value : this.floor,
       mainFloor: data.mainFloor.present ? data.mainFloor.value : this.mainFloor,
-      x: data.x.present ? data.x.value : this.x,
-      y: data.y.present ? data.y.value : this.y,
+      lat: data.lat.present ? data.lat.value : this.lat,
+      lng: data.lng.present ? data.lng.value : this.lng,
     );
   }
 
@@ -273,14 +279,14 @@ class Building extends DataClass implements Insertable<Building> {
           ..write('name: $name, ')
           ..write('floor: $floor, ')
           ..write('mainFloor: $mainFloor, ')
-          ..write('x: $x, ')
-          ..write('y: $y')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, floor, mainFloor, x, y);
+  int get hashCode => Object.hash(id, name, floor, mainFloor, lat, lng);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -289,8 +295,8 @@ class Building extends DataClass implements Insertable<Building> {
           other.name == this.name &&
           other.floor == this.floor &&
           other.mainFloor == this.mainFloor &&
-          other.x == this.x &&
-          other.y == this.y);
+          other.lat == this.lat &&
+          other.lng == this.lng);
 }
 
 class BuildingsCompanion extends UpdateCompanion<Building> {
@@ -298,41 +304,41 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
   final Value<String> name;
   final Value<int> floor;
   final Value<int> mainFloor;
-  final Value<int> x;
-  final Value<int> y;
+  final Value<double> lat;
+  final Value<double> lng;
   const BuildingsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.floor = const Value.absent(),
     this.mainFloor = const Value.absent(),
-    this.x = const Value.absent(),
-    this.y = const Value.absent(),
+    this.lat = const Value.absent(),
+    this.lng = const Value.absent(),
   });
   BuildingsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.floor = const Value.absent(),
     this.mainFloor = const Value.absent(),
-    required int x,
-    required int y,
+    required double lat,
+    required double lng,
   }) : name = Value(name),
-       x = Value(x),
-       y = Value(y);
+       lat = Value(lat),
+       lng = Value(lng);
   static Insertable<Building> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? floor,
     Expression<int>? mainFloor,
-    Expression<int>? x,
-    Expression<int>? y,
+    Expression<double>? lat,
+    Expression<double>? lng,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (floor != null) 'floor': floor,
       if (mainFloor != null) 'main_floor': mainFloor,
-      if (x != null) 'x': x,
-      if (y != null) 'y': y,
+      if (lat != null) 'lat': lat,
+      if (lng != null) 'lng': lng,
     });
   }
 
@@ -341,16 +347,16 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     Value<String>? name,
     Value<int>? floor,
     Value<int>? mainFloor,
-    Value<int>? x,
-    Value<int>? y,
+    Value<double>? lat,
+    Value<double>? lng,
   }) {
     return BuildingsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       floor: floor ?? this.floor,
       mainFloor: mainFloor ?? this.mainFloor,
-      x: x ?? this.x,
-      y: y ?? this.y,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
     );
   }
 
@@ -369,11 +375,11 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     if (mainFloor.present) {
       map['main_floor'] = Variable<int>(mainFloor.value);
     }
-    if (x.present) {
-      map['x'] = Variable<int>(x.value);
+    if (lat.present) {
+      map['lat'] = Variable<double>(lat.value);
     }
-    if (y.present) {
-      map['y'] = Variable<int>(y.value);
+    if (lng.present) {
+      map['lng'] = Variable<double>(lng.value);
     }
     return map;
   }
@@ -385,8 +391,8 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
           ..write('name: $name, ')
           ..write('floor: $floor, ')
           ..write('mainFloor: $mainFloor, ')
-          ..write('x: $x, ')
-          ..write('y: $y')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng')
           ..write(')'))
         .toString();
   }
@@ -420,22 +426,22 @@ class $LocationsTable extends Locations
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
-  late final GeneratedColumn<int> x = GeneratedColumn<int>(
-    'x',
+  late final GeneratedColumn<double> lat = GeneratedColumn<double>(
+    'lat',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
-  late final GeneratedColumn<int> y = GeneratedColumn<int>(
-    'y',
+  late final GeneratedColumn<double> lng = GeneratedColumn<double>(
+    'lng',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _floorMeta = const VerificationMeta('floor');
@@ -460,7 +466,7 @@ class $LocationsTable extends Locations
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, x, y, floor, buildingId];
+  List<GeneratedColumn> get $columns => [id, name, lat, lng, floor, buildingId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -484,15 +490,21 @@ class $LocationsTable extends Locations
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('x')) {
-      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    if (data.containsKey('lat')) {
+      context.handle(
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
-      context.missing(_xMeta);
+      context.missing(_latMeta);
     }
-    if (data.containsKey('y')) {
-      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    if (data.containsKey('lng')) {
+      context.handle(
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
-      context.missing(_yMeta);
+      context.missing(_lngMeta);
     }
     if (data.containsKey('floor')) {
       context.handle(
@@ -525,15 +537,15 @@ class $LocationsTable extends Locations
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
-      x:
+      lat:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}x'],
+            DriftSqlType.double,
+            data['${effectivePrefix}lat'],
           )!,
-      y:
+      lng:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}y'],
+            DriftSqlType.double,
+            data['${effectivePrefix}lng'],
           )!,
       floor:
           attachedDatabase.typeMapping.read(
@@ -561,8 +573,8 @@ class Location extends DataClass implements Insertable<Location> {
   final String name;
 
   /// Position of the location
-  final int x;
-  final int y;
+  final double lat;
+  final double lng;
 
   /// which floor
   final int floor;
@@ -572,8 +584,8 @@ class Location extends DataClass implements Insertable<Location> {
   const Location({
     required this.id,
     required this.name,
-    required this.x,
-    required this.y,
+    required this.lat,
+    required this.lng,
     required this.floor,
     this.buildingId,
   });
@@ -582,8 +594,8 @@ class Location extends DataClass implements Insertable<Location> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['x'] = Variable<int>(x);
-    map['y'] = Variable<int>(y);
+    map['lat'] = Variable<double>(lat);
+    map['lng'] = Variable<double>(lng);
     map['floor'] = Variable<int>(floor);
     if (!nullToAbsent || buildingId != null) {
       map['building_id'] = Variable<int>(buildingId);
@@ -595,8 +607,8 @@ class Location extends DataClass implements Insertable<Location> {
     return LocationsCompanion(
       id: Value(id),
       name: Value(name),
-      x: Value(x),
-      y: Value(y),
+      lat: Value(lat),
+      lng: Value(lng),
       floor: Value(floor),
       buildingId:
           buildingId == null && nullToAbsent
@@ -613,8 +625,8 @@ class Location extends DataClass implements Insertable<Location> {
     return Location(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      x: serializer.fromJson<int>(json['x']),
-      y: serializer.fromJson<int>(json['y']),
+      lat: serializer.fromJson<double>(json['lat']),
+      lng: serializer.fromJson<double>(json['lng']),
       floor: serializer.fromJson<int>(json['floor']),
       buildingId: serializer.fromJson<int?>(json['buildingId']),
     );
@@ -625,8 +637,8 @@ class Location extends DataClass implements Insertable<Location> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'x': serializer.toJson<int>(x),
-      'y': serializer.toJson<int>(y),
+      'lat': serializer.toJson<double>(lat),
+      'lng': serializer.toJson<double>(lng),
       'floor': serializer.toJson<int>(floor),
       'buildingId': serializer.toJson<int?>(buildingId),
     };
@@ -635,15 +647,15 @@ class Location extends DataClass implements Insertable<Location> {
   Location copyWith({
     int? id,
     String? name,
-    int? x,
-    int? y,
+    double? lat,
+    double? lng,
     int? floor,
     Value<int?> buildingId = const Value.absent(),
   }) => Location(
     id: id ?? this.id,
     name: name ?? this.name,
-    x: x ?? this.x,
-    y: y ?? this.y,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
     floor: floor ?? this.floor,
     buildingId: buildingId.present ? buildingId.value : this.buildingId,
   );
@@ -651,8 +663,8 @@ class Location extends DataClass implements Insertable<Location> {
     return Location(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      x: data.x.present ? data.x.value : this.x,
-      y: data.y.present ? data.y.value : this.y,
+      lat: data.lat.present ? data.lat.value : this.lat,
+      lng: data.lng.present ? data.lng.value : this.lng,
       floor: data.floor.present ? data.floor.value : this.floor,
       buildingId:
           data.buildingId.present ? data.buildingId.value : this.buildingId,
@@ -664,8 +676,8 @@ class Location extends DataClass implements Insertable<Location> {
     return (StringBuffer('Location(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('x: $x, ')
-          ..write('y: $y, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
           ..write('floor: $floor, ')
           ..write('buildingId: $buildingId')
           ..write(')'))
@@ -673,15 +685,15 @@ class Location extends DataClass implements Insertable<Location> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, x, y, floor, buildingId);
+  int get hashCode => Object.hash(id, name, lat, lng, floor, buildingId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Location &&
           other.id == this.id &&
           other.name == this.name &&
-          other.x == this.x &&
-          other.y == this.y &&
+          other.lat == this.lat &&
+          other.lng == this.lng &&
           other.floor == this.floor &&
           other.buildingId == this.buildingId);
 }
@@ -689,41 +701,41 @@ class Location extends DataClass implements Insertable<Location> {
 class LocationsCompanion extends UpdateCompanion<Location> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> x;
-  final Value<int> y;
+  final Value<double> lat;
+  final Value<double> lng;
   final Value<int> floor;
   final Value<int?> buildingId;
   const LocationsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.x = const Value.absent(),
-    this.y = const Value.absent(),
+    this.lat = const Value.absent(),
+    this.lng = const Value.absent(),
     this.floor = const Value.absent(),
     this.buildingId = const Value.absent(),
   });
   LocationsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required int x,
-    required int y,
+    required double lat,
+    required double lng,
     this.floor = const Value.absent(),
     this.buildingId = const Value.absent(),
   }) : name = Value(name),
-       x = Value(x),
-       y = Value(y);
+       lat = Value(lat),
+       lng = Value(lng);
   static Insertable<Location> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? x,
-    Expression<int>? y,
+    Expression<double>? lat,
+    Expression<double>? lng,
     Expression<int>? floor,
     Expression<int>? buildingId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (x != null) 'x': x,
-      if (y != null) 'y': y,
+      if (lat != null) 'lat': lat,
+      if (lng != null) 'lng': lng,
       if (floor != null) 'floor': floor,
       if (buildingId != null) 'building_id': buildingId,
     });
@@ -732,16 +744,16 @@ class LocationsCompanion extends UpdateCompanion<Location> {
   LocationsCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<int>? x,
-    Value<int>? y,
+    Value<double>? lat,
+    Value<double>? lng,
     Value<int>? floor,
     Value<int?>? buildingId,
   }) {
     return LocationsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      x: x ?? this.x,
-      y: y ?? this.y,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
       floor: floor ?? this.floor,
       buildingId: buildingId ?? this.buildingId,
     );
@@ -756,11 +768,11 @@ class LocationsCompanion extends UpdateCompanion<Location> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (x.present) {
-      map['x'] = Variable<int>(x.value);
+    if (lat.present) {
+      map['lat'] = Variable<double>(lat.value);
     }
-    if (y.present) {
-      map['y'] = Variable<int>(y.value);
+    if (lng.present) {
+      map['lng'] = Variable<double>(lng.value);
     }
     if (floor.present) {
       map['floor'] = Variable<int>(floor.value);
@@ -776,8 +788,8 @@ class LocationsCompanion extends UpdateCompanion<Location> {
     return (StringBuffer('LocationsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('x: $x, ')
-          ..write('y: $y, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
           ..write('floor: $floor, ')
           ..write('buildingId: $buildingId')
           ..write(')'))
@@ -976,7 +988,6 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 
   /// optional if there is a route
   final String? route;
-
   const MyPath({
     required this.id,
     required this.pointAId,
@@ -1220,8 +1231,8 @@ typedef $$BuildingsTableCreateCompanionBuilder =
       required String name,
       Value<int> floor,
       Value<int> mainFloor,
-      required int x,
-      required int y,
+      required double lat,
+      required double lng,
     });
 typedef $$BuildingsTableUpdateCompanionBuilder =
     BuildingsCompanion Function({
@@ -1229,8 +1240,8 @@ typedef $$BuildingsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<int> floor,
       Value<int> mainFloor,
-      Value<int> x,
-      Value<int> y,
+      Value<double> lat,
+      Value<double> lng,
     });
 
 class $$BuildingsTableFilterComposer
@@ -1262,13 +1273,13 @@ class $$BuildingsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get x => $composableBuilder(
-    column: $table.x,
+  ColumnFilters<double> get lat => $composableBuilder(
+    column: $table.lat,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get y => $composableBuilder(
-    column: $table.y,
+  ColumnFilters<double> get lng => $composableBuilder(
+    column: $table.lng,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1302,13 +1313,13 @@ class $$BuildingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get x => $composableBuilder(
-    column: $table.x,
+  ColumnOrderings<double> get lat => $composableBuilder(
+    column: $table.lat,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get y => $composableBuilder(
-    column: $table.y,
+  ColumnOrderings<double> get lng => $composableBuilder(
+    column: $table.lng,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -1334,11 +1345,11 @@ class $$BuildingsTableAnnotationComposer
   GeneratedColumn<int> get mainFloor =>
       $composableBuilder(column: $table.mainFloor, builder: (column) => column);
 
-  GeneratedColumn<int> get x =>
-      $composableBuilder(column: $table.x, builder: (column) => column);
+  GeneratedColumn<double> get lat =>
+      $composableBuilder(column: $table.lat, builder: (column) => column);
 
-  GeneratedColumn<int> get y =>
-      $composableBuilder(column: $table.y, builder: (column) => column);
+  GeneratedColumn<double> get lng =>
+      $composableBuilder(column: $table.lng, builder: (column) => column);
 }
 
 class $$BuildingsTableTableManager
@@ -1373,15 +1384,15 @@ class $$BuildingsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<int> floor = const Value.absent(),
                 Value<int> mainFloor = const Value.absent(),
-                Value<int> x = const Value.absent(),
-                Value<int> y = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
               }) => BuildingsCompanion(
                 id: id,
                 name: name,
                 floor: floor,
                 mainFloor: mainFloor,
-                x: x,
-                y: y,
+                lat: lat,
+                lng: lng,
               ),
           createCompanionCallback:
               ({
@@ -1389,15 +1400,15 @@ class $$BuildingsTableTableManager
                 required String name,
                 Value<int> floor = const Value.absent(),
                 Value<int> mainFloor = const Value.absent(),
-                required int x,
-                required int y,
+                required double lat,
+                required double lng,
               }) => BuildingsCompanion.insert(
                 id: id,
                 name: name,
                 floor: floor,
                 mainFloor: mainFloor,
-                x: x,
-                y: y,
+                lat: lat,
+                lng: lng,
               ),
           withReferenceMapper:
               (p0) =>
@@ -1432,8 +1443,8 @@ typedef $$LocationsTableCreateCompanionBuilder =
     LocationsCompanion Function({
       Value<int> id,
       required String name,
-      required int x,
-      required int y,
+      required double lat,
+      required double lng,
       Value<int> floor,
       Value<int?> buildingId,
     });
@@ -1441,8 +1452,8 @@ typedef $$LocationsTableUpdateCompanionBuilder =
     LocationsCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<int> x,
-      Value<int> y,
+      Value<double> lat,
+      Value<double> lng,
       Value<int> floor,
       Value<int?> buildingId,
     });
@@ -1466,13 +1477,13 @@ class $$LocationsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get x => $composableBuilder(
-    column: $table.x,
+  ColumnFilters<double> get lat => $composableBuilder(
+    column: $table.lat,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get y => $composableBuilder(
-    column: $table.y,
+  ColumnFilters<double> get lng => $composableBuilder(
+    column: $table.lng,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1506,13 +1517,13 @@ class $$LocationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get x => $composableBuilder(
-    column: $table.x,
+  ColumnOrderings<double> get lat => $composableBuilder(
+    column: $table.lat,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get y => $composableBuilder(
-    column: $table.y,
+  ColumnOrderings<double> get lng => $composableBuilder(
+    column: $table.lng,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1542,11 +1553,11 @@ class $$LocationsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<int> get x =>
-      $composableBuilder(column: $table.x, builder: (column) => column);
+  GeneratedColumn<double> get lat =>
+      $composableBuilder(column: $table.lat, builder: (column) => column);
 
-  GeneratedColumn<int> get y =>
-      $composableBuilder(column: $table.y, builder: (column) => column);
+  GeneratedColumn<double> get lng =>
+      $composableBuilder(column: $table.lng, builder: (column) => column);
 
   GeneratedColumn<int> get floor =>
       $composableBuilder(column: $table.floor, builder: (column) => column);
@@ -1587,15 +1598,15 @@ class $$LocationsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<int> x = const Value.absent(),
-                Value<int> y = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
                 Value<int> floor = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
               }) => LocationsCompanion(
                 id: id,
                 name: name,
-                x: x,
-                y: y,
+                lat: lat,
+                lng: lng,
                 floor: floor,
                 buildingId: buildingId,
               ),
@@ -1603,15 +1614,15 @@ class $$LocationsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                required int x,
-                required int y,
+                required double lat,
+                required double lng,
                 Value<int> floor = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
               }) => LocationsCompanion.insert(
                 id: id,
                 name: name,
-                x: x,
-                y: y,
+                lat: lat,
+                lng: lng,
                 floor: floor,
                 buildingId: buildingId,
               ),

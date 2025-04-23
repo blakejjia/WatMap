@@ -1,7 +1,6 @@
 import '../../db/database.dart';
 
 class MyMap {
-
   /// There are many buildings in the map
   final List<Building> buildings;
 
@@ -11,5 +10,5 @@ class MyMap {
   /// There are many paths in the map
   final List<MyPath> paths;
 
-  MyMap(this.buildings, this.locations, this.paths);
+  const MyMap(this.buildings, this.locations, this.paths);
 }

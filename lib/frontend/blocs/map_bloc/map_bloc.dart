@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 import '../../../backend/db/database.dart';
 import '../../../backend/repositories/building.dart';
@@ -15,18 +16,25 @@ part 'map_event.dart';
 part 'map_state.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
-  MapBloc() : super(MapInitial(MyMap([], [], []))) {
+  MapBloc() : super(MapInitial(camera: MapCamera.initialCamera(MapOptions()))) {
     on<MapLoad>(_mapLoad);
     on<MapSelectBuilding>(_mapSelectBuilding);
     on<_MapFindRoute>(_mapFindRoute);
+    on<UpdateCameraState>(_mapChangeZoom);
     add(MapLoad());
+  }
+
+  void _mapChangeZoom(UpdateCameraState event, Emitter<MapState> emit) {
+    emit(state.copyWith(camera: event.camera));
   }
 
   Future<void> _mapLoad(MapLoad event, Emitter<MapState> emit) async {
     final buildings = await getIt<BuildingRepository>().readAllBuildings();
     final locations = await getIt<LocationRepository>().readAllLocations();
     final paths = await getIt<PathRepository>().readAllPaths();
-    emit(MapIdeal([], MyMap(buildings, locations, paths)));
+    emit(
+      MapIdeal([], MyMap(buildings, locations, paths), camera: state.camera),
+    );
   }
 
   void _mapSelectBuilding(MapSelectBuilding event, Emitter<MapState> emit) {
@@ -40,7 +48,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       final updated =
           currentSelection.where((b) => b != event.building).toList();
 
-      emit(MapIdeal(updated, currentState.map));
+      emit(currentState.copyWith(selectedBuildings: updated));
     } else {
       List<Building> updated;
       if (currentSelection.length == 2) {
@@ -50,7 +58,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         updated = [...currentSelection.whereType<Building>(), event.building];
       }
 
-      emit(MapIdeal(updated, currentState.map));
+      emit(currentState.copyWith(selectedBuildings: updated));
 
       // Only add route if we have exactly 2 now
       if (updated.length == 2) {
@@ -76,6 +84,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         route,
         isFound,
         (state as MapIdeal).map,
+        camera: state.camera,
       ),
     );
   }

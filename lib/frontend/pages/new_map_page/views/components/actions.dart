@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
-import '../../settings_page/settings_page.dart';
+import '../../../settings_page/settings_page.dart';
 
 const double actionSize = 55;
 
-class HomePageActions extends StatelessWidget {
-  const HomePageActions({super.key});
+class MapActions extends StatelessWidget {
+  const MapActions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class HomePageActions extends StatelessWidget {
 }
 
 class _ActionWidget extends StatefulWidget {
-  const _ActionWidget({super.key});
+  const _ActionWidget();
 
   @override
   State<_ActionWidget> createState() => _ActionWidgetState();
@@ -83,14 +83,20 @@ class _ActionWidgetState extends State<_ActionWidget>
       },
       builder: (context, state) {
         final weather = state.weather;
+        _controller.forward(from: 0);
 
-        return TweenAnimationBuilder<Color?>(
-          tween: ColorTween(
-            begin: _getColor(_previousWeather ?? weather),
-            end: _getColor(weather),
-          ),
-          duration: const Duration(milliseconds: 500),
-          builder: (context, color, child) {
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final colorTween = ColorTween(
+              begin: _getColor(_previousWeather ?? weather),
+              end: _getColor(weather),
+            );
+            final scaleTween = Tween<double>(begin: 0.8, end: 1.0);
+
+            final color = colorTween.evaluate(_controller);
+            final scale = scaleTween.evaluate(_controller);
+
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -109,34 +115,37 @@ class _ActionWidgetState extends State<_ActionWidget>
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         transitionBuilder: (child, animation) {
-                          return ScaleTransition(
-                            scale: animation,
+                          return FadeTransition(
+                            opacity: animation,
                             child: child,
                           );
                         },
-                        child: Column(
-                          key: ValueKey(weather), // Add key to the Column
-                          mainAxisSize: MainAxisSize.min, // Shrink the column
-                          children: [
-                            Icon(_getIcon(weather), grade: 1),
-                            Text(
-                              _getText(weather),
-                              style: TextStyle(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 8,
+                        child: Transform.scale(
+                          scale: scale,
+                          child: Column(
+                            key: ValueKey(weather),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(_getIcon(weather), grade: 1),
+                              Text(
+                                _getText(weather),
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 8,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0), // Spacing between the two widgets
+                const SizedBox(height: 16.0),
                 Container(
                   width: actionSize,
                   height: actionSize,

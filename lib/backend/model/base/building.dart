@@ -15,6 +15,6 @@ class Buildings extends Table {
   IntColumn get mainFloor => integer().withDefault(Constant(1))();
 
   /// Position of the building
-  IntColumn get x => integer()();
-  IntColumn get y => integer()();
+  RealColumn get lat => real()();
+  RealColumn get lng => real()();
 }

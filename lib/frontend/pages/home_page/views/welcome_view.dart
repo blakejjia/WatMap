@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
-import 'package:watmap/frontend/animations/delay_fade_in.dart';
+import 'package:watmap/frontend/pages/home_page/animations/delay_fade_in.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});

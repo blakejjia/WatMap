@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:vector_math/vector_math.dart';
 import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
@@ -28,14 +29,21 @@ double WALK_SPEED = 4; // on map, needs more investigation.
 
 MyPath createMyPath(Location locA, Location locB, MyMap map) {
   return map.paths.firstWhere(
-        (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
-    orElse: () => MyPath(
-      id: 0,
-      pointAId: locA.id,
-      pointBId: locB.id,
-      pathType: PATH_OUTSIDE,
-    ),
+    (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
+    orElse:
+        () => MyPath(
+          id: 0,
+          pointAId: locA.id,
+          pointBId: locB.id,
+          pathType: PATH_OUTSIDE,
+        ),
   );
+}
+
+extension LocationExtensions on Location {
+  double distanceTo(Location a) {
+    return sqrt(pow(lat - a.lat, 2) + pow(lng - a.lng, 2));
+  }
 }
 
 extension AlgorPath on MyPath {
@@ -72,10 +80,7 @@ extension AlgorPath on MyPath {
       final a = map.locations.firstWhere((e) => e.id == pointAId);
       final b = map.locations.firstWhere((e) => e.id == pointBId);
       return [
-        [
-          Point(a.x.toDouble(), a.y.toDouble()),
-          Point(b.x.toDouble(), b.y.toDouble()),
-        ],
+        [Point(a.lat, a.lng), Point(b.lat, b.lng)],
       ];
     }
     return (jsonDecode(route!) as List)

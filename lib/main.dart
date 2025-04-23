@@ -9,6 +9,7 @@ import 'package:watmap/frontend/pages/home_page/home_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import 'package:watmap/frontend/blocs/report_bloc/report_bloc.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'backend/db/database.dart';
 import 'backend/repositories/building.dart';
 import 'backend/repositories/location.dart';
@@ -26,6 +27,8 @@ void main() async {
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "config/properties.env");
+  await FMTCObjectBoxBackend().initialise();
+  await FMTCStore('mapStore').manage.create();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
       (await getApplicationDocumentsDirectory()).path,

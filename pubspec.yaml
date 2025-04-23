@@ -1,6 +1,6 @@
 name: watmap
 description: "A app help you hang around uwaterloo"
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.1+5
 
@@ -25,6 +25,8 @@ dependencies:
   vector_math: ^2.1.4
   animations: ^2.0.11
   flutter_map: ^8.1.1
+  latlong2: ^0.9.1
+  flutter_map_tile_caching: ^10.1.1
 
 dev_dependencies:
   flutter_test:
@@ -48,4 +50,3 @@ flutter:
     - assets/campusMap.png
     - assets/lang/appInfo.json
     - config/properties.env
-

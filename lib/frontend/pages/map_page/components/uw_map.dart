@@ -53,10 +53,3 @@ class UWMap extends StatelessWidget {
     }
   }
 }
-
-double _offsetX(int x) {
-  return x.toDouble() - 31.0;
-}
-double _offsetY(int y) {
-  return y.toDouble() - 31.0;
-}

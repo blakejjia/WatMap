@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import '../db/database.dart';
 
 class LocationRepository {
@@ -13,8 +11,9 @@ class LocationRepository {
 
   Future<Location?> getLocation(int building, int floor) async {
     return (db.select(db.locations)
-      ..where((tbl) => tbl.buildingId.equals(building))
-      ..where((tbl) => tbl.floor.equals(floor))).getSingleOrNull();
+          ..where((tbl) => tbl.buildingId.equals(building))
+          ..where((tbl) => tbl.floor.equals(floor)))
+        .getSingleOrNull();
   }
 
   Future<Location?> readLocation(int id) {
@@ -36,11 +35,5 @@ class LocationRepository {
 
   Future<int> destroyAllLocations() {
     return db.delete(db.locations).go();
-  }
-}
-
-extension LocationExtensions on Location {
-  double distanceTo(Location a) {
-    return sqrt(pow(x - a.x, 2) + pow(y - a.y, 2));
   }
 }

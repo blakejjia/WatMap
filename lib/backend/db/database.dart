@@ -6,11 +6,10 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Buildings, Locations, MyPaths])
 class AppDatabase extends _$AppDatabase {
-
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

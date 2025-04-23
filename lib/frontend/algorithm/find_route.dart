@@ -42,9 +42,9 @@ List<Location> aStar(Location loc1, Location loc2, MyMap map) {
   }
   distTable[loc1] = 0.0;
 
-  int heuristic(Location a, Location b) {
+  double heuristic(Location a, Location b) {
     // Manhattan distance as the heuristic function
-    return (a.x - b.x).abs() + (a.y - b.y).abs();
+    return (a.lat - b.lat).abs() + (a.lng - b.lng).abs();
   }
 
   PriorityQueue<Location> queue = PriorityQueue<Location>(
