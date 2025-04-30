@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:watmap/backend/model/base/path_raw.dart';
-import 'package:watmap/backend/services/SupaService.dart';
+import 'package:watmap/backend/services/supa_service.dart';
 
 import '../../../main.dart';
 

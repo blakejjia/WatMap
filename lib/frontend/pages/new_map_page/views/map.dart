@@ -9,17 +9,21 @@ import 'package:watmap/backend/db/database.dart';
 import 'package:watmap/frontend/blocs/map_bloc/map_bloc.dart';
 import 'package:watmap/main.dart';
 
+import '../../../algorithm/algorithms.dart';
+import '../route_page/route_page.dart';
+
 part 'components/markers.dart';
 part 'components/paths.dart';
+part 'components/route_dialog.dart';
 
-class WatMap extends StatefulWidget {
-  const WatMap({super.key});
+class OSMap extends StatefulWidget {
+  const OSMap({super.key});
 
   @override
-  State<WatMap> createState() => _WatMapState();
+  State<OSMap> createState() => _OSMapState();
 }
 
-class _WatMapState extends State<WatMap> {
+class _OSMapState extends State<OSMap> {
   final MapController controller = MapController();
 
   @override
@@ -27,7 +31,7 @@ class _WatMapState extends State<WatMap> {
     super.initState();
     context.read<MapBloc>().add(MapLoad());
     controller.mapEventStream.listen((event) {
-      getIt<MapBloc>().add(UpdateCameraState(event.camera));
+      getIt<MapBloc>().add(UpdateMapCameraState(event.camera));
     });
   }
 
@@ -37,29 +41,41 @@ class _WatMapState extends State<WatMap> {
       stores: const {'mapStore': BrowseStoreStrategy.readUpdateCreate},
     );
 
-    return FlutterMap(
-      mapController: controller,
-      options: MapOptions(
-        initialCenter: LatLng(43.4723, -80.5449),
-        initialZoom: 16.0,
-        maxZoom: 18.0,
-        minZoom: 15.0,
-        initialRotation: 23,
-      ),
+    return Stack(
       children: [
-        TileLayer(
-          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-          userAgentPackageName: 'com.jia-yx.watmap',
-          tileProvider: tileProvider,
-        ),
         BlocBuilder<MapBloc, MapState>(
           builder: (context, state) {
-            final markers = _buildingMarkers(
-              context.read<MapBloc>().state,
-              context,
-            );
-            return MarkerLayer(markers: markers);
+            if (state is MapTriedFoundRoute) {
+              return dialogBox(state, context);
+            }
+            return const SizedBox();
           },
+        ),
+        FlutterMap(
+          mapController: controller,
+          options: MapOptions(
+            initialCenter: LatLng(43.4723, -80.5449),
+            initialZoom: 16.0,
+            maxZoom: 18.0,
+            minZoom: 15.0,
+            initialRotation: 23,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+              userAgentPackageName: 'com.jia-yx.watmap',
+              tileProvider: tileProvider,
+            ),
+            BlocBuilder<MapBloc, MapState>(
+              builder: (context, state) {
+                final markers = _buildingMarkers(
+                  context.read<MapBloc>().state,
+                  context,
+                );
+                return MarkerLayer(markers: markers);
+              },
+            ),
+          ],
         ),
       ],
     );

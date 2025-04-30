@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
-import '../../../settings_page/settings_page.dart';
+import '../../settings_page/settings_page.dart';
 
 const double actionSize = 55;
 

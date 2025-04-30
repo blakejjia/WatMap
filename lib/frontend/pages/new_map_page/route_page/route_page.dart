@@ -15,8 +15,8 @@ class RoutePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "From ${_locationName(route.paths[0].pointAId, map)} "
-          "to ${_locationName(route.paths[route.paths.length - 1].pointBId, map)}",
+          "From ${route.paths[0].pointAId} "
+          "to ${route.paths[route.paths.length - 1].pointBId}",
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -36,6 +36,3 @@ class RoutePage extends StatelessWidget {
   }
 }
 
-String _locationName(int id, MyMap map) {
-  return map.locations.firstWhere((location) => location.id == id).name;
-}

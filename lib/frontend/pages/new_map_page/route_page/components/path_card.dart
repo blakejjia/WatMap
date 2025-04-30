@@ -9,12 +9,12 @@ Widget _pathCard(MyPath path, MyMap map, int index) {
       child: Column(
         children: [
           Text(
-            "At ${_location(path.pointAId, map)}",
+            "At ${path.pointAId}",
             style: TextStyle(fontSize: 18),
           ),
           Text(_parsePath(path), style: TextStyle(fontSize: 18, color: Colors.brown)),
           Text(
-            "to ${_location(path.pointBId, map)}",
+            "to ${path.pointBId}",
             style: TextStyle(fontSize: 18),
           ),
         ],
@@ -26,7 +26,7 @@ Widget _pathCard(MyPath path, MyMap map, int index) {
 Widget _startCard(MyPath path, MyMap map) {
   return ListTile(
     title: Text(
-      "Starts your journey at ${_location(path.pointAId, map)}",
+      "Starts your journey at ${path.pointAId}",
       style: TextStyle(fontSize: 18),
     ),
   );
@@ -34,13 +34,8 @@ Widget _startCard(MyPath path, MyMap map) {
 
 Widget _endCard(MyPath path, MyMap map) {
   return ListTile(
-    title: Text("And you will arrive ${_location(path.pointBId, map)} 😊"),
+    title: Text("And you will arrive ${path.pointBId} 😊"),
   );
-}
-
-String _location(int id, MyMap map) {
-  Location location = map.locations.firstWhere((location) => location.id == id);
-  return "${location.name} Lv.${location.floor}";
 }
 
 String _parsePath(MyPath path) {
@@ -52,8 +47,6 @@ String _parsePath(MyPath path) {
       sPath += "Stay inside and you will find a way 🏢";
     case PATH_STAIRS:
       sPath += "take the stairs 🧗";
-    case PATH_ELEVATOR:
-      sPath += "take the elevator 🛗";
     case PATH_TUNNEL:
       sPath += "There should be a tunnel 🔮";
     case PATH_BRIDGE:

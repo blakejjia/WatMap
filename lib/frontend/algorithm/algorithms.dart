@@ -5,34 +5,27 @@ import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import '../../backend/db/database.dart';
 import '../../backend/model/mid/my_map.dart';
+import 'package:uuid/uuid.dart';
 
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:watmap/backend/model/mid/my_route.dart';
 import '../../main.dart';
-import '../../backend/repositories/location.dart';
+import '../app_strings.dart';
 import '../blocs/map_bloc/map_bloc.dart';
 
-part 'clean_route.dart';
 part 'find_route.dart';
 part 'format_route_path.dart';
 
 typedef Point = Vector2;
 typedef Segment = List<Point>;
 
-// constants for clean routes
-const double EPS = 0.1;
-const double PT_EPS = 1;
-
-double STAIRS_COST = 30; // depends on usr settings, typically ~30
-double OUTSIDE_COST_MULTIPLIER = 4; // if sunny, 1; if snow, this number
-double WALK_SPEED = 4; // on map, needs more investigation.
-
 MyPath createMyPath(Location locA, Location locB, MyMap map) {
   return map.paths.firstWhere(
     (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
     orElse:
         () => MyPath(
-          id: 0,
+          id: Uuid().v4(),
           pointAId: locA.id,
           pointBId: locB.id,
           pathType: PATH_OUTSIDE,
@@ -53,14 +46,13 @@ extension AlgorPath on MyPath {
     }
     switch (pathType) {
       case PATH_INSIDE:
-      case PATH_ELEVATOR:
       case PATH_TUNNEL:
       case PATH_BRIDGE:
         return 1;
       case PATH_BRIEFLY_OUTSIDE:
-        return 1 + (OUTSIDE_COST_MULTIPLIER - 1) * 0.5;
+        return 1 + (AppStrings.outsideCostMultiplier - 1) * 0.5;
       default:
-        return OUTSIDE_COST_MULTIPLIER;
+        return AppStrings.outsideCostMultiplier;
     }
   }
 
@@ -90,7 +82,7 @@ extension AlgorPath on MyPath {
                   .map<Point>((q) => Point(q[0].toDouble(), q[1].toDouble()))
                   .toList(),
         )
-        .where((seg) => (seg[0] - seg[1]).length > PT_EPS)
+        .where((seg) => (seg[0] - seg[1]).length > AppStrings.ptEps)
         .toList();
   }
 
@@ -120,7 +112,7 @@ extension AlgorPath on MyPath {
     for (final seg in route) {
       dist += seg[0].distanceTo(seg[1]);
     }
-    double time = dist / WALK_SPEED;
+    double time = dist / AppStrings.walkSpeed;
     return time;
   }
 }

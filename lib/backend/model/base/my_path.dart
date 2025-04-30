@@ -1,25 +1,24 @@
 // ignore_for_file: constant_identifier_names
 import 'package:drift/drift.dart';
 
-const int PATH_OUTSIDE = 1;
-const int PATH_INSIDE = 2;
-const int PATH_STAIRS = 3;
-const int PATH_ELEVATOR = 4;
-const int PATH_TUNNEL = 5;
-const int PATH_BRIDGE = 6;
-const int PATH_BRIEFLY_OUTSIDE = 7;
+const String PATH_OUTSIDE = "OUTSIDE";
+const String PATH_INSIDE = "INSIDE";
+const String PATH_STAIRS = "STAIRS";
+const String PATH_TUNNEL = "TUNNEL";
+const String PATH_BRIDGE = "BRIDGE";
+const String PATH_BRIEFLY_OUTSIDE = "BRIEFLY_OUTSIDE";
 
 @DataClassName('MyPath')
 class MyPaths extends Table {
   /// Unique id of the Path
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
 
   /// Starting and ending points of the path
-  IntColumn get pointAId => integer()();
-  IntColumn get pointBId => integer()();
+  TextColumn get pointAId => text()();
+  TextColumn get pointBId => text()();
 
   /// Type of the path
-  IntColumn get pathType => integer()();
+  TextColumn get pathType => text()();
   IntColumn get buildingId => integer().nullable()();
 
   /// optional if there is a route

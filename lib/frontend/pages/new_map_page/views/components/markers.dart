@@ -1,7 +1,7 @@
 part of '../map.dart';
 
 List<Marker> _buildingMarkers(MapState state, BuildContext context) {
-  double scaler = max((state.camera.zoom - 15), 0.5);
+  double scalar = max((state.camera.zoom - 15), 0.5);
   double rotation = -state.camera.rotation * pi / 180;
 
   if (state is MapIdeal || state is MapTriedFoundRoute) {
@@ -12,7 +12,7 @@ List<Marker> _buildingMarkers(MapState state, BuildContext context) {
           alignment: Alignment.center,
           height: 80,
           width: 40,
-          child: _buildings(building, scaler, rotation, context, false),
+          child: _buildings(building, scalar, rotation, context, false),
         );
       }),
       ...state.selectedBuildings.map((building) {
@@ -20,7 +20,7 @@ List<Marker> _buildingMarkers(MapState state, BuildContext context) {
           point: LatLng(building!.lat, building.lng),
           width: 40,
           height: 80,
-          child: _buildings(building, scaler, rotation, context, true),
+          child: _buildings(building, scalar, rotation, context, true),
         );
       }),
     ];

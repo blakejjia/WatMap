@@ -5,8 +5,15 @@ class BuildingRepository {
 
   BuildingRepository(this.db);
 
-  Future<int> createBuilding(BuildingsCompanion building) {
+  Future<int> insertBuilding(Building building) {
     return db.into(db.buildings).insert(building);
+  }
+
+  Future<bool> insertAllBuildings(List<Building> buildings) async {
+    for (final building in buildings) {
+      await db.into(db.buildings).insert(building);
+    }
+    return true;
   }
 
   Future<int> getIdByName(String name) async {

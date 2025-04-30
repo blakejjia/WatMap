@@ -15,12 +15,8 @@ class $BuildingsTable extends Buildings
     'id',
     aliasedName,
     false,
-    hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -31,27 +27,16 @@ class $BuildingsTable extends Buildings
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _floorMeta = const VerificationMeta('floor');
-  @override
-  late final GeneratedColumn<int> floor = GeneratedColumn<int>(
-    'floor',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: Constant(1),
-  );
-  static const VerificationMeta _mainFloorMeta = const VerificationMeta(
-    'mainFloor',
+  static const VerificationMeta _fullNameMeta = const VerificationMeta(
+    'fullName',
   );
   @override
-  late final GeneratedColumn<int> mainFloor = GeneratedColumn<int>(
-    'main_floor',
+  late final GeneratedColumn<String> fullName = GeneratedColumn<String>(
+    'full_name',
     aliasedName,
     false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: Constant(1),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
@@ -71,8 +56,60 @@ class $BuildingsTable extends Buildings
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _floorMeta = const VerificationMeta('floor');
   @override
-  List<GeneratedColumn> get $columns => [id, name, floor, mainFloor, lat, lng];
+  late final GeneratedColumn<int> floor = GeneratedColumn<int>(
+    'floor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mainFloorMeta = const VerificationMeta(
+    'mainFloor',
+  );
+  @override
+  late final GeneratedColumn<int> mainFloor = GeneratedColumn<int>(
+    'main_floor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _otherInfoMeta = const VerificationMeta(
+    'otherInfo',
+  );
+  @override
+  late final GeneratedColumn<String> otherInfo = GeneratedColumn<String>(
+    'other_info',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    fullName,
+    lat,
+    lng,
+    floor,
+    mainFloor,
+    description,
+    otherInfo,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -87,6 +124,8 @@ class $BuildingsTable extends Buildings
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -96,17 +135,13 @@ class $BuildingsTable extends Buildings
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('floor')) {
+    if (data.containsKey('full_name')) {
       context.handle(
-        _floorMeta,
-        floor.isAcceptableOrUnknown(data['floor']!, _floorMeta),
+        _fullNameMeta,
+        fullName.isAcceptableOrUnknown(data['full_name']!, _fullNameMeta),
       );
-    }
-    if (data.containsKey('main_floor')) {
-      context.handle(
-        _mainFloorMeta,
-        mainFloor.isAcceptableOrUnknown(data['main_floor']!, _mainFloorMeta),
-      );
+    } else if (isInserting) {
+      context.missing(_fullNameMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
@@ -124,11 +159,42 @@ class $BuildingsTable extends Buildings
     } else if (isInserting) {
       context.missing(_lngMeta);
     }
+    if (data.containsKey('floor')) {
+      context.handle(
+        _floorMeta,
+        floor.isAcceptableOrUnknown(data['floor']!, _floorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_floorMeta);
+    }
+    if (data.containsKey('main_floor')) {
+      context.handle(
+        _mainFloorMeta,
+        mainFloor.isAcceptableOrUnknown(data['main_floor']!, _mainFloorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mainFloorMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('other_info')) {
+      context.handle(
+        _otherInfoMeta,
+        otherInfo.isAcceptableOrUnknown(data['other_info']!, _otherInfoMeta),
+      );
+    }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
   Building map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -143,15 +209,10 @@ class $BuildingsTable extends Buildings
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
-      floor:
+      fullName:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}floor'],
-          )!,
-      mainFloor:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}main_floor'],
+            DriftSqlType.string,
+            data['${effectivePrefix}full_name'],
           )!,
       lat:
           attachedDatabase.typeMapping.read(
@@ -163,6 +224,24 @@ class $BuildingsTable extends Buildings
             DriftSqlType.double,
             data['${effectivePrefix}lng'],
           )!,
+      floor:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}floor'],
+          )!,
+      mainFloor:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}main_floor'],
+          )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      otherInfo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}other_info'],
+      ),
     );
   }
 
@@ -178,33 +257,46 @@ class Building extends DataClass implements Insertable<Building> {
 
   /// Name of the building
   final String name;
-
-  /// Main floor of this building
-  final int floor;
-
-  /// Main floor of this building
-  final int mainFloor;
+  final String fullName;
 
   /// Position of the building
   final double lat;
   final double lng;
+
+  /// Floor info
+  final int floor;
+  final int mainFloor;
+
+  /// other Info
+  final String? description;
+  final String? otherInfo;
   const Building({
     required this.id,
     required this.name,
-    required this.floor,
-    required this.mainFloor,
+    required this.fullName,
     required this.lat,
     required this.lng,
+    required this.floor,
+    required this.mainFloor,
+    this.description,
+    this.otherInfo,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['floor'] = Variable<int>(floor);
-    map['main_floor'] = Variable<int>(mainFloor);
+    map['full_name'] = Variable<String>(fullName);
     map['lat'] = Variable<double>(lat);
     map['lng'] = Variable<double>(lng);
+    map['floor'] = Variable<int>(floor);
+    map['main_floor'] = Variable<int>(mainFloor);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || otherInfo != null) {
+      map['other_info'] = Variable<String>(otherInfo);
+    }
     return map;
   }
 
@@ -212,10 +304,19 @@ class Building extends DataClass implements Insertable<Building> {
     return BuildingsCompanion(
       id: Value(id),
       name: Value(name),
-      floor: Value(floor),
-      mainFloor: Value(mainFloor),
+      fullName: Value(fullName),
       lat: Value(lat),
       lng: Value(lng),
+      floor: Value(floor),
+      mainFloor: Value(mainFloor),
+      description:
+          description == null && nullToAbsent
+              ? const Value.absent()
+              : Value(description),
+      otherInfo:
+          otherInfo == null && nullToAbsent
+              ? const Value.absent()
+              : Value(otherInfo),
     );
   }
 
@@ -227,10 +328,13 @@ class Building extends DataClass implements Insertable<Building> {
     return Building(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      floor: serializer.fromJson<int>(json['floor']),
-      mainFloor: serializer.fromJson<int>(json['mainFloor']),
+      fullName: serializer.fromJson<String>(json['fullName']),
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
+      floor: serializer.fromJson<int>(json['floor']),
+      mainFloor: serializer.fromJson<int>(json['mainFloor']),
+      description: serializer.fromJson<String?>(json['description']),
+      otherInfo: serializer.fromJson<String?>(json['otherInfo']),
     );
   }
   @override
@@ -239,36 +343,49 @@ class Building extends DataClass implements Insertable<Building> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'floor': serializer.toJson<int>(floor),
-      'mainFloor': serializer.toJson<int>(mainFloor),
+      'fullName': serializer.toJson<String>(fullName),
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
+      'floor': serializer.toJson<int>(floor),
+      'mainFloor': serializer.toJson<int>(mainFloor),
+      'description': serializer.toJson<String?>(description),
+      'otherInfo': serializer.toJson<String?>(otherInfo),
     };
   }
 
   Building copyWith({
     int? id,
     String? name,
-    int? floor,
-    int? mainFloor,
+    String? fullName,
     double? lat,
     double? lng,
+    int? floor,
+    int? mainFloor,
+    Value<String?> description = const Value.absent(),
+    Value<String?> otherInfo = const Value.absent(),
   }) => Building(
     id: id ?? this.id,
     name: name ?? this.name,
-    floor: floor ?? this.floor,
-    mainFloor: mainFloor ?? this.mainFloor,
+    fullName: fullName ?? this.fullName,
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
+    floor: floor ?? this.floor,
+    mainFloor: mainFloor ?? this.mainFloor,
+    description: description.present ? description.value : this.description,
+    otherInfo: otherInfo.present ? otherInfo.value : this.otherInfo,
   );
   Building copyWithCompanion(BuildingsCompanion data) {
     return Building(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      floor: data.floor.present ? data.floor.value : this.floor,
-      mainFloor: data.mainFloor.present ? data.mainFloor.value : this.mainFloor,
+      fullName: data.fullName.present ? data.fullName.value : this.fullName,
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
+      floor: data.floor.present ? data.floor.value : this.floor,
+      mainFloor: data.mainFloor.present ? data.mainFloor.value : this.mainFloor,
+      description:
+          data.description.present ? data.description.value : this.description,
+      otherInfo: data.otherInfo.present ? data.otherInfo.value : this.otherInfo,
     );
   }
 
@@ -277,86 +394,134 @@ class Building extends DataClass implements Insertable<Building> {
     return (StringBuffer('Building(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('fullName: $fullName, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
           ..write('floor: $floor, ')
           ..write('mainFloor: $mainFloor, ')
-          ..write('lat: $lat, ')
-          ..write('lng: $lng')
+          ..write('description: $description, ')
+          ..write('otherInfo: $otherInfo')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, floor, mainFloor, lat, lng);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    fullName,
+    lat,
+    lng,
+    floor,
+    mainFloor,
+    description,
+    otherInfo,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Building &&
           other.id == this.id &&
           other.name == this.name &&
+          other.fullName == this.fullName &&
+          other.lat == this.lat &&
+          other.lng == this.lng &&
           other.floor == this.floor &&
           other.mainFloor == this.mainFloor &&
-          other.lat == this.lat &&
-          other.lng == this.lng);
+          other.description == this.description &&
+          other.otherInfo == this.otherInfo);
 }
 
 class BuildingsCompanion extends UpdateCompanion<Building> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> floor;
-  final Value<int> mainFloor;
+  final Value<String> fullName;
   final Value<double> lat;
   final Value<double> lng;
+  final Value<int> floor;
+  final Value<int> mainFloor;
+  final Value<String?> description;
+  final Value<String?> otherInfo;
+  final Value<int> rowid;
   const BuildingsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.floor = const Value.absent(),
-    this.mainFloor = const Value.absent(),
+    this.fullName = const Value.absent(),
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
-  });
-  BuildingsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
     this.floor = const Value.absent(),
     this.mainFloor = const Value.absent(),
+    this.description = const Value.absent(),
+    this.otherInfo = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BuildingsCompanion.insert({
+    required int id,
+    required String name,
+    required String fullName,
     required double lat,
     required double lng,
-  }) : name = Value(name),
+    required int floor,
+    required int mainFloor,
+    this.description = const Value.absent(),
+    this.otherInfo = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       fullName = Value(fullName),
        lat = Value(lat),
-       lng = Value(lng);
+       lng = Value(lng),
+       floor = Value(floor),
+       mainFloor = Value(mainFloor);
   static Insertable<Building> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? floor,
-    Expression<int>? mainFloor,
+    Expression<String>? fullName,
     Expression<double>? lat,
     Expression<double>? lng,
+    Expression<int>? floor,
+    Expression<int>? mainFloor,
+    Expression<String>? description,
+    Expression<String>? otherInfo,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (floor != null) 'floor': floor,
-      if (mainFloor != null) 'main_floor': mainFloor,
+      if (fullName != null) 'full_name': fullName,
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
+      if (floor != null) 'floor': floor,
+      if (mainFloor != null) 'main_floor': mainFloor,
+      if (description != null) 'description': description,
+      if (otherInfo != null) 'other_info': otherInfo,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   BuildingsCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<int>? floor,
-    Value<int>? mainFloor,
+    Value<String>? fullName,
     Value<double>? lat,
     Value<double>? lng,
+    Value<int>? floor,
+    Value<int>? mainFloor,
+    Value<String?>? description,
+    Value<String?>? otherInfo,
+    Value<int>? rowid,
   }) {
     return BuildingsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      floor: floor ?? this.floor,
-      mainFloor: mainFloor ?? this.mainFloor,
+      fullName: fullName ?? this.fullName,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
+      floor: floor ?? this.floor,
+      mainFloor: mainFloor ?? this.mainFloor,
+      description: description ?? this.description,
+      otherInfo: otherInfo ?? this.otherInfo,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -369,17 +534,29 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (floor.present) {
-      map['floor'] = Variable<int>(floor.value);
-    }
-    if (mainFloor.present) {
-      map['main_floor'] = Variable<int>(mainFloor.value);
+    if (fullName.present) {
+      map['full_name'] = Variable<String>(fullName.value);
     }
     if (lat.present) {
       map['lat'] = Variable<double>(lat.value);
     }
     if (lng.present) {
       map['lng'] = Variable<double>(lng.value);
+    }
+    if (floor.present) {
+      map['floor'] = Variable<int>(floor.value);
+    }
+    if (mainFloor.present) {
+      map['main_floor'] = Variable<int>(mainFloor.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (otherInfo.present) {
+      map['other_info'] = Variable<String>(otherInfo.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -389,10 +566,14 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     return (StringBuffer('BuildingsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('fullName: $fullName, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
           ..write('floor: $floor, ')
           ..write('mainFloor: $mainFloor, ')
-          ..write('lat: $lat, ')
-          ..write('lng: $lng')
+          ..write('description: $description, ')
+          ..write('otherInfo: $otherInfo, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -406,21 +587,8 @@ class $LocationsTable extends Locations
   $LocationsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -466,7 +634,7 @@ class $LocationsTable extends Locations
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, lat, lng, floor, buildingId];
+  List<GeneratedColumn> get $columns => [id, lat, lng, floor, buildingId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -481,14 +649,8 @@ class $LocationsTable extends Locations
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_idMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
@@ -522,20 +684,15 @@ class $LocationsTable extends Locations
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
   Location map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Location(
       id:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}id'],
-          )!,
-      name:
-          attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}name'],
+            data['${effectivePrefix}id'],
           )!,
       lat:
           attachedDatabase.typeMapping.read(
@@ -567,10 +724,7 @@ class $LocationsTable extends Locations
 
 class Location extends DataClass implements Insertable<Location> {
   /// Unique id of the location
-  final int id;
-
-  /// Name of the location
-  final String name;
+  final String id;
 
   /// Position of the location
   final double lat;
@@ -583,7 +737,6 @@ class Location extends DataClass implements Insertable<Location> {
   final int? buildingId;
   const Location({
     required this.id,
-    required this.name,
     required this.lat,
     required this.lng,
     required this.floor,
@@ -592,8 +745,7 @@ class Location extends DataClass implements Insertable<Location> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
+    map['id'] = Variable<String>(id);
     map['lat'] = Variable<double>(lat);
     map['lng'] = Variable<double>(lng);
     map['floor'] = Variable<int>(floor);
@@ -606,7 +758,6 @@ class Location extends DataClass implements Insertable<Location> {
   LocationsCompanion toCompanion(bool nullToAbsent) {
     return LocationsCompanion(
       id: Value(id),
-      name: Value(name),
       lat: Value(lat),
       lng: Value(lng),
       floor: Value(floor),
@@ -623,8 +774,7 @@ class Location extends DataClass implements Insertable<Location> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Location(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
+      id: serializer.fromJson<String>(json['id']),
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
       floor: serializer.fromJson<int>(json['floor']),
@@ -635,8 +785,7 @@ class Location extends DataClass implements Insertable<Location> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
+      'id': serializer.toJson<String>(id),
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
       'floor': serializer.toJson<int>(floor),
@@ -645,15 +794,13 @@ class Location extends DataClass implements Insertable<Location> {
   }
 
   Location copyWith({
-    int? id,
-    String? name,
+    String? id,
     double? lat,
     double? lng,
     int? floor,
     Value<int?> buildingId = const Value.absent(),
   }) => Location(
     id: id ?? this.id,
-    name: name ?? this.name,
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
     floor: floor ?? this.floor,
@@ -662,7 +809,6 @@ class Location extends DataClass implements Insertable<Location> {
   Location copyWithCompanion(LocationsCompanion data) {
     return Location(
       id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
       floor: data.floor.present ? data.floor.value : this.floor,
@@ -675,7 +821,6 @@ class Location extends DataClass implements Insertable<Location> {
   String toString() {
     return (StringBuffer('Location(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('floor: $floor, ')
@@ -685,13 +830,12 @@ class Location extends DataClass implements Insertable<Location> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, lat, lng, floor, buildingId);
+  int get hashCode => Object.hash(id, lat, lng, floor, buildingId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Location &&
           other.id == this.id &&
-          other.name == this.name &&
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.floor == this.floor &&
@@ -699,63 +843,63 @@ class Location extends DataClass implements Insertable<Location> {
 }
 
 class LocationsCompanion extends UpdateCompanion<Location> {
-  final Value<int> id;
-  final Value<String> name;
+  final Value<String> id;
   final Value<double> lat;
   final Value<double> lng;
   final Value<int> floor;
   final Value<int?> buildingId;
+  final Value<int> rowid;
   const LocationsCompanion({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
     this.floor = const Value.absent(),
     this.buildingId = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   LocationsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
+    required String id,
     required double lat,
     required double lng,
     this.floor = const Value.absent(),
     this.buildingId = const Value.absent(),
-  }) : name = Value(name),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
        lat = Value(lat),
        lng = Value(lng);
   static Insertable<Location> custom({
-    Expression<int>? id,
-    Expression<String>? name,
+    Expression<String>? id,
     Expression<double>? lat,
     Expression<double>? lng,
     Expression<int>? floor,
     Expression<int>? buildingId,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name != null) 'name': name,
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
       if (floor != null) 'floor': floor,
       if (buildingId != null) 'building_id': buildingId,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   LocationsCompanion copyWith({
-    Value<int>? id,
-    Value<String>? name,
+    Value<String>? id,
     Value<double>? lat,
     Value<double>? lng,
     Value<int>? floor,
     Value<int?>? buildingId,
+    Value<int>? rowid,
   }) {
     return LocationsCompanion(
       id: id ?? this.id,
-      name: name ?? this.name,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       floor: floor ?? this.floor,
       buildingId: buildingId ?? this.buildingId,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -763,10 +907,7 @@ class LocationsCompanion extends UpdateCompanion<Location> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (lat.present) {
       map['lat'] = Variable<double>(lat.value);
@@ -780,6 +921,9 @@ class LocationsCompanion extends UpdateCompanion<Location> {
     if (buildingId.present) {
       map['building_id'] = Variable<int>(buildingId.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -787,11 +931,11 @@ class LocationsCompanion extends UpdateCompanion<Location> {
   String toString() {
     return (StringBuffer('LocationsCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('floor: $floor, ')
-          ..write('buildingId: $buildingId')
+          ..write('buildingId: $buildingId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -804,48 +948,44 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
   $MyPathsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
     'id',
     aliasedName,
     false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _pointAIdMeta = const VerificationMeta(
     'pointAId',
   );
   @override
-  late final GeneratedColumn<int> pointAId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> pointAId = GeneratedColumn<String>(
     'point_a_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _pointBIdMeta = const VerificationMeta(
     'pointBId',
   );
   @override
-  late final GeneratedColumn<int> pointBId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> pointBId = GeneratedColumn<String>(
     'point_b_id',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _pathTypeMeta = const VerificationMeta(
     'pathType',
   );
   @override
-  late final GeneratedColumn<int> pathType = GeneratedColumn<int>(
+  late final GeneratedColumn<String> pathType = GeneratedColumn<String>(
     'path_type',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _buildingIdMeta = const VerificationMeta(
@@ -891,6 +1031,8 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('point_a_id')) {
       context.handle(
@@ -932,29 +1074,29 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
   MyPath map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MyPath(
       id:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
+            DriftSqlType.string,
             data['${effectivePrefix}id'],
           )!,
       pointAId:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
+            DriftSqlType.string,
             data['${effectivePrefix}point_a_id'],
           )!,
       pointBId:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
+            DriftSqlType.string,
             data['${effectivePrefix}point_b_id'],
           )!,
       pathType:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
+            DriftSqlType.string,
             data['${effectivePrefix}path_type'],
           )!,
       buildingId: attachedDatabase.typeMapping.read(
@@ -976,14 +1118,14 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
 
 class MyPath extends DataClass implements Insertable<MyPath> {
   /// Unique id of the Path
-  final int id;
+  final String id;
 
   /// Starting and ending points of the path
-  final int pointAId;
-  final int pointBId;
+  final String pointAId;
+  final String pointBId;
 
   /// Type of the path
-  final int pathType;
+  final String pathType;
   final int? buildingId;
 
   /// optional if there is a route
@@ -999,10 +1141,10 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['point_a_id'] = Variable<int>(pointAId);
-    map['point_b_id'] = Variable<int>(pointBId);
-    map['path_type'] = Variable<int>(pathType);
+    map['id'] = Variable<String>(id);
+    map['point_a_id'] = Variable<String>(pointAId);
+    map['point_b_id'] = Variable<String>(pointBId);
+    map['path_type'] = Variable<String>(pathType);
     if (!nullToAbsent || buildingId != null) {
       map['building_id'] = Variable<int>(buildingId);
     }
@@ -1033,10 +1175,10 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MyPath(
-      id: serializer.fromJson<int>(json['id']),
-      pointAId: serializer.fromJson<int>(json['pointAId']),
-      pointBId: serializer.fromJson<int>(json['pointBId']),
-      pathType: serializer.fromJson<int>(json['pathType']),
+      id: serializer.fromJson<String>(json['id']),
+      pointAId: serializer.fromJson<String>(json['pointAId']),
+      pointBId: serializer.fromJson<String>(json['pointBId']),
+      pathType: serializer.fromJson<String>(json['pathType']),
       buildingId: serializer.fromJson<int?>(json['buildingId']),
       route: serializer.fromJson<String?>(json['route']),
     );
@@ -1045,20 +1187,20 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'pointAId': serializer.toJson<int>(pointAId),
-      'pointBId': serializer.toJson<int>(pointBId),
-      'pathType': serializer.toJson<int>(pathType),
+      'id': serializer.toJson<String>(id),
+      'pointAId': serializer.toJson<String>(pointAId),
+      'pointBId': serializer.toJson<String>(pointBId),
+      'pathType': serializer.toJson<String>(pathType),
       'buildingId': serializer.toJson<int?>(buildingId),
       'route': serializer.toJson<String?>(route),
     };
   }
 
   MyPath copyWith({
-    int? id,
-    int? pointAId,
-    int? pointBId,
-    int? pathType,
+    String? id,
+    String? pointAId,
+    String? pointBId,
+    String? pathType,
     Value<int?> buildingId = const Value.absent(),
     Value<String?> route = const Value.absent(),
   }) => MyPath(
@@ -1110,12 +1252,13 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 }
 
 class MyPathsCompanion extends UpdateCompanion<MyPath> {
-  final Value<int> id;
-  final Value<int> pointAId;
-  final Value<int> pointBId;
-  final Value<int> pathType;
+  final Value<String> id;
+  final Value<String> pointAId;
+  final Value<String> pointBId;
+  final Value<String> pathType;
   final Value<int?> buildingId;
   final Value<String?> route;
+  final Value<int> rowid;
   const MyPathsCompanion({
     this.id = const Value.absent(),
     this.pointAId = const Value.absent(),
@@ -1123,24 +1266,28 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     this.pathType = const Value.absent(),
     this.buildingId = const Value.absent(),
     this.route = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   MyPathsCompanion.insert({
-    this.id = const Value.absent(),
-    required int pointAId,
-    required int pointBId,
-    required int pathType,
+    required String id,
+    required String pointAId,
+    required String pointBId,
+    required String pathType,
     this.buildingId = const Value.absent(),
     this.route = const Value.absent(),
-  }) : pointAId = Value(pointAId),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       pointAId = Value(pointAId),
        pointBId = Value(pointBId),
        pathType = Value(pathType);
   static Insertable<MyPath> custom({
-    Expression<int>? id,
-    Expression<int>? pointAId,
-    Expression<int>? pointBId,
-    Expression<int>? pathType,
+    Expression<String>? id,
+    Expression<String>? pointAId,
+    Expression<String>? pointBId,
+    Expression<String>? pathType,
     Expression<int>? buildingId,
     Expression<String>? route,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1149,16 +1296,18 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
       if (pathType != null) 'path_type': pathType,
       if (buildingId != null) 'building_id': buildingId,
       if (route != null) 'route': route,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   MyPathsCompanion copyWith({
-    Value<int>? id,
-    Value<int>? pointAId,
-    Value<int>? pointBId,
-    Value<int>? pathType,
+    Value<String>? id,
+    Value<String>? pointAId,
+    Value<String>? pointBId,
+    Value<String>? pathType,
     Value<int?>? buildingId,
     Value<String?>? route,
+    Value<int>? rowid,
   }) {
     return MyPathsCompanion(
       id: id ?? this.id,
@@ -1167,6 +1316,7 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
       pathType: pathType ?? this.pathType,
       buildingId: buildingId ?? this.buildingId,
       route: route ?? this.route,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -1174,22 +1324,25 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (pointAId.present) {
-      map['point_a_id'] = Variable<int>(pointAId.value);
+      map['point_a_id'] = Variable<String>(pointAId.value);
     }
     if (pointBId.present) {
-      map['point_b_id'] = Variable<int>(pointBId.value);
+      map['point_b_id'] = Variable<String>(pointBId.value);
     }
     if (pathType.present) {
-      map['path_type'] = Variable<int>(pathType.value);
+      map['path_type'] = Variable<String>(pathType.value);
     }
     if (buildingId.present) {
       map['building_id'] = Variable<int>(buildingId.value);
     }
     if (route.present) {
       map['route'] = Variable<String>(route.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -1202,7 +1355,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
           ..write('pointBId: $pointBId, ')
           ..write('pathType: $pathType, ')
           ..write('buildingId: $buildingId, ')
-          ..write('route: $route')
+          ..write('route: $route, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1227,21 +1381,29 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$BuildingsTableCreateCompanionBuilder =
     BuildingsCompanion Function({
-      Value<int> id,
+      required int id,
       required String name,
-      Value<int> floor,
-      Value<int> mainFloor,
+      required String fullName,
       required double lat,
       required double lng,
+      required int floor,
+      required int mainFloor,
+      Value<String?> description,
+      Value<String?> otherInfo,
+      Value<int> rowid,
     });
 typedef $$BuildingsTableUpdateCompanionBuilder =
     BuildingsCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<int> floor,
-      Value<int> mainFloor,
+      Value<String> fullName,
       Value<double> lat,
       Value<double> lng,
+      Value<int> floor,
+      Value<int> mainFloor,
+      Value<String?> description,
+      Value<String?> otherInfo,
+      Value<int> rowid,
     });
 
 class $$BuildingsTableFilterComposer
@@ -1263,13 +1425,8 @@ class $$BuildingsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get floor => $composableBuilder(
-    column: $table.floor,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get mainFloor => $composableBuilder(
-    column: $table.mainFloor,
+  ColumnFilters<String> get fullName => $composableBuilder(
+    column: $table.fullName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1280,6 +1437,26 @@ class $$BuildingsTableFilterComposer
 
   ColumnFilters<double> get lng => $composableBuilder(
     column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get floor => $composableBuilder(
+    column: $table.floor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get mainFloor => $composableBuilder(
+    column: $table.mainFloor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get otherInfo => $composableBuilder(
+    column: $table.otherInfo,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1303,13 +1480,8 @@ class $$BuildingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get floor => $composableBuilder(
-    column: $table.floor,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get mainFloor => $composableBuilder(
-    column: $table.mainFloor,
+  ColumnOrderings<String> get fullName => $composableBuilder(
+    column: $table.fullName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1320,6 +1492,26 @@ class $$BuildingsTableOrderingComposer
 
   ColumnOrderings<double> get lng => $composableBuilder(
     column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get floor => $composableBuilder(
+    column: $table.floor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get mainFloor => $composableBuilder(
+    column: $table.mainFloor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get otherInfo => $composableBuilder(
+    column: $table.otherInfo,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -1339,17 +1531,28 @@ class $$BuildingsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<int> get floor =>
-      $composableBuilder(column: $table.floor, builder: (column) => column);
-
-  GeneratedColumn<int> get mainFloor =>
-      $composableBuilder(column: $table.mainFloor, builder: (column) => column);
+  GeneratedColumn<String> get fullName =>
+      $composableBuilder(column: $table.fullName, builder: (column) => column);
 
   GeneratedColumn<double> get lat =>
       $composableBuilder(column: $table.lat, builder: (column) => column);
 
   GeneratedColumn<double> get lng =>
       $composableBuilder(column: $table.lng, builder: (column) => column);
+
+  GeneratedColumn<int> get floor =>
+      $composableBuilder(column: $table.floor, builder: (column) => column);
+
+  GeneratedColumn<int> get mainFloor =>
+      $composableBuilder(column: $table.mainFloor, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get otherInfo =>
+      $composableBuilder(column: $table.otherInfo, builder: (column) => column);
 }
 
 class $$BuildingsTableTableManager
@@ -1382,33 +1585,49 @@ class $$BuildingsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<int> floor = const Value.absent(),
-                Value<int> mainFloor = const Value.absent(),
+                Value<String> fullName = const Value.absent(),
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
+                Value<int> floor = const Value.absent(),
+                Value<int> mainFloor = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String?> otherInfo = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => BuildingsCompanion(
                 id: id,
                 name: name,
-                floor: floor,
-                mainFloor: mainFloor,
+                fullName: fullName,
                 lat: lat,
                 lng: lng,
+                floor: floor,
+                mainFloor: mainFloor,
+                description: description,
+                otherInfo: otherInfo,
+                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                required int id,
                 required String name,
-                Value<int> floor = const Value.absent(),
-                Value<int> mainFloor = const Value.absent(),
+                required String fullName,
                 required double lat,
                 required double lng,
+                required int floor,
+                required int mainFloor,
+                Value<String?> description = const Value.absent(),
+                Value<String?> otherInfo = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => BuildingsCompanion.insert(
                 id: id,
                 name: name,
-                floor: floor,
-                mainFloor: mainFloor,
+                fullName: fullName,
                 lat: lat,
                 lng: lng,
+                floor: floor,
+                mainFloor: mainFloor,
+                description: description,
+                otherInfo: otherInfo,
+                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>
@@ -1441,21 +1660,21 @@ typedef $$BuildingsTableProcessedTableManager =
     >;
 typedef $$LocationsTableCreateCompanionBuilder =
     LocationsCompanion Function({
-      Value<int> id,
-      required String name,
+      required String id,
       required double lat,
       required double lng,
       Value<int> floor,
       Value<int?> buildingId,
+      Value<int> rowid,
     });
 typedef $$LocationsTableUpdateCompanionBuilder =
     LocationsCompanion Function({
-      Value<int> id,
-      Value<String> name,
+      Value<String> id,
       Value<double> lat,
       Value<double> lng,
       Value<int> floor,
       Value<int?> buildingId,
+      Value<int> rowid,
     });
 
 class $$LocationsTableFilterComposer
@@ -1467,13 +1686,8 @@ class $$LocationsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1507,13 +1721,8 @@ class $$LocationsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1547,11 +1756,8 @@ class $$LocationsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
+  GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<double> get lat =>
       $composableBuilder(column: $table.lat, builder: (column) => column);
@@ -1596,35 +1802,35 @@ class $$LocationsTableTableManager
               () => $$LocationsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String> id = const Value.absent(),
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
                 Value<int> floor = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => LocationsCompanion(
                 id: id,
-                name: name,
                 lat: lat,
                 lng: lng,
                 floor: floor,
                 buildingId: buildingId,
+                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                required String name,
+                required String id,
                 required double lat,
                 required double lng,
                 Value<int> floor = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => LocationsCompanion.insert(
                 id: id,
-                name: name,
                 lat: lat,
                 lng: lng,
                 floor: floor,
                 buildingId: buildingId,
+                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>
@@ -1657,21 +1863,23 @@ typedef $$LocationsTableProcessedTableManager =
     >;
 typedef $$MyPathsTableCreateCompanionBuilder =
     MyPathsCompanion Function({
-      Value<int> id,
-      required int pointAId,
-      required int pointBId,
-      required int pathType,
+      required String id,
+      required String pointAId,
+      required String pointBId,
+      required String pathType,
       Value<int?> buildingId,
       Value<String?> route,
+      Value<int> rowid,
     });
 typedef $$MyPathsTableUpdateCompanionBuilder =
     MyPathsCompanion Function({
-      Value<int> id,
-      Value<int> pointAId,
-      Value<int> pointBId,
-      Value<int> pathType,
+      Value<String> id,
+      Value<String> pointAId,
+      Value<String> pointBId,
+      Value<String> pathType,
       Value<int?> buildingId,
       Value<String?> route,
+      Value<int> rowid,
     });
 
 class $$MyPathsTableFilterComposer
@@ -1683,22 +1891,22 @@ class $$MyPathsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
+  ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get pointAId => $composableBuilder(
+  ColumnFilters<String> get pointAId => $composableBuilder(
     column: $table.pointAId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get pointBId => $composableBuilder(
+  ColumnFilters<String> get pointBId => $composableBuilder(
     column: $table.pointBId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get pathType => $composableBuilder(
+  ColumnFilters<String> get pathType => $composableBuilder(
     column: $table.pathType,
     builder: (column) => ColumnFilters(column),
   );
@@ -1723,22 +1931,22 @@ class $$MyPathsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
+  ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get pointAId => $composableBuilder(
+  ColumnOrderings<String> get pointAId => $composableBuilder(
     column: $table.pointAId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get pointBId => $composableBuilder(
+  ColumnOrderings<String> get pointBId => $composableBuilder(
     column: $table.pointBId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get pathType => $composableBuilder(
+  ColumnOrderings<String> get pathType => $composableBuilder(
     column: $table.pathType,
     builder: (column) => ColumnOrderings(column),
   );
@@ -1763,16 +1971,16 @@ class $$MyPathsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
+  GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get pointAId =>
+  GeneratedColumn<String> get pointAId =>
       $composableBuilder(column: $table.pointAId, builder: (column) => column);
 
-  GeneratedColumn<int> get pointBId =>
+  GeneratedColumn<String> get pointBId =>
       $composableBuilder(column: $table.pointBId, builder: (column) => column);
 
-  GeneratedColumn<int> get pathType =>
+  GeneratedColumn<String> get pathType =>
       $composableBuilder(column: $table.pathType, builder: (column) => column);
 
   GeneratedColumn<int> get buildingId => $composableBuilder(
@@ -1812,12 +2020,13 @@ class $$MyPathsTableTableManager
               () => $$MyPathsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                Value<int> pointAId = const Value.absent(),
-                Value<int> pointBId = const Value.absent(),
-                Value<int> pathType = const Value.absent(),
+                Value<String> id = const Value.absent(),
+                Value<String> pointAId = const Value.absent(),
+                Value<String> pointBId = const Value.absent(),
+                Value<String> pathType = const Value.absent(),
                 Value<int?> buildingId = const Value.absent(),
                 Value<String?> route = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => MyPathsCompanion(
                 id: id,
                 pointAId: pointAId,
@@ -1825,15 +2034,17 @@ class $$MyPathsTableTableManager
                 pathType: pathType,
                 buildingId: buildingId,
                 route: route,
+                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
-                required int pointAId,
-                required int pointBId,
-                required int pathType,
+                required String id,
+                required String pointAId,
+                required String pointBId,
+                required String pathType,
                 Value<int?> buildingId = const Value.absent(),
                 Value<String?> route = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => MyPathsCompanion.insert(
                 id: id,
                 pointAId: pointAId,
@@ -1841,6 +2052,7 @@ class $$MyPathsTableTableManager
                 pathType: pathType,
                 buildingId: buildingId,
                 route: route,
+                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>

@@ -1,23 +1,20 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:watmap/backend/services/pour_db.dart';
+import 'package:watmap/frontend/app_strings.dart';
 import 'package:watmap/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../map_bloc/map_bloc.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';
 
-const String NEWUSER = 'Not yet';
-const String ERROR = 'error occurred';
-const String SUCCESS = 'db built, enjoy~';
-const String BUILDING = 'building db... takes';
-
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
   SettingsBloc()
     : super(
         SettingsState(
-          lastMapRefreshTime: NEWUSER,
-          lastUpdateTime: NEWUSER,
+          lastMapRefreshTime: AppStrings.newUser,
+          lastUpdateTime: AppStrings.newUser,
           weather: Weather.snowy,
           isBuilt: false,
           newUsr: true,
@@ -41,6 +38,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     if (state.isBuilt == false) return;
     getIt<MapBloc>().add(MapLoad());
     emit(state.copyWith(lastMapRefreshTime: _now()));
+    Fluttertoast.showToast(msg: "map refreshed");
   }
 
   Future<void> _onChangeWeather(
@@ -55,21 +53,20 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     UpdateDataEvent event,
     Emitter<SettingsState> emit,
   ) async {
-    if (state.isBuilt == false) return;
-    emit(state.copyWith(isBuilt: false));
-    _buildingTicker(emit);
+    Fluttertoast.showToast(msg: "start to build database...");
     bool isSuccess = await pourDb();
 
     if (isSuccess == true) {
+      Fluttertoast.showToast(msg: "database built!");
       emit(
-        state.copyWith(lastUpdateTime: SUCCESS, lastMapRefreshTime: SUCCESS),
+        state.copyWith(lastUpdateTime: AppStrings.success, lastMapRefreshTime: AppStrings.success),
       );
       add(RefreshMapEvent());
       emit(state.copyWith(lastUpdateTime: _now()));
     } else {
-      emit(state.copyWith(lastUpdateTime: ERROR, lastMapRefreshTime: ERROR));
+      Fluttertoast.showToast(msg: "failed to build db!");
+      emit(state.copyWith(lastUpdateTime: AppStrings.error, lastMapRefreshTime: AppStrings.error));
     }
-    emit(state.copyWith(isBuilt: true));
   }
 
   Future<void> _noNotNewUser(
@@ -77,21 +74,6 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     Emitter<SettingsState> emit,
   ) async {
     emit(state.copyWith(newUsr: false));
-  }
-
-  Future<void> _buildingTicker(Emitter<SettingsState> emit) async {
-    int counter = 0;
-    while (state.isBuilt == false) {
-      counter++;
-      emit(
-        state.copyWith(
-          lastUpdateTime: "$BUILDING $counter s",
-          lastMapRefreshTime: "$BUILDING $counter s",
-        ),
-      );
-      await Future.delayed(const Duration(seconds: 1));
-    }
-    return;
   }
 
   @override

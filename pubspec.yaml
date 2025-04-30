@@ -27,6 +27,7 @@ dependencies:
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
   flutter_map_tile_caching: ^10.1.1
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -49,4 +50,4 @@ flutter:
   assets:
     - assets/campusMap.png
     - assets/lang/appInfo.json
-    - config/properties.env
+    - config/.env

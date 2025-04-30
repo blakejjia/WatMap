@@ -18,9 +18,9 @@ class SupaService {
     return dat.map((e) => Location.fromJson(e)).toList();
   }
 
-  Future<List<RawPath>> getPaths() async {
+  Future<List<MyPath>> getPaths() async {
     List<Map<String, dynamic>>? dat = await db.from('paths').select();
-    return dat.map((e) => RawPath.fromJson(e)).toList();
+    return dat.map((e) => MyPath.fromJson(e)).toList();
   }
 
   Future<bool> reportPath(RawPath path) async {
@@ -28,7 +28,6 @@ class SupaService {
       await db.from('reports').insert(path.toJson());
       return true;
     } catch (e) {
-      print('Error reporting path: $e');
       return false;
     }
   }
@@ -41,7 +40,6 @@ class SupaService {
       });
       return true;
     } catch (e) {
-      print('Error reporting message: $e');
       return false;
     }
   }

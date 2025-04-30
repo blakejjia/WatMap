@@ -18,8 +18,8 @@ final class _MapFindRoute extends MapEvent {
   _MapFindRoute(this.start, this.end);
 }
 
-final class UpdateCameraState extends MapEvent {
+final class UpdateMapCameraState extends MapEvent {
   final MapCamera camera;
 
-  UpdateCameraState(this.camera);
+  UpdateMapCameraState(this.camera);
 }

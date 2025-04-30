@@ -5,18 +5,19 @@ class LocationRepository {
 
   LocationRepository(this.db);
 
-  Future<int> createLocation(LocationsCompanion location) {
+  Future<int> insertLocation(LocationsCompanion location) {
     return db.into(db.locations).insert(location);
   }
 
-  Future<Location?> getLocation(int building, int floor) async {
-    return (db.select(db.locations)
-          ..where((tbl) => tbl.buildingId.equals(building))
-          ..where((tbl) => tbl.floor.equals(floor)))
-        .getSingleOrNull();
+  Future<int> insertAllLocations(List<Location> locations) {
+    return db.batch((batch) {
+      for (var location in locations) {
+        batch.insert(db.locations, location);
+      }
+    }).then((_) => locations.length);
   }
 
-  Future<Location?> readLocation(int id) {
+  Future<Location?> readLocation(String id) {
     return (db.select(db.locations)
       ..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
   }
@@ -29,7 +30,7 @@ class LocationRepository {
     return db.update(db.locations).replace(location);
   }
 
-  Future<int> deleteLocation(int id) {
+  Future<int> deleteLocation(String id) {
     return (db.delete(db.locations)..where((tbl) => tbl.id.equals(id))).go();
   }
 

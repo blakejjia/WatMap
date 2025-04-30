@@ -6,11 +6,19 @@ class PathRepository {
 
   PathRepository(this.db);
 
-  Future<int> createPath(MyPathsCompanion path) {
+  Future<int> insertPath(MyPathsCompanion path) {
     return db.into(db.myPaths).insert(path);
   }
 
-  Future<MyPath?> readPath(int id) {
+  Future<int> insertAllPaths(List<MyPath> paths) {
+    return db.batch((batch) {
+      for (var path in paths) {
+        batch.insert(db.myPaths, path);
+      }
+    }).then((_) => paths.length);
+  }
+
+  Future<MyPath?> readPath(String id) {
     return (db.select(db.myPaths)
       ..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
   }
@@ -23,7 +31,7 @@ class PathRepository {
     return db.update(db.myPaths).replace(path);
   }
 
-  Future<int> deletePath(int id) {
+  Future<int> deletePath(String id) {
     return (db.delete(db.myPaths)..where((tbl) => tbl.id.equals(id))).go();
   }
 

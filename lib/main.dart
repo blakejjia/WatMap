@@ -14,7 +14,7 @@ import 'backend/db/database.dart';
 import 'backend/repositories/building.dart';
 import 'backend/repositories/location.dart';
 import 'backend/repositories/path.dart';
-import 'backend/services/SupaService.dart';
+import 'backend/services/supa_service.dart';
 import 'frontend/blocs/map_bloc/map_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -26,7 +26,7 @@ void main() async {
 
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: "config/properties.env");
+  await dotenv.load(fileName: "config/.env");
   await FMTCObjectBoxBackend().initialise();
   await FMTCStore('mapStore').manage.create();
   HydratedBloc.storage = await HydratedStorage.build(
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<MapBloc>(create: (context) => getIt<MapBloc>()),
         BlocProvider<SettingsBloc>(create: (context) => getIt<SettingsBloc>()),
-        BlocProvider(create: (context) => ReportBloc()),
+        BlocProvider<ReportBloc>(create: (context) => getIt<ReportBloc>()),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {

@@ -17,18 +17,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       body: Stack(
         children: [
-          BlocConsumer<SettingsBloc, SettingsState>(
-            listener: (context, state) {
-              if (state.isBuilt == false) {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.lastMapRefreshTime),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
+          BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               if (state.newUsr) {
                 return const WelcomeView();

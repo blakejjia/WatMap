@@ -2,14 +2,8 @@ part of 'algorithms.dart';
 
 Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   // Real start from the main floor of each building
-  Location? locationA = await getIt<LocationRepository>().getLocation(
-    start.id,
-    start.mainFloor,
-  );
-  Location? locationB = await getIt<LocationRepository>().getLocation(
-    end.id,
-    end.mainFloor,
-  );
+  Location? locationA = _getLocationFromBuilding(start, map);
+  Location? locationB = _getLocationFromBuilding(end, map);
   if (locationA == null || locationB == null) {
     return null;
   }
@@ -116,4 +110,10 @@ class LocationAndDistance {
   String toString() {
     return '$distance: $location';
   }
+}
+
+_getLocationFromBuilding(Building building, MyMap map) {
+  return map.locations.firstWhere(
+    (element) => element.id == "${building.name}_F${building.mainFloor}",
+  );
 }

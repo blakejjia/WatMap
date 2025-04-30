@@ -3,15 +3,12 @@ import 'package:drift/drift.dart';
 @DataClassName('Location')
 class Locations extends Table {
   /// Unique id of the location
-  IntColumn get id => integer().autoIncrement()();
-
-  /// Name of the location
-  TextColumn get name => text()();
+  TextColumn get id => text()();
 
   /// Position of the location
   RealColumn get lat => real()();
   RealColumn get lng => real()();
-
+  
   /// which floor
   IntColumn get floor => integer().withDefault(Constant(0))();
 

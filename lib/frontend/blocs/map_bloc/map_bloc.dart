@@ -20,11 +20,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<MapLoad>(_mapLoad);
     on<MapSelectBuilding>(_mapSelectBuilding);
     on<_MapFindRoute>(_mapFindRoute);
-    on<UpdateCameraState>(_mapChangeZoom);
+    on<UpdateMapCameraState>(_mapChangeZoom);
     add(MapLoad());
   }
 
-  void _mapChangeZoom(UpdateCameraState event, Emitter<MapState> emit) {
+  void _mapChangeZoom(UpdateMapCameraState event, Emitter<MapState> emit) {
     emit(state.copyWith(camera: event.camera));
   }
 
