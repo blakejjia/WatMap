@@ -23,7 +23,7 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   }
 
   // Return route
-  final route = MyRoute.auto(paths, locationA, locationB, map);
+  final route = MyRoute.auto(paths, locations, locationA, locationB, map);
   return route;
 }
 
@@ -113,7 +113,12 @@ class LocationAndDistance {
 }
 
 _getLocationFromBuilding(Building building, MyMap map) {
-  return map.locations.firstWhere(
-    (element) => element.id == "${building.name}_F${building.mainFloor}",
-  );
+ return map.locations.firstWhere(
+   (element) =>
+       element.building_id == building.id &&
+       element.floor == building.mainFloor,
+   orElse: () => map.locations.firstWhere(
+     (element) => element.building_id == building.id,
+   ),
+ );
 }

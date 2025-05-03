@@ -1,4 +1,6 @@
 // ignore_for_file: constant_identifier_names
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 const String PATH_OUTSIDE = "OUTSIDE";
@@ -19,8 +21,19 @@ class MyPaths extends Table {
 
   /// Type of the path
   TextColumn get pathType => text()();
-  IntColumn get buildingId => integer().nullable()();
+  TextColumn get buildingId => text().nullable()();
 
   /// optional if there is a route
-  TextColumn get route => text().nullable()();
+  TextColumn get route => text().map(const JsonConverter()).nullable()();
 }
+
+class JsonConverter extends TypeConverter<Map<String, dynamic>, String> {
+  const JsonConverter();
+
+  @override
+  Map<String, dynamic> fromSql(String fromDb) => jsonDecode(fromDb);
+
+  @override
+  String toSql(Map<String, dynamic> value) => jsonEncode(value);
+}
+

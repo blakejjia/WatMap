@@ -43,14 +43,6 @@ class _OSMapState extends State<OSMap> {
 
     return Stack(
       children: [
-        BlocBuilder<MapBloc, MapState>(
-          builder: (context, state) {
-            if (state is MapTriedFoundRoute) {
-              return dialogBox(state, context);
-            }
-            return const SizedBox();
-          },
-        ),
         FlutterMap(
           mapController: controller,
           options: MapOptions(
@@ -68,6 +60,14 @@ class _OSMapState extends State<OSMap> {
             ),
             BlocBuilder<MapBloc, MapState>(
               builder: (context, state) {
+                if (state is MapTriedFoundRoute) {
+                  return PolylineLayer(polylines: _paths(state, context));
+                }
+                return const SizedBox();
+              },
+            ),
+            BlocBuilder<MapBloc, MapState>(
+              builder: (context, state) {
                 final markers = _buildingMarkers(
                   context.read<MapBloc>().state,
                   context,
@@ -76,6 +76,14 @@ class _OSMapState extends State<OSMap> {
               },
             ),
           ],
+        ),
+        BlocBuilder<MapBloc, MapState>(
+          builder: (context, state) {
+            if (state is MapTriedFoundRoute) {
+              return dialogBox(state, context);
+            }
+            return const SizedBox();
+          },
         ),
       ],
     );

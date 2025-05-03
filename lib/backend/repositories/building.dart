@@ -16,13 +16,13 @@ class BuildingRepository {
     return true;
   }
 
-  Future<int> getIdByName(String name) async {
+  Future<String?> getIdByName(String name) async {
     final building = await (db.select(db.buildings)
       ..where((tbl) => tbl.name.equals(name))).getSingleOrNull();
-    return building?.id ?? -1;
+    return building?.id;
   }
 
-  Future<Building?> readBuilding(int id) {
+  Future<Building?> readBuilding(String id) {
     return (db.select(db.buildings)
       ..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
   }
@@ -35,7 +35,7 @@ class BuildingRepository {
     return db.update(db.buildings).replace(building);
   }
 
-  Future<int> deleteBuilding(int id) {
+  Future<int> deleteBuilding(String id) {
     return (db.delete(db.buildings)..where((tbl) => tbl.id.equals(id))).go();
   }
 

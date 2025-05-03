@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 class Locations extends Table {
   /// Unique id of the location
   TextColumn get id => text()();
+  TextColumn get name => text()();
 
   /// Position of the location
   RealColumn get lat => real()();
@@ -13,5 +14,5 @@ class Locations extends Table {
   IntColumn get floor => integer().withDefault(Constant(0))();
 
   /// If a location is inside a building, here should have its id.
-  IntColumn get buildingId => integer().nullable()();
+  TextColumn get building_id => text().nullable()();
 }

@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 @DataClassName('Building')
 class Buildings extends Table {
   /// Unique id of the Building
-  IntColumn get id => integer()();
+  TextColumn get id => text()();
 
   /// Name of the building
   TextColumn get name => text()();
@@ -14,7 +14,6 @@ class Buildings extends Table {
   RealColumn get lng => real()();
 
   /// Floor info
-  IntColumn get floor => integer()();
   IntColumn get mainFloor => integer()();
 
   /// other Info

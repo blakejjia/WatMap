@@ -1,11 +1,9 @@
-import 'dart:convert';
-import 'dart:math';
-import 'package:vector_math/vector_math.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import '../../backend/db/database.dart';
 import '../../backend/model/mid/my_map.dart';
-import 'package:uuid/uuid.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -17,26 +15,30 @@ import '../blocs/map_bloc/map_bloc.dart';
 part 'find_route.dart';
 part 'format_route_path.dart';
 
-typedef Point = Vector2;
-typedef Segment = List<Point>;
-
 MyPath createMyPath(Location locA, Location locB, MyMap map) {
-  return map.paths.firstWhere(
-    (element) => (element.pointAId == locA.id && element.pointBId == locB.id),
-    orElse:
-        () => MyPath(
-          id: Uuid().v4(),
-          pointAId: locA.id,
-          pointBId: locB.id,
-          pathType: PATH_OUTSIDE,
-        ),
-  );
-}
+  for (final element in map.paths) {
+    // 正向匹配
+    if (element.pointAId == locA.id && element.pointBId == locB.id) {
+      return element;
+    }
 
-extension LocationExtensions on Location {
-  double distanceTo(Location a) {
-    return sqrt(pow(lat - a.lat, 2) + pow(lng - a.lng, 2));
+    // 反向匹配
+    if (element.pointAId == locB.id && element.pointBId == locA.id) {
+      List<dynamic> originalRoute = element.route?["route"] ?? [];
+      List<dynamic> reversedRoute = List.from(originalRoute.reversed);
+
+      return MyPath(
+        id: const Uuid().v4(),
+        pointAId: locA.id,
+        pointBId: locB.id,
+        buildingId: element.buildingId,
+        pathType: element.pathType,
+        route: {"route": reversedRoute},
+      );
+    }
   }
+
+  throw Exception("No path found between ${locA.id} and ${locB.id}");
 }
 
 extension AlgorPath on MyPath {
@@ -50,7 +52,7 @@ extension AlgorPath on MyPath {
       case PATH_BRIDGE:
         return 1;
       case PATH_BRIEFLY_OUTSIDE:
-        return 1 + (AppStrings.outsideCostMultiplier - 1) * 0.5;
+        return 1 + (AppStrings.outsideCostMultiplier - 1) * 0.2;
       default:
         return AppStrings.outsideCostMultiplier;
     }
@@ -64,25 +66,17 @@ extension AlgorPath on MyPath {
     return pathType == PATH_BRIDGE || pathType == PATH_TUNNEL;
   }
 
-  List<Segment> getRoute(MyMap map) {
+  List<LatLng> getRoute(MyMap map) {
     if (pathType == PATH_STAIRS) {
       return [];
     }
-    if (route == null || route == "null") {
+    if (route == null || route!["route"] == null || route!["route"].isEmpty) {
       final a = map.locations.firstWhere((e) => e.id == pointAId);
       final b = map.locations.firstWhere((e) => e.id == pointBId);
-      return [
-        [Point(a.lat, a.lng), Point(b.lat, b.lng)],
-      ];
+      return [LatLng(a.lat, a.lng), LatLng(b.lat, b.lng)];
     }
-    return (jsonDecode(route!) as List)
-        .map<Segment>(
-          (seg) =>
-              (seg as List)
-                  .map<Point>((q) => Point(q[0].toDouble(), q[1].toDouble()))
-                  .toList(),
-        )
-        .where((seg) => (seg[0] - seg[1]).length > AppStrings.ptEps)
+    return (route!["route"] as List)
+        .map<LatLng>((p) => LatLng(p[0], p[1]))
         .toList();
   }
 
@@ -93,7 +87,11 @@ extension AlgorPath on MyPath {
       return (a.floor - b.floor).abs() * 30;
     }
     // Otherwise use the Euclidean distance.
-    double cost = a.distanceTo(b); // on need to use real, cause low speed
+    double cost = Distance().as(
+      LengthUnit.Meter,
+      LatLng(a.lat, a.lng),
+      LatLng(b.lat, b.lng),
+    );
     // Penalize going outside.
     cost *= typeMultiplier();
     return cost;
@@ -109,8 +107,12 @@ extension AlgorPath on MyPath {
     // Otherwise use the Euclidean distance.
     final route = getRoute(map);
     double dist = 0;
-    for (final seg in route) {
-      dist += seg[0].distanceTo(seg[1]);
+    for (int i = 0; i < route.length - 1; i++) {
+      dist += Distance().as(
+        LengthUnit.Meter,
+        route[i],
+        route[i+1],
+      );
     }
     double time = dist / AppStrings.walkSpeed;
     return time;
@@ -118,8 +120,8 @@ extension AlgorPath on MyPath {
 }
 
 extension AlgorRoute on MyRoute {
-  List<Segment> getRoute(MyMap map) {
-    List<Segment> route = [];
+  List<LatLng> getRoute(MyMap map) {
+    List<LatLng> route = [];
     for (final p in paths) {
       if (p.pathType == PATH_STAIRS) continue;
       route.addAll(p.getRoute(map));

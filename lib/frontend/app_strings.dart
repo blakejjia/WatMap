@@ -10,5 +10,5 @@ class AppStrings {
 
   static const double stairsCost = 30; // depends on usr settings, typically ~30
   static const double outsideCostMultiplier = 4; // if sunny, 1; if snow, this number
-  static const double walkSpeed = 4; // on map, needs more investigation.
+  static const double walkSpeed = 1.5; // usually 1.5m/s
 }

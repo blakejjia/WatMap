@@ -10,16 +10,16 @@ List<Marker> _buildingMarkers(MapState state, BuildContext context) {
         return Marker(
           point: LatLng(building.lat, building.lng),
           alignment: Alignment.center,
-          height: 80,
-          width: 40,
+          height: 20,
+          width: 20,
           child: _buildings(building, scalar, rotation, context, false),
         );
       }),
       ...state.selectedBuildings.map((building) {
         return Marker(
           point: LatLng(building!.lat, building.lng),
-          width: 40,
-          height: 80,
+          width: 20,
+          height: 20,
           child: _buildings(building, scalar, rotation, context, true),
         );
       }),
@@ -31,7 +31,7 @@ List<Marker> _buildingMarkers(MapState state, BuildContext context) {
 
 Widget _buildings(
   Building building,
-  double scaler,
+  double scalar,
   double rotation,
   BuildContext context,
   bool isSelected,
@@ -40,33 +40,36 @@ Widget _buildings(
     alignment: Alignment.center,
     transform:
         Matrix4.identity()
-          ..scale(scaler)
+          ..scale(scalar)
           ..rotateZ(rotation),
-    child: Stack(
-      children: [
-        IconButton(
-          icon: Icon(
-            Icons.location_on,
+    child: InkWell(
+      onTap: () {
+        context.read<MapBloc>().add(MapSelectBuilding(building));
+      },
+      child: Stack(
+        children: [
+          Icon(
+            Icons.circle,
             color:
                 isSelected
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).colorScheme.primary,
             size: 20,
           ),
-          onPressed: () {
-            context.read<MapBloc>().add(MapSelectBuilding(building));
-          },
-        ),
-        Positioned(
-          top: 30,
-          left: 15,
-          child: Text(
-            building.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+
+          Center(
+            child: Text(
+              building.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 7,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

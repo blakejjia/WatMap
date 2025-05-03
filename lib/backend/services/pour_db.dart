@@ -22,7 +22,6 @@ Future<bool> pourDb() async {
   } catch (e) {
     return false;
   }
-
   return true;
 }
 
