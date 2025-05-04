@@ -2,6 +2,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
+import 'package:watmap/frontend/pages/map_page/views/format_string.dart';
 import '../../backend/db/database.dart';
 import '../../backend/model/mid/my_map.dart';
 
@@ -97,6 +98,30 @@ extension AlgorPath on MyPath {
     return cost;
   }
 
+  double getMeter(MyMap map) {
+    if (pathType == PATH_STAIRS) {
+      return 0;
+    }
+    if (route == null || route!["route"] == null || route!["route"].isEmpty) {
+      final a = map.locations.firstWhere((e) => e.id == locAId);
+      final b = map.locations.firstWhere((e) => e.id == locBId);
+      return Distance().as(
+        LengthUnit.Meter,
+        LatLng(a.lat, a.lng),
+        LatLng(b.lat, b.lng),
+      );
+    }
+    double dist = 0;
+    for (int i = 0; i < route!["route"].length - 1; i++) {
+      dist += Distance().as(
+        LengthUnit.Meter,
+        LatLng(route!["route"][i][0], route!["route"][i][1]),
+        LatLng(route!["route"][i+1][0], route!["route"][i+1][1]),
+      );
+    }
+    return dist;
+  }
+
   double getTime(MyMap map) {
     final a = map.locations.firstWhere((e) => e.id == locAId);
     final b = map.locations.firstWhere((e) => e.id == locBId);
@@ -133,6 +158,14 @@ extension AlgorRoute on MyRoute {
     double time = 0;
     for (final path in paths) {
       time += path.getTime(map);
+    }
+    return time;
+  }
+
+  double getMeter(MyMap map) {
+    double time = 0;
+    for (final path in paths) {
+      time += path.getMeter(map);
     }
     return time;
   }

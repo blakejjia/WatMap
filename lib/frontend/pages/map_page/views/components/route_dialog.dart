@@ -68,9 +68,7 @@ Widget dialogBox(MapTriedFoundRoute state, BuildContext context) {
                 ),
               ),
               Text(
-                (state.route.time != null)
-                    ? "Time: ${Duration(seconds: state.route.time!.round()).inMinutes} minutes"
-                    : "Cannot calculate time",
+                state.route.toTimeString(state.map),
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,

@@ -62,7 +62,7 @@ Widget _buildings(
               building.name,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 7,
+                fontSize: building.name.length <= 3 ? 7 : 3.5,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

@@ -18,12 +18,15 @@ Future<MyRoute?> findRoute(MyMap map, Building start, Building end) async {
   }
 
   // Check if the last path is a "STAIR" and remove it if so
+  if (paths.isNotEmpty && paths.first.pathType == PATH_STAIRS) {
+    paths.removeAt(0);
+  }
   if (paths.isNotEmpty && paths.last.pathType == PATH_STAIRS) {
     paths.removeLast();
   }
 
   // Return route
-  final route = MyRoute.auto(paths, locations, locationA, locationB, map);
+  final route = MyRoute(paths, locations, locationA, locationB);
   return route;
 }
 

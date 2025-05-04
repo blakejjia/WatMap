@@ -1,32 +1,29 @@
 part of '../route_page.dart';
 
 Widget _pathCard(MyPath path, MyMap map, int index) {
-  index = index - 1;
-  return Card(
-    margin: EdgeInsets.fromLTRB(20, 6, 20, 6),
-    child: Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        children: [
-          Text(
-            "At ${path.locAId}",
-            style: TextStyle(fontSize: 18),
-          ),
-          Text(_parsePath(path), style: TextStyle(fontSize: 18, color: Colors.brown)),
-          Text(
-            "to ${path.locBId}",
-            style: TextStyle(fontSize: 18),
-          ),
-        ],
+  return Column(
+    children: [
+      Text(
+        "At ${path.toLocAString(map)}",
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       ),
-    ),
+      Text(
+        _parsePath(path),
+        style: TextStyle(fontSize: 18, color: Colors.brown),
+      ),
+      Text(
+        "to ${path.toLocBString(map)}",
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+      ),
+      Divider(),
+    ],
   );
 }
 
 Widget _startCard(MyPath path, MyMap map) {
   return ListTile(
     title: Text(
-      "Starts your journey at ${path.locAId}",
+      "Starts your journey at ${path.toLocAString(map)}",
       style: TextStyle(fontSize: 18),
     ),
   );
@@ -34,8 +31,18 @@ Widget _startCard(MyPath path, MyMap map) {
 
 Widget _endCard(MyPath path, MyMap map) {
   return ListTile(
-    title: Text("And you will arrive ${path.locBId} 😊"),
+    title: Text(
+      "And you will arrive ${path.toLocBString(map)} 😊",
+      style: TextStyle(fontSize: 18),
+    ),
   );
+}
+
+Widget _construction() {
+  return Text("This page is Still under construction!", style: TextStyle(
+    fontSize: 18,
+    color: Colors.red,
+  ),);
 }
 
 String _parsePath(MyPath path) {

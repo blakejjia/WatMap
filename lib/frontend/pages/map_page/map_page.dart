@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:watmap/frontend/pages/new_map_page/components/actions.dart';
-import 'package:watmap/frontend/pages/new_map_page/views/map.dart';
+import 'package:watmap/frontend/pages/map_page/views/map.dart';
+
+import 'components/actions.dart';
 
 class WatMapPage extends StatelessWidget {
   const WatMapPage({super.key});

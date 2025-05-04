@@ -33,21 +33,25 @@ class SettingsPage extends StatelessWidget {
               // ========== basic settings ==========
               GroupedTile(
                 children: [
-                  ListTile(
-                    title: Text("refresh map"),
-                    leading: Icon(Icons.refresh),
-                    trailing: Text(state.lastMapRefreshTime),
+                  InkWell(
                     onTap: () {
                       context.read<SettingsBloc>().add(RefreshMapEvent());
                     },
+                    child: ListTile(
+                      title: Text("refresh map"),
+                      leading: Icon(Icons.refresh),
+                      trailing: Text(state.lastMapRefreshTime),
+                    ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.cloud_download),
-                    title: Text("update data"),
-                    trailing: Text(state.lastUpdateTime),
+                  InkWell(
                     onTap: () {
                       context.read<SettingsBloc>().add(UpdateDataEvent());
                     },
+                    child: ListTile(
+                      leading: Icon(Icons.cloud_download),
+                      title: Text("update data"),
+                      trailing: Text(state.lastUpdateTime),
+                    ),
                   ),
                 ],
               ),
@@ -55,9 +59,7 @@ class SettingsPage extends StatelessWidget {
               SizedBox(height: 20),
               GroupedTile(
                 children: [
-                  ListTile(
-                    leading: Icon(Icons.add_location_alt),
-                    title: Text("Tell us a undiscovered route"),
+                  InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -66,6 +68,10 @@ class SettingsPage extends StatelessWidget {
                         ),
                       );
                     },
+                    child: ListTile(
+                      leading: Icon(Icons.add_location_alt),
+                      title: Text("Tell us a undiscovered route"),
+                    ),
                   ),
                 ],
               ),
@@ -74,19 +80,21 @@ class SettingsPage extends StatelessWidget {
               SizedBox(height: 20),
               GroupedTile(
                 children: [
-                  ListTile(
-                    leading: Icon(Icons.info_outline),
-                    title: Text("Software information"),
+                  InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const InfoView()),
+                        MaterialPageRoute(
+                          builder: (context) => const InfoView(),
+                        ),
                       );
                     },
+                    child: ListTile(
+                      leading: Icon(Icons.info_outline),
+                      title: Text("Software information"),
+                    ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text("Send us a message"),
+                  InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -95,6 +103,10 @@ class SettingsPage extends StatelessWidget {
                         ),
                       );
                     },
+                    child: ListTile(
+                      leading: Icon(Icons.message),
+                      title: Text("Send us a message"),
+                    ),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:watmap/frontend/pages/map_page/views/format_string.dart';
 import '../../../../backend/model/models.dart';
 import '../../../blocs/map_bloc/map_bloc.dart';
 
@@ -15,8 +16,8 @@ class RoutePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "From ${route.paths[0].locAId} "
-          "to ${route.paths[route.paths.length - 1].locBId}",
+          "From ${route.paths[0].toLocAString(map)} "
+          "to ${route.paths[route.paths.length - 1].toLocBString(map)}",
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -24,7 +25,12 @@ class RoutePage extends StatelessWidget {
         itemCount: route.paths.length + 2,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return _startCard(route.paths[0], map);
+            return Column(
+              children: [
+                _construction(),
+                _startCard(route.paths[0], map),
+              ],
+            );
           } else if (index == route.paths.length + 1) {
             return _endCard(route.paths[route.paths.length - 1], map);
           } else {

@@ -7,6 +7,7 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:watmap/backend/db/database.dart';
 import 'package:watmap/frontend/blocs/map_bloc/map_bloc.dart';
+import 'package:watmap/frontend/pages/map_page/views/format_string.dart';
 import 'package:watmap/main.dart';
 
 import '../../../algorithm/algorithms.dart';
