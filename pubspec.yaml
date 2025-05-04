@@ -48,6 +48,5 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   assets:
-    - assets/campusMap.png
     - assets/lang/appInfo.json
     - config/.env
