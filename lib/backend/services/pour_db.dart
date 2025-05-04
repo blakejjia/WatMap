@@ -19,7 +19,9 @@ Future<bool> pourDb() async {
     await getIt<PathRepository>().insertAllPaths(
       await getIt<SupaService>().getPaths(),
     );
-  } catch (e) {
+  } catch (e, stack) {
+    print(e);
+    print(stack);
     return false;
   }
   return true;

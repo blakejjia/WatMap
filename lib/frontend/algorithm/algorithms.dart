@@ -18,19 +18,19 @@ part 'format_route_path.dart';
 MyPath createMyPath(Location locA, Location locB, MyMap map) {
   for (final element in map.paths) {
     // 正向匹配
-    if (element.pointAId == locA.id && element.pointBId == locB.id) {
+    if (element.locAId == locA.id && element.locBId == locB.id) {
       return element;
     }
 
     // 反向匹配
-    if (element.pointAId == locB.id && element.pointBId == locA.id) {
+    if (element.locAId == locB.id && element.locBId == locA.id) {
       List<dynamic> originalRoute = element.route?["route"] ?? [];
       List<dynamic> reversedRoute = List.from(originalRoute.reversed);
 
       return MyPath(
         id: const Uuid().v4(),
-        pointAId: locA.id,
-        pointBId: locB.id,
+        locAId: locA.id,
+        locBId: locB.id,
         buildingId: element.buildingId,
         pathType: element.pathType,
         route: {"route": reversedRoute},
@@ -71,8 +71,8 @@ extension AlgorPath on MyPath {
       return [];
     }
     if (route == null || route!["route"] == null || route!["route"].isEmpty) {
-      final a = map.locations.firstWhere((e) => e.id == pointAId);
-      final b = map.locations.firstWhere((e) => e.id == pointBId);
+      final a = map.locations.firstWhere((e) => e.id == locAId);
+      final b = map.locations.firstWhere((e) => e.id == locBId);
       return [LatLng(a.lat, a.lng), LatLng(b.lat, b.lng)];
     }
     return (route!["route"] as List)
@@ -81,8 +81,8 @@ extension AlgorPath on MyPath {
   }
 
   double getCost(MyMap map) {
-    final a = map.locations.firstWhere((e) => e.id == pointAId);
-    final b = map.locations.firstWhere((e) => e.id == pointBId);
+    final a = map.locations.firstWhere((e) => e.id == locAId);
+    final b = map.locations.firstWhere((e) => e.id == locBId);
     if (pathType == PATH_STAIRS) {
       return (a.floor - b.floor).abs() * 30;
     }
@@ -98,8 +98,8 @@ extension AlgorPath on MyPath {
   }
 
   double getTime(MyMap map) {
-    final a = map.locations.firstWhere((e) => e.id == pointAId);
-    final b = map.locations.firstWhere((e) => e.id == pointBId);
+    final a = map.locations.firstWhere((e) => e.id == locAId);
+    final b = map.locations.firstWhere((e) => e.id == locBId);
     if (pathType == PATH_STAIRS) {
       int floorDifference = (a.floor - b.floor).abs();
       return 50 + (floorDifference - 1) * 30;

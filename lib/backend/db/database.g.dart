@@ -78,17 +78,15 @@ class $BuildingsTable extends Buildings
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _otherInfoMeta = const VerificationMeta(
-    'otherInfo',
-  );
   @override
-  late final GeneratedColumn<String> otherInfo = GeneratedColumn<String>(
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+  otherInfo = GeneratedColumn<String>(
     'other_info',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-  );
+  ).withConverter<Map<String, dynamic>?>($BuildingsTable.$converterotherInfon);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -166,12 +164,6 @@ class $BuildingsTable extends Buildings
         ),
       );
     }
-    if (data.containsKey('other_info')) {
-      context.handle(
-        _otherInfoMeta,
-        otherInfo.isAcceptableOrUnknown(data['other_info']!, _otherInfoMeta),
-      );
-    }
     return context;
   }
 
@@ -215,9 +207,11 @@ class $BuildingsTable extends Buildings
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       ),
-      otherInfo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}other_info'],
+      otherInfo: $BuildingsTable.$converterotherInfon.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}other_info'],
+        ),
       ),
     );
   }
@@ -226,6 +220,11 @@ class $BuildingsTable extends Buildings
   $BuildingsTable createAlias(String alias) {
     return $BuildingsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<Map<String, dynamic>, String> $converterotherInfo =
+      const JsonConverter();
+  static TypeConverter<Map<String, dynamic>?, String?> $converterotherInfon =
+      NullAwareTypeConverter.wrap($converterotherInfo);
 }
 
 class Building extends DataClass implements Insertable<Building> {
@@ -245,7 +244,7 @@ class Building extends DataClass implements Insertable<Building> {
 
   /// other Info
   final String? description;
-  final String? otherInfo;
+  final Map<String, dynamic>? otherInfo;
   const Building({
     required this.id,
     required this.name,
@@ -269,7 +268,9 @@ class Building extends DataClass implements Insertable<Building> {
       map['description'] = Variable<String>(description);
     }
     if (!nullToAbsent || otherInfo != null) {
-      map['other_info'] = Variable<String>(otherInfo);
+      map['other_info'] = Variable<String>(
+        $BuildingsTable.$converterotherInfon.toSql(otherInfo),
+      );
     }
     return map;
   }
@@ -306,7 +307,7 @@ class Building extends DataClass implements Insertable<Building> {
       lng: serializer.fromJson<double>(json['lng']),
       mainFloor: serializer.fromJson<int>(json['mainFloor']),
       description: serializer.fromJson<String?>(json['description']),
-      otherInfo: serializer.fromJson<String?>(json['otherInfo']),
+      otherInfo: serializer.fromJson<Map<String, dynamic>?>(json['otherInfo']),
     );
   }
   @override
@@ -320,7 +321,7 @@ class Building extends DataClass implements Insertable<Building> {
       'lng': serializer.toJson<double>(lng),
       'mainFloor': serializer.toJson<int>(mainFloor),
       'description': serializer.toJson<String?>(description),
-      'otherInfo': serializer.toJson<String?>(otherInfo),
+      'otherInfo': serializer.toJson<Map<String, dynamic>?>(otherInfo),
     };
   }
 
@@ -332,7 +333,7 @@ class Building extends DataClass implements Insertable<Building> {
     double? lng,
     int? mainFloor,
     Value<String?> description = const Value.absent(),
-    Value<String?> otherInfo = const Value.absent(),
+    Value<Map<String, dynamic>?> otherInfo = const Value.absent(),
   }) => Building(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -405,7 +406,7 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
   final Value<double> lng;
   final Value<int> mainFloor;
   final Value<String?> description;
-  final Value<String?> otherInfo;
+  final Value<Map<String, dynamic>?> otherInfo;
   final Value<int> rowid;
   const BuildingsCompanion({
     this.id = const Value.absent(),
@@ -466,7 +467,7 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
     Value<double>? lng,
     Value<int>? mainFloor,
     Value<String?>? description,
-    Value<String?>? otherInfo,
+    Value<Map<String, dynamic>?>? otherInfo,
     Value<int>? rowid,
   }) {
     return BuildingsCompanion(
@@ -507,7 +508,9 @@ class BuildingsCompanion extends UpdateCompanion<Building> {
       map['description'] = Variable<String>(description.value);
     }
     if (otherInfo.present) {
-      map['other_info'] = Variable<String>(otherInfo.value);
+      map['other_info'] = Variable<String>(
+        $BuildingsTable.$converterotherInfon.toSql(otherInfo.value),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -963,23 +966,19 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _pointAIdMeta = const VerificationMeta(
-    'pointAId',
-  );
+  static const VerificationMeta _locAIdMeta = const VerificationMeta('locAId');
   @override
-  late final GeneratedColumn<String> pointAId = GeneratedColumn<String>(
-    'point_a_id',
+  late final GeneratedColumn<String> locAId = GeneratedColumn<String>(
+    'loc_a_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _pointBIdMeta = const VerificationMeta(
-    'pointBId',
-  );
+  static const VerificationMeta _locBIdMeta = const VerificationMeta('locBId');
   @override
-  late final GeneratedColumn<String> pointBId = GeneratedColumn<String>(
-    'point_b_id',
+  late final GeneratedColumn<String> locBId = GeneratedColumn<String>(
+    'loc_b_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -1019,8 +1018,8 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    pointAId,
-    pointBId,
+    locAId,
+    locBId,
     pathType,
     buildingId,
     route,
@@ -1042,21 +1041,21 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('point_a_id')) {
+    if (data.containsKey('loc_a_id')) {
       context.handle(
-        _pointAIdMeta,
-        pointAId.isAcceptableOrUnknown(data['point_a_id']!, _pointAIdMeta),
+        _locAIdMeta,
+        locAId.isAcceptableOrUnknown(data['loc_a_id']!, _locAIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_pointAIdMeta);
+      context.missing(_locAIdMeta);
     }
-    if (data.containsKey('point_b_id')) {
+    if (data.containsKey('loc_b_id')) {
       context.handle(
-        _pointBIdMeta,
-        pointBId.isAcceptableOrUnknown(data['point_b_id']!, _pointBIdMeta),
+        _locBIdMeta,
+        locBId.isAcceptableOrUnknown(data['loc_b_id']!, _locBIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_pointBIdMeta);
+      context.missing(_locBIdMeta);
     }
     if (data.containsKey('path_type')) {
       context.handle(
@@ -1086,15 +1085,15 @@ class $MyPathsTable extends MyPaths with TableInfo<$MyPathsTable, MyPath> {
             DriftSqlType.string,
             data['${effectivePrefix}id'],
           )!,
-      pointAId:
+      locAId:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}point_a_id'],
+            data['${effectivePrefix}loc_a_id'],
           )!,
-      pointBId:
+      locBId:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
-            data['${effectivePrefix}point_b_id'],
+            data['${effectivePrefix}loc_b_id'],
           )!,
       pathType:
           attachedDatabase.typeMapping.read(
@@ -1130,8 +1129,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   final String id;
 
   /// Starting and ending points of the path
-  final String pointAId;
-  final String pointBId;
+  final String locAId;
+  final String locBId;
 
   /// Type of the path
   final String pathType;
@@ -1141,8 +1140,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   final Map<String, dynamic>? route;
   const MyPath({
     required this.id,
-    required this.pointAId,
-    required this.pointBId,
+    required this.locAId,
+    required this.locBId,
     required this.pathType,
     this.buildingId,
     this.route,
@@ -1151,8 +1150,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['point_a_id'] = Variable<String>(pointAId);
-    map['point_b_id'] = Variable<String>(pointBId);
+    map['loc_a_id'] = Variable<String>(locAId);
+    map['loc_b_id'] = Variable<String>(locBId);
     map['path_type'] = Variable<String>(pathType);
     if (!nullToAbsent || buildingId != null) {
       map['building_id'] = Variable<String>(buildingId);
@@ -1168,8 +1167,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   MyPathsCompanion toCompanion(bool nullToAbsent) {
     return MyPathsCompanion(
       id: Value(id),
-      pointAId: Value(pointAId),
-      pointBId: Value(pointBId),
+      locAId: Value(locAId),
+      locBId: Value(locBId),
       pathType: Value(pathType),
       buildingId:
           buildingId == null && nullToAbsent
@@ -1187,8 +1186,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MyPath(
       id: serializer.fromJson<String>(json['id']),
-      pointAId: serializer.fromJson<String>(json['pointAId']),
-      pointBId: serializer.fromJson<String>(json['pointBId']),
+      locAId: serializer.fromJson<String>(json['locAId']),
+      locBId: serializer.fromJson<String>(json['locBId']),
       pathType: serializer.fromJson<String>(json['pathType']),
       buildingId: serializer.fromJson<String?>(json['buildingId']),
       route: serializer.fromJson<Map<String, dynamic>?>(json['route']),
@@ -1199,8 +1198,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'pointAId': serializer.toJson<String>(pointAId),
-      'pointBId': serializer.toJson<String>(pointBId),
+      'locAId': serializer.toJson<String>(locAId),
+      'locBId': serializer.toJson<String>(locBId),
       'pathType': serializer.toJson<String>(pathType),
       'buildingId': serializer.toJson<String?>(buildingId),
       'route': serializer.toJson<Map<String, dynamic>?>(route),
@@ -1209,15 +1208,15 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 
   MyPath copyWith({
     String? id,
-    String? pointAId,
-    String? pointBId,
+    String? locAId,
+    String? locBId,
     String? pathType,
     Value<String?> buildingId = const Value.absent(),
     Value<Map<String, dynamic>?> route = const Value.absent(),
   }) => MyPath(
     id: id ?? this.id,
-    pointAId: pointAId ?? this.pointAId,
-    pointBId: pointBId ?? this.pointBId,
+    locAId: locAId ?? this.locAId,
+    locBId: locBId ?? this.locBId,
     pathType: pathType ?? this.pathType,
     buildingId: buildingId.present ? buildingId.value : this.buildingId,
     route: route.present ? route.value : this.route,
@@ -1225,8 +1224,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   MyPath copyWithCompanion(MyPathsCompanion data) {
     return MyPath(
       id: data.id.present ? data.id.value : this.id,
-      pointAId: data.pointAId.present ? data.pointAId.value : this.pointAId,
-      pointBId: data.pointBId.present ? data.pointBId.value : this.pointBId,
+      locAId: data.locAId.present ? data.locAId.value : this.locAId,
+      locBId: data.locBId.present ? data.locBId.value : this.locBId,
       pathType: data.pathType.present ? data.pathType.value : this.pathType,
       buildingId:
           data.buildingId.present ? data.buildingId.value : this.buildingId,
@@ -1238,8 +1237,8 @@ class MyPath extends DataClass implements Insertable<MyPath> {
   String toString() {
     return (StringBuffer('MyPath(')
           ..write('id: $id, ')
-          ..write('pointAId: $pointAId, ')
-          ..write('pointBId: $pointBId, ')
+          ..write('locAId: $locAId, ')
+          ..write('locBId: $locBId, ')
           ..write('pathType: $pathType, ')
           ..write('buildingId: $buildingId, ')
           ..write('route: $route')
@@ -1249,14 +1248,14 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 
   @override
   int get hashCode =>
-      Object.hash(id, pointAId, pointBId, pathType, buildingId, route);
+      Object.hash(id, locAId, locBId, pathType, buildingId, route);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MyPath &&
           other.id == this.id &&
-          other.pointAId == this.pointAId &&
-          other.pointBId == this.pointBId &&
+          other.locAId == this.locAId &&
+          other.locBId == this.locBId &&
           other.pathType == this.pathType &&
           other.buildingId == this.buildingId &&
           other.route == this.route);
@@ -1264,16 +1263,16 @@ class MyPath extends DataClass implements Insertable<MyPath> {
 
 class MyPathsCompanion extends UpdateCompanion<MyPath> {
   final Value<String> id;
-  final Value<String> pointAId;
-  final Value<String> pointBId;
+  final Value<String> locAId;
+  final Value<String> locBId;
   final Value<String> pathType;
   final Value<String?> buildingId;
   final Value<Map<String, dynamic>?> route;
   final Value<int> rowid;
   const MyPathsCompanion({
     this.id = const Value.absent(),
-    this.pointAId = const Value.absent(),
-    this.pointBId = const Value.absent(),
+    this.locAId = const Value.absent(),
+    this.locBId = const Value.absent(),
     this.pathType = const Value.absent(),
     this.buildingId = const Value.absent(),
     this.route = const Value.absent(),
@@ -1281,20 +1280,20 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   });
   MyPathsCompanion.insert({
     required String id,
-    required String pointAId,
-    required String pointBId,
+    required String locAId,
+    required String locBId,
     required String pathType,
     this.buildingId = const Value.absent(),
     this.route = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       pointAId = Value(pointAId),
-       pointBId = Value(pointBId),
+       locAId = Value(locAId),
+       locBId = Value(locBId),
        pathType = Value(pathType);
   static Insertable<MyPath> custom({
     Expression<String>? id,
-    Expression<String>? pointAId,
-    Expression<String>? pointBId,
+    Expression<String>? locAId,
+    Expression<String>? locBId,
     Expression<String>? pathType,
     Expression<String>? buildingId,
     Expression<String>? route,
@@ -1302,8 +1301,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (pointAId != null) 'point_a_id': pointAId,
-      if (pointBId != null) 'point_b_id': pointBId,
+      if (locAId != null) 'loc_a_id': locAId,
+      if (locBId != null) 'loc_b_id': locBId,
       if (pathType != null) 'path_type': pathType,
       if (buildingId != null) 'building_id': buildingId,
       if (route != null) 'route': route,
@@ -1313,8 +1312,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
 
   MyPathsCompanion copyWith({
     Value<String>? id,
-    Value<String>? pointAId,
-    Value<String>? pointBId,
+    Value<String>? locAId,
+    Value<String>? locBId,
     Value<String>? pathType,
     Value<String?>? buildingId,
     Value<Map<String, dynamic>?>? route,
@@ -1322,8 +1321,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   }) {
     return MyPathsCompanion(
       id: id ?? this.id,
-      pointAId: pointAId ?? this.pointAId,
-      pointBId: pointBId ?? this.pointBId,
+      locAId: locAId ?? this.locAId,
+      locBId: locBId ?? this.locBId,
       pathType: pathType ?? this.pathType,
       buildingId: buildingId ?? this.buildingId,
       route: route ?? this.route,
@@ -1337,11 +1336,11 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (pointAId.present) {
-      map['point_a_id'] = Variable<String>(pointAId.value);
+    if (locAId.present) {
+      map['loc_a_id'] = Variable<String>(locAId.value);
     }
-    if (pointBId.present) {
-      map['point_b_id'] = Variable<String>(pointBId.value);
+    if (locBId.present) {
+      map['loc_b_id'] = Variable<String>(locBId.value);
     }
     if (pathType.present) {
       map['path_type'] = Variable<String>(pathType.value);
@@ -1364,8 +1363,8 @@ class MyPathsCompanion extends UpdateCompanion<MyPath> {
   String toString() {
     return (StringBuffer('MyPathsCompanion(')
           ..write('id: $id, ')
-          ..write('pointAId: $pointAId, ')
-          ..write('pointBId: $pointBId, ')
+          ..write('locAId: $locAId, ')
+          ..write('locBId: $locBId, ')
           ..write('pathType: $pathType, ')
           ..write('buildingId: $buildingId, ')
           ..write('route: $route, ')
@@ -1401,7 +1400,7 @@ typedef $$BuildingsTableCreateCompanionBuilder =
       required double lng,
       required int mainFloor,
       Value<String?> description,
-      Value<String?> otherInfo,
+      Value<Map<String, dynamic>?> otherInfo,
       Value<int> rowid,
     });
 typedef $$BuildingsTableUpdateCompanionBuilder =
@@ -1413,7 +1412,7 @@ typedef $$BuildingsTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<int> mainFloor,
       Value<String?> description,
-      Value<String?> otherInfo,
+      Value<Map<String, dynamic>?> otherInfo,
       Value<int> rowid,
     });
 
@@ -1461,9 +1460,14 @@ class $$BuildingsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get otherInfo => $composableBuilder(
+  ColumnWithTypeConverterFilters<
+    Map<String, dynamic>?,
+    Map<String, dynamic>,
+    String
+  >
+  get otherInfo => $composableBuilder(
     column: $table.otherInfo,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -1549,7 +1553,8 @@ class $$BuildingsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get otherInfo =>
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+  get otherInfo =>
       $composableBuilder(column: $table.otherInfo, builder: (column) => column);
 }
 
@@ -1588,7 +1593,7 @@ class $$BuildingsTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<int> mainFloor = const Value.absent(),
                 Value<String?> description = const Value.absent(),
-                Value<String?> otherInfo = const Value.absent(),
+                Value<Map<String, dynamic>?> otherInfo = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BuildingsCompanion(
                 id: id,
@@ -1610,7 +1615,7 @@ class $$BuildingsTableTableManager
                 required double lng,
                 required int mainFloor,
                 Value<String?> description = const Value.absent(),
-                Value<String?> otherInfo = const Value.absent(),
+                Value<Map<String, dynamic>?> otherInfo = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BuildingsCompanion.insert(
                 id: id,
@@ -1877,8 +1882,8 @@ typedef $$LocationsTableProcessedTableManager =
 typedef $$MyPathsTableCreateCompanionBuilder =
     MyPathsCompanion Function({
       required String id,
-      required String pointAId,
-      required String pointBId,
+      required String locAId,
+      required String locBId,
       required String pathType,
       Value<String?> buildingId,
       Value<Map<String, dynamic>?> route,
@@ -1887,8 +1892,8 @@ typedef $$MyPathsTableCreateCompanionBuilder =
 typedef $$MyPathsTableUpdateCompanionBuilder =
     MyPathsCompanion Function({
       Value<String> id,
-      Value<String> pointAId,
-      Value<String> pointBId,
+      Value<String> locAId,
+      Value<String> locBId,
       Value<String> pathType,
       Value<String?> buildingId,
       Value<Map<String, dynamic>?> route,
@@ -1909,13 +1914,13 @@ class $$MyPathsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get pointAId => $composableBuilder(
-    column: $table.pointAId,
+  ColumnFilters<String> get locAId => $composableBuilder(
+    column: $table.locAId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get pointBId => $composableBuilder(
-    column: $table.pointBId,
+  ColumnFilters<String> get locBId => $composableBuilder(
+    column: $table.locBId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1954,13 +1959,13 @@ class $$MyPathsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get pointAId => $composableBuilder(
-    column: $table.pointAId,
+  ColumnOrderings<String> get locAId => $composableBuilder(
+    column: $table.locAId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get pointBId => $composableBuilder(
-    column: $table.pointBId,
+  ColumnOrderings<String> get locBId => $composableBuilder(
+    column: $table.locBId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1992,11 +1997,11 @@ class $$MyPathsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get pointAId =>
-      $composableBuilder(column: $table.pointAId, builder: (column) => column);
+  GeneratedColumn<String> get locAId =>
+      $composableBuilder(column: $table.locAId, builder: (column) => column);
 
-  GeneratedColumn<String> get pointBId =>
-      $composableBuilder(column: $table.pointBId, builder: (column) => column);
+  GeneratedColumn<String> get locBId =>
+      $composableBuilder(column: $table.locBId, builder: (column) => column);
 
   GeneratedColumn<String> get pathType =>
       $composableBuilder(column: $table.pathType, builder: (column) => column);
@@ -2039,16 +2044,16 @@ class $$MyPathsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> pointAId = const Value.absent(),
-                Value<String> pointBId = const Value.absent(),
+                Value<String> locAId = const Value.absent(),
+                Value<String> locBId = const Value.absent(),
                 Value<String> pathType = const Value.absent(),
                 Value<String?> buildingId = const Value.absent(),
                 Value<Map<String, dynamic>?> route = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MyPathsCompanion(
                 id: id,
-                pointAId: pointAId,
-                pointBId: pointBId,
+                locAId: locAId,
+                locBId: locBId,
                 pathType: pathType,
                 buildingId: buildingId,
                 route: route,
@@ -2057,16 +2062,16 @@ class $$MyPathsTableTableManager
           createCompanionCallback:
               ({
                 required String id,
-                required String pointAId,
-                required String pointBId,
+                required String locAId,
+                required String locBId,
                 required String pathType,
                 Value<String?> buildingId = const Value.absent(),
                 Value<Map<String, dynamic>?> route = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MyPathsCompanion.insert(
                 id: id,
-                pointAId: pointAId,
-                pointBId: pointBId,
+                locAId: locAId,
+                locBId: locBId,
                 pathType: pathType,
                 buildingId: buildingId,
                 route: route,

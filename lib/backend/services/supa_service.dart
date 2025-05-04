@@ -1,4 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:watmap/backend/model/base/building.dart';
+import 'package:watmap/backend/model/base/location.dart';
+import 'package:watmap/backend/model/base/my_path.dart';
 import 'package:watmap/backend/model/base/path_raw.dart';
 
 import '../db/database.dart';
@@ -10,17 +13,17 @@ class SupaService {
 
   Future<List<Building>> getBuildings() async {
     List<Map<String, dynamic>>? dat = await db.from('buildings').select();
-    return dat.map((e) => Building.fromJson(e)).toList();
+    return dat.map((e) => buildingFromJsonWithSnakeCase(e)).toList();
   }
 
   Future<List<Location>> getLocations() async {
     List<Map<String, dynamic>>? dat = await db.from('locations').select();
-    return dat.map((e) => Location.fromJson(e)).toList();
+    return dat.map((e) => locationFromJsonWithSnakeCase(e)).toList();
   }
 
   Future<List<MyPath>> getPaths() async {
     List<Map<String, dynamic>>? dat = await db.from('paths').select();
-    return dat.map((e) => MyPath.fromJson(e)).toList();
+    return dat.map((e) => pathFromJsonWithSnakeCase(e)).toList();
   }
 
   Future<bool> reportPath(RawPath path) async {

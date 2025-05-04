@@ -15,8 +15,8 @@ class RoutePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "From ${route.paths[0].pointAId} "
-          "to ${route.paths[route.paths.length - 1].pointBId}",
+          "From ${route.paths[0].locAId} "
+          "to ${route.paths[route.paths.length - 1].locBId}",
           style: TextStyle(fontSize: 18),
         ),
       ),

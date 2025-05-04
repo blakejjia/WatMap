@@ -9,12 +9,12 @@ Widget _pathCard(MyPath path, MyMap map, int index) {
       child: Column(
         children: [
           Text(
-            "At ${path.pointAId}",
+            "At ${path.locAId}",
             style: TextStyle(fontSize: 18),
           ),
           Text(_parsePath(path), style: TextStyle(fontSize: 18, color: Colors.brown)),
           Text(
-            "to ${path.pointBId}",
+            "to ${path.locBId}",
             style: TextStyle(fontSize: 18),
           ),
         ],
@@ -26,7 +26,7 @@ Widget _pathCard(MyPath path, MyMap map, int index) {
 Widget _startCard(MyPath path, MyMap map) {
   return ListTile(
     title: Text(
-      "Starts your journey at ${path.pointAId}",
+      "Starts your journey at ${path.locAId}",
       style: TextStyle(fontSize: 18),
     ),
   );
@@ -34,7 +34,7 @@ Widget _startCard(MyPath path, MyMap map) {
 
 Widget _endCard(MyPath path, MyMap map) {
   return ListTile(
-    title: Text("And you will arrive ${path.pointBId} 😊"),
+    title: Text("And you will arrive ${path.locBId} 😊"),
   );
 }
 

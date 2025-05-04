@@ -81,16 +81,16 @@ List<Location> aStar(Location loc1, Location loc2, MyMap map) {
 List<LocationAndDistance> getAdjacentLocations(Location loc, MyMap map) {
   List<LocationAndDistance> adjacents = [];
   for (MyPath path in map.paths) {
-    if (path.pointAId == loc.id) {
+    if (path.locAId == loc.id) {
       Location adjacent = map.locations.firstWhere(
-        (element) => element.id == path.pointBId,
+        (element) => element.id == path.locBId,
       );
       double dist = path.getCost(map);
       adjacents.add(LocationAndDistance(adjacent, dist));
     }
-    if (path.pointBId == loc.id) {
+    if (path.locBId == loc.id) {
       Location adjacent = map.locations.firstWhere(
-        (element) => element.id == path.pointAId,
+        (element) => element.id == path.locAId,
       );
       double dist = path.getCost(map);
       adjacents.add(LocationAndDistance(adjacent, dist));
