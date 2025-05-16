@@ -52,6 +52,12 @@ class _OSMapState extends State<OSMap> {
             maxZoom: 18.0,
             minZoom: 15.0,
             initialRotation: 23,
+            cameraConstraint: CameraConstraint.containCenter(
+              bounds: LatLngBounds(
+                LatLng(43.46331506457337, -80.52699695774027),
+                LatLng(43.4776931711855, -80.56239865789252),
+              ),
+            ),
           ),
           children: [
             TileLayer(

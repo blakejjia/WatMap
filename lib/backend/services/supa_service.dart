@@ -28,7 +28,10 @@ class SupaService {
 
   Future<bool> reportPath(RawPath path) async {
     try {
-      await db.from('reports').insert(path.toJson());
+      await db.from('messages').insert({
+        'message': path.toJson(),
+        'contact': 'path report',
+      });
       return true;
     } catch (e) {
       return false;
