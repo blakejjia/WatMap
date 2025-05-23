@@ -6,6 +6,13 @@
 
 **WatMap** is a cross-platform map app built with Flutter, tailored for students and visitors at the University of Waterloo. Whether you’re rushing to class or exploring new shortcuts between buildings, WatMap helps you find the most efficient indoor and outdoor routes around campus — rain or shine!
 
+<a href='https://play.google.com/store/apps/details?id=com.jiayx.watmap'>
+  <img alt='Get it on Google Play'
+       src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
+       style='height: 60px;' />
+</a>
+
+
 ---
 
 ## 🚀 Key Features
