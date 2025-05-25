@@ -31,6 +31,7 @@ class _WelcomeViewState extends State<WelcomeView> {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: pages[_currentPage]),
         Row(
@@ -183,37 +184,39 @@ class PageContent extends StatelessWidget {
                 child: child,
               );
             },
-            child: Column(
-              key: ValueKey(title),
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+            child: Center(
+              child: Column(
+                key: ValueKey(title),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 80,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: Text(
-                    description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.color?.withAlpha(170),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: Text(
+                      description,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.color?.withAlpha(170),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

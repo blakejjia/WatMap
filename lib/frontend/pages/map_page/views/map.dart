@@ -4,10 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:watmap/backend/db/database.dart';
 import 'package:watmap/frontend/blocs/map_bloc/map_bloc.dart';
+import 'package:watmap/frontend/blocs/settings_bloc/settings_bloc.dart';
 import 'package:watmap/frontend/pages/map_page/views/format_string.dart';
 import 'package:watmap/main.dart';
 
@@ -35,6 +37,9 @@ class _OSMapState extends State<OSMap> {
     controller.mapEventStream.listen((event) {
       getIt<MapBloc>().add(UpdateMapCameraState(event.camera));
     });
+    if (context.read<MapBloc>().state.map.buildings.isEmpty) {
+      context.read<SettingsBloc>().add(UpdateDataEvent());
+    }
   }
 
   @override
@@ -67,7 +72,8 @@ class _OSMapState extends State<OSMap> {
             TileLayer(
               urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
               userAgentPackageName: 'com.jia-yx.watmap',
-              tileProvider: kIsWeb ? NetworkTileProvider() : tileProvider,
+              tileProvider:
+                  kIsWeb ? CancellableNetworkTileProvider() : tileProvider,
             ),
             BlocBuilder<MapBloc, MapState>(
               builder: (context, state) {

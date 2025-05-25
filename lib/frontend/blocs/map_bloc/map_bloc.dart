@@ -21,6 +21,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<MapSelectBuilding>(_mapSelectBuilding);
     on<_MapFindRoute>(_mapFindRoute);
     on<UpdateMapCameraState>(_mapChangeZoom);
+
     add(MapLoad());
   }
 
