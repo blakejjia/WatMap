@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -38,9 +39,12 @@ class _OSMapState extends State<OSMap> {
 
   @override
   Widget build(BuildContext context) {
-    final tileProvider = FMTCTileProvider(
-      stores: const {'mapStore': BrowseStoreStrategy.readUpdateCreate},
-    );
+    late FMTCTileProvider tileProvider;
+    if (!kIsWeb) {
+      tileProvider = FMTCTileProvider(
+        stores: const {'mapStore': BrowseStoreStrategy.readUpdateCreate},
+      );
+    }
 
     return Stack(
       children: [
@@ -63,7 +67,7 @@ class _OSMapState extends State<OSMap> {
             TileLayer(
               urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
               userAgentPackageName: 'com.jia-yx.watmap',
-              tileProvider: tileProvider,
+              tileProvider: kIsWeb ? NetworkTileProvider() : tileProvider,
             ),
             BlocBuilder<MapBloc, MapState>(
               builder: (context, state) {

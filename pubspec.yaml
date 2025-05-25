@@ -2,7 +2,7 @@ name: watmap
 description: "A app help you hang around uwaterloo"
 publish_to: "none"
 
-version: 2.0.0+6
+version: 2.1.1+8
 
 environment:
   sdk: ^3.7.0

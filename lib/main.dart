@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -27,13 +28,19 @@ void main() async {
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "config/.env");
-  await FMTCObjectBoxBackend().initialise();
-  await FMTCStore('mapStore').manage.create();
-  HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: HydratedStorageDirectory(
-      (await getApplicationDocumentsDirectory()).path,
-    ),
-  );
+  if (!kIsWeb) {
+    await FMTCObjectBoxBackend().initialise();
+    await FMTCStore('mapStore').manage.create();
+
+    final storageDir = await getApplicationDocumentsDirectory();
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: HydratedStorageDirectory(storageDir.path),
+    );
+  } else {
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: HydratedStorageDirectory.web,
+    );
+  }
 
   await Supabase.initialize(
     anonKey: dotenv.env['API_KEY'] ?? "",

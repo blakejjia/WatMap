@@ -7,8 +7,10 @@ class _InputField extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController messageController = TextEditingController();
     final TextEditingController contactController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           TextFormField(
@@ -34,7 +36,7 @@ class _InputField extends StatelessWidget {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Message is required';
+                return 'contact information is required';
               }
               return null;
             },
@@ -42,9 +44,9 @@ class _InputField extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              final contactInfo = contactController.text;
-              final message = messageController.text;
-              if (contactInfo.isNotEmpty && message.isNotEmpty) {
+              if (_formKey.currentState!.validate()) {
+                final contactInfo = contactController.text;
+                final message = messageController.text;
                 context.read<ReportBloc>().add(
                   SendUsMessageEvent(message, contactInfo),
                 );
