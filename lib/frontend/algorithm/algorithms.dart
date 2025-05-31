@@ -102,9 +102,9 @@ extension AlgorPath on MyPath {
     if (pathType == PATH_STAIRS) {
       return 0;
     }
+    final a = map.locations.firstWhere((e) => e.id == locAId);
+    final b = map.locations.firstWhere((e) => e.id == locBId);
     if (route == null || route!["route"] == null || route!["route"].isEmpty) {
-      final a = map.locations.firstWhere((e) => e.id == locAId);
-      final b = map.locations.firstWhere((e) => e.id == locBId);
       return Distance().as(
         LengthUnit.Meter,
         LatLng(a.lat, a.lng),
@@ -112,11 +112,18 @@ extension AlgorPath on MyPath {
       );
     }
     double dist = 0;
-    for (int i = 0; i < route!["route"].length - 1; i++) {
+    List<List<double>> realRoute = [
+      [a.lat, a.lng],
+      ...(route!["route"] as List).map<List<double>>(
+        (e) => (e as List).map((v) => v.toDouble()).toList().cast<double>(),
+      ),
+      [b.lat, b.lng],
+    ];
+    for (int i = 0; i < realRoute.length - 1; i++) {
       dist += Distance().as(
         LengthUnit.Meter,
-        LatLng(route!["route"][i][0], route!["route"][i][1]),
-        LatLng(route!["route"][i+1][0], route!["route"][i+1][1]),
+        LatLng(realRoute[i][0], realRoute[i][1]),
+        LatLng(realRoute[i + 1][0], realRoute[i + 1][1]),
       );
     }
     return dist;
@@ -133,11 +140,7 @@ extension AlgorPath on MyPath {
     final route = getRoute(map);
     double dist = 0;
     for (int i = 0; i < route.length - 1; i++) {
-      dist += Distance().as(
-        LengthUnit.Meter,
-        route[i],
-        route[i+1],
-      );
+      dist += Distance().as(LengthUnit.Meter, route[i], route[i + 1]);
     }
     double time = dist / AppStrings.walkSpeed;
     return time;
